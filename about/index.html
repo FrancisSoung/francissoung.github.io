@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="这是一个程序员的日记薄，记录工作与生活的点点滴滴。包括WEB程序开发、Linux服务器管理、LAMP/LNMP环境配置优化、PHP网络技术、MySQL优化等技术分享以及个人生活旅行中的所见所闻所解。">
+    <meta name="keywords"  content="WEB程序开发,Linux服务器管理,LAMP/LNMP环境配置优化,网络架构,MySQL优化,生活旅行,Francis,francissoung,php程序猿的笔记,程序员的日记薄">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>About - Francis Soung</title>
+
+    <link rel="canonical" href="http://www.francissoung.com/about/">
+
+    
+    <!-- css CDN to qiniu -->
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Fbootstrap.min.css">
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Ffrancis-blog.min.css">
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Fsyntax.css">
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Freturntop.css">
+    
+
+    <link href="http://cdn.staticfile.org/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Francis Soung</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/about/">About</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/portfolio/">Portfolio</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/tags/">Tags</a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    var __HuxNav__ = {
+        close: function(){
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        },
+        open: function(){
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+
+    // Bind Event
+    $toggle.addEventListener('click', function(e){
+        if ($navbar.className.indexOf('in') > 0) {
+            __HuxNav__.close()
+        }else{
+            __HuxNav__.open()
+        }
+    })
+
+    /**
+     * Since Fastclick is used to delegate 'touchstart' globally
+     * to hack 300ms delay in iOS by performing a fake 'click',
+     * Using 'e.stopPropagation' to stop 'touchstart' event from 
+     * $toggle/$collapse will break global delegation.
+     * 
+     * Instead, we use a 'e.target' filter to prevent handler
+     * added to document close HuxNav.  
+     *
+     * Also, we use 'click' instead of 'touchstart' as compromise
+     */
+    document.addEventListener('click', function(e){
+        if(e.target == $toggle) return;
+        if(e.target.className == 'icon-bar') return;
+        __HuxNav__.close();
+    })
+</script>
+
+
+    <!-- Page Header -->
+<header class="intro-header" style="background-image: url('/img/about-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
+                <div class="site-heading">
+                    <h1>About</h1>
+                    <!--<hr class="small">-->
+                    <span class="subheading">Hey, this is Francis.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Main Content -->
+<div class="container">
+	<div class="row">
+        
+
+<!-- USE SIDEBAR -->
+    <!-- PostList Container -->
+    		<div class="
+                col-lg-8 col-lg-offset-1
+                col-md-8 col-md-offset-1
+                col-sm-12
+                col-xs-12
+                postlist-container
+            ">
+    			<!-- Language Selector -->
+<select onchange= "onLanChange(this.options[this.options.selectedIndex].value)">
+    <option value="0" selected> 中文 Chinese </option>
+    <option value="1"> 英文 English </option>
+</select>
+
+<!-- Chinese Version -->
+<div class="zh post-container">
+
+    <!--copied from markdown -->
+    <blockquote><p>爱好旅行，摄影和运动，更热爱我现在的coding。<br>
+    世界那么大，我想去看看。</p></blockquote>
+
+    <p>Hey，我是<strong>Francis Soung</strong>，程序员 &amp; PHP开发工程师，<a href="http://www.pku.edu.cn/" target="_blank">北京大学</a> · 计算机科学与技术专业在修；前 · <a href="http://www.biigroup.com" target="_blank">天地互连</a>开发组技术负责人；
+    目前任职于<a href="http://phtv.ifeng.com/" target="_blank">凤凰卫视</a> · <a href="http://art.ifeng.com" target="_blank">凤凰艺术</a>，担任PHP开发主管，负责PHP后台开发以及技术架构。</p>
+
+    <p>一些作品和开源项目，👉 戳 <a href="/portfolio">Portfolio</a> 与 <a href="http://github.com/FrancisSoung" target="_blank">Github</a></p>
+
+    <p>个人旅行相册：<a href="http://gallery.francissoung.com" target="_blank">弗朗西斯的简单生活</a></p>
+
+    <h5>Book</h5>
+    <ul>
+        <li><a href="https://www.gitbook.com/book/francissoung/understanding_the_php_kernel/details">深入理解PHP内核</a></li>
+        <p>如有打开不了的情况，请访问以下PDF版本，也可以保存到本地&nbsp;<a href="/attach/Understanding_the_PHP_kernel.pdf">点击阅读</a></p>
+    </ul>
+
+    <h5>Talks</h5>
+    <ul>
+        <li><a href="http://www.francissoung.com/2015/11/11/%E7%A8%8B%E5%BA%8F%E5%91%98%E5%88%B0%E5%BA%95%E6%98%AF%E4%B8%80%E4%B8%AA%E4%BB%80%E4%B9%88%E8%81%8C%E4%B8%9A/">程序员到底是一个什么职业？</a></li>
+    </ul>
+    <ul>
+        <li><a href="http://www.francissoung.com/2016/03/03/%E6%B5%85%E8%B0%88%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E5%8A%A8%E6%80%81%E5%BA%94%E7%94%A8%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/">浅谈大型网站动态应用系统架构</a></li>
+    </ul>
+
+    <ul>
+        <li><a href="http://www.francissoung.com/2016/03/04/%E5%A6%82%E4%BD%95%E5%86%99%E5%87%BA%E4%BC%98%E7%BE%8E%E7%9A%84-C-%E4%BB%A3%E7%A0%81/">如何写出优美的C代码</a></li>
+    </ul>
+
+    <h5>微信公众号</h5>
+    <p><img src="/img/qrcode_for_francissoung.jpg" alt="PHP程序猿的笔记"></p>
+
+    <!--<h5>Resumes</h5>-->
+
+    <!--<ul>-->
+    <!--<li><a href="/attach/2016_Hux_en_SE.pdf">2016_Hux_en_SE &amp; FE</a></li>-->
+    <!--<li><a href="attach/2016_Hux_en_PD.pdf">2016_Hux_en_PD &amp; UX</a></li>-->
+    <!--</ul>-->
+
+</div>
+
+<!-- English Version -->
+<div class="en post-container">
+    <blockquote><p>Yet another Web Developer / PHP Engineer.</p></blockquote>
+
+    <p>My name is <strong>Francis Soung</strong>，you can call me nickname <strong>Francis</strong>. I studied Digital Media Art in <a href="http://www.pku.edu.cn/" target="_blank">Peking University</a>, Computer Science and Technology.</p>
+
+    <p>As a engineer, I work at Art@ifeng (<a href="http://art.ifeng.com" target="_blank">Art Ifeng</a>) ,responsible for the development of background technique, and <a href="http://www.biigroup.com/" target="_blank">BII Group</a> three years of work.</p>
+
+    <p>As a engineer,I am ever offered as php engineer Intern by Bii, PhoenixTV etc, at the background of technology development.</p>
+
+    <p>Some of my projects is put on my <a href="/portfolio">Portfolio 👉</a> and <a href="http://github.com/FrancisSoung" target="_blank">Github 👉</a></p>
+
+    <!--<h5>Talks</h5>-->
+
+    <!--<ul>-->
+    <!--<li><a href="http://huangxuan.me/2015/12/28/css-sucks-2015/">CSS Still Sucks 2015 · 2015</a></li>-->
+    <!--<li><a href="http://huangxuan.me/2015/07/09/js-module-7day/">JavaScript Modularization Journey · 2015</a></li>-->
+    <!--</ul>-->
+
+
+    <!--<h5>Resumes</h5>-->
+
+    <!--<ul>-->
+    <!--<li><a href="/attach/2016_Hux_en_SE.pdf">2016_Hux_en_SE &amp; FE</a></li>-->
+    <!--<li><a href="attach/2016_Hux_en_PD.pdf">2016_Hux_en_PD &amp; UX</a></li>-->
+    <!--</ul>-->
+
+    <h5>WeChat</h5>
+    <p><img src="/img/qrcode_for_francissoung.jpg" alt="PHP程序猿的笔记"></p>
+</div>
+
+<!-- Handle Language Change -->
+<script type="text/javascript">
+    // get nodes
+    var $zh = document.querySelector(".zh");
+    var $en = document.querySelector(".en");
+    var $select = document.querySelector("select");
+
+    // bind hashchange event
+    window.addEventListener('hashchange', _render);
+
+    // handle render
+    function _render(){
+        var _hash = window.location.hash;
+        // en
+        if(_hash == "#en"){
+            $select.selectedIndex = 1;
+            $en.style.display = "block";
+            $zh.style.display = "none";
+        // zh by default
+        }else{
+            // not trigger onChange, otherwise cause a loop call.
+            $select.selectedIndex = 0;
+            $zh.style.display = "block";
+            $en.style.display = "none";
+        }
+    }
+
+    // handle select change
+    function onLanChange(index){
+        if(index == 0){
+            window.location.hash = "#zh"
+        }else{
+            window.location.hash = "#en"
+        }
+    }
+
+    // init
+    _render();
+</script>
+
+
+
+
+
+
+
+<!-- disqus 评论框 start -->
+<div class="comment">
+    <div id="disqus_thread" class="disqus-thread">
+
+    </div>
+</div>
+<!-- disqus 评论框 end -->
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "francissoungblog";
+    var disqus_identifier = "francissoungblog//about/";
+    var disqus_url = "http://www.francissoung.com/about/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+    		</div>
+    <!-- Sidebar Container -->
+            <div class="
+                col-lg-3 col-lg-offset-0
+                col-md-3 col-md-offset-0
+                col-sm-12
+                col-xs-12
+                sidebar-container
+            ">
+                <!-- Featured Tags -->
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                            
+                                <a href="/tags/#Linux" title="Linux" rel="10">
+                                    Linux
+                                </a>
+                            
+                        
+                            
+                                <a href="/tags/#Francis 旅行录" title="Francis 旅行录" rel="6">
+                                    Francis 旅行录
+                                </a>
+                            
+                        
+                            
+                                <a href="/tags/#Francis 简单生活" title="Francis 简单生活" rel="5">
+                                    Francis 简单生活
+                                </a>
+                            
+                        
+                            
+                        
+                            
+                                <a href="/tags/#PHP" title="PHP" rel="6">
+                                    PHP
+                                </a>
+                            
+                        
+                            
+                                <a href="/tags/#MySQL" title="MySQL" rel="2">
+                                    MySQL
+                                </a>
+                            
+                        
+                            
+                                <a href="/tags/#Apache" title="Apache" rel="2">
+                                    Apache
+                                </a>
+                            
+                        
+                            
+                                <a href="/tags/#Francis 杂谈" title="Francis 杂谈" rel="9">
+                                    Francis 杂谈
+                                </a>
+                            
+                        
+                            
+                                <a href="/tags/#OS X" title="OS X" rel="2">
+                                    OS X
+                                </a>
+                            
+                        
+                            
+                        
+                            
+                                <a href="/tags/#Nginx" title="Nginx" rel="2">
+                                    Nginx
+                                </a>
+                            
+                        
+                            
+                        
+                            
+                                <a href="/tags/#编程" title="编程" rel="3">
+                                    编程
+                                </a>
+                            
+                        
+                            
+                        
+                            
+                                <a href="/tags/#C语言" title="C语言" rel="2">
+                                    C语言
+                                </a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Short About -->
+                <section class="visible-md visible-lg">
+                    <hr><h5><a href="">ABOUT ME</a></h5>
+                    <div class="short-about">
+                        
+                            <img src="/img/avatar-francis.jpg" alt="Francis Soung" />
+                        
+                        
+                            <p>爱好旅行，摄影和运动，更热爱我现在的coding。世界那么大，我想去看看。</p>
+                        
+                        <!-- SNS Link -->
+                        <ul class="list-inline">
+                            
+                            
+                            <li>
+                                <a target="_blank" href="http://weibo.com/523072343">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            
+                            
+                            <li>
+                                <a target="_blank" href="https://www.zhihu.com/people/Franciskeke">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa  fa-stack-1x fa-inverse">知</i>
+                                    </span>
+                                </a>
+                            </li>
+                            
+                            
+                            <li>
+                                <a target="_blank" href="https://segmentfault.com/u/francissoung">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa  fa-stack-1x fa-inverse">sf</i>
+                                    </span>
+                                </a>
+                            </li>
+                            
+                            
+                            <li>
+                                <a target="_blank" href="https://github.com/FrancisSoung">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            
+                            
+                            <li>
+                                <a target="_blank" href="https://www.facebook.com/francis.soung">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            
+                            
+                            <li>
+                                <a href="https://twitter.com/Francis_Soung">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            
+
+                        </ul>
+                    </div>
+                </section>
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+                    
+                        <li><a href="http://blog.maryopen.com/">马力全开</a></li>
+                    
+                        <li><a href="http://www.april2nd.me/">航哥</a></li>
+                    
+                        <li><a href="http://blog.ichuck.net/">鹏哥</a></li>
+                    
+                        <li><a href="http://www.shmilyx.net/">望望</a></li>
+                    
+                        <li><a href="http://www.51hsw.com/">好一网</a></li>
+                    
+                </ul>
+                
+    		</div>
+        
+	</div>
+</div>
+
+
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="http://weibo.com/523072343">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/Franciskeke">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://segmentfault.com/u/francissoung">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa  fa-stack-1x fa-inverse">sf</i>
+                                    </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/FrancisSoung">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/francis.soung">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a href="https://twitter.com/Francis_Soung">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Francis Soung 2016
+                    <br>
+                    Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> and <a href="http://www.bootcss.com/">Bootstrap</a> | Theme © <a href="http://huangxuan.me">Hux</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=FrancisSoung&repo=francissoung.github.io&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+<p id="back-to-top"><a href="#top"><span></span></a></p>
+
+
+<script src="http://7xl0td.com1.z0.glb.clouddn.com/js%2Fjquery.min.js"></script>
+<script src="http://7xl0td.com1.z0.glb.clouddn.com/js%2Fbootstrap.min.js"></script>
+<script src="http://7xl0td.com1.z0.glb.clouddn.com/js%2Ffrancis-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- Highlight.js -->
+<script>
+    async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+        hljs.initHighlightingOnLoad();
+    })
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+<link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+
+<!--fastClick.js -->
+<script>
+    async("http://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        // var $nav = document.querySelector("nav");
+        // if($nav) FastClick.attach($nav);
+
+        // global FastClick!!
+        FastClick.attach(document.body);    
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Francis Soung
+    var _baId = '551c451674b914ab3e454205afd429a8';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- Baidu zhanzhang -->
+<script>
+    (function(){
+        var bp = document.createElement('script');
+        bp.src = '//push.zhanzhang.baidu.com/push.js';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+<!--返回顶部-->
+<script>
+    $(function(){
+        //当滚动条的位置处于距顶部100像素以下时，跳转链接出现，否则消失
+        $(function () {
+            $(window).scroll(function(){
+                if ($(window).scrollTop()>100){
+                    $("#back-to-top").fadeIn(1500);
+                }
+                else
+                {
+                    $("#back-to-top").fadeOut(1500);
+                }
+            });
+
+            //当点击跳转链接后，回到页面顶部位置
+
+            $("#back-to-top").click(function(){
+                $('body,html').animate({scrollTop:0},1000);
+                return false;
+            });
+        });
+    });
+</script>
+
+
+
+<!-- Image to hack wechat -->
+<img src="/img/icon_wechat.png" alt="Francis Soung" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

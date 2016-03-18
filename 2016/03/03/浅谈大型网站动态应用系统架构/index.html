@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="这是一个程序员的日记薄，记录工作与生活的点点滴滴。包括WEB程序开发、Linux服务器管理、LAMP/LNMP环境配置优化、PHP网络技术、MySQL优化等技术分享以及个人生活旅行中的所见所闻所解。">
+    <meta name="keywords"  content="WEB程序开发,Linux服务器管理,LAMP/LNMP环境配置优化,网络架构,MySQL优化,生活旅行,Francis,francissoung,php程序猿的笔记,程序员的日记薄">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>浅谈大型网站动态应用系统架构 - Francis Soung</title>
+
+    <link rel="canonical" href="http://www.francissoung.com/2016/03/03/%E6%B5%85%E8%B0%88%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E5%8A%A8%E6%80%81%E5%BA%94%E7%94%A8%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/">
+
+    
+    <!-- css CDN to qiniu -->
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Fbootstrap.min.css">
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Ffrancis-blog.min.css">
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Fsyntax.css">
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Freturntop.css">
+    
+
+    <link href="http://cdn.staticfile.org/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Francis Soung</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/about/">About</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/portfolio/">Portfolio</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/tags/">Tags</a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    var __HuxNav__ = {
+        close: function(){
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        },
+        open: function(){
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+
+    // Bind Event
+    $toggle.addEventListener('click', function(e){
+        if ($navbar.className.indexOf('in') > 0) {
+            __HuxNav__.close()
+        }else{
+            __HuxNav__.open()
+        }
+    })
+
+    /**
+     * Since Fastclick is used to delegate 'touchstart' globally
+     * to hack 300ms delay in iOS by performing a fake 'click',
+     * Using 'e.stopPropagation' to stop 'touchstart' event from 
+     * $toggle/$collapse will break global delegation.
+     * 
+     * Instead, we use a 'e.target' filter to prevent handler
+     * added to document close HuxNav.  
+     *
+     * Also, we use 'click' instead of 'touchstart' as compromise
+     */
+    document.addEventListener('click', function(e){
+        if(e.target == $toggle) return;
+        if(e.target.className == 'icon-bar') return;
+        __HuxNav__.close();
+    })
+</script>
+
+
+    <!-- Image to hack wechat -->
+<!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="/img/post-bg-unix-linux.jpg" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        position: relative;
+        background-image: url('/img/post-bg-unix-linux.jpg')
+    }
+
+    
+</style>
+<header class="intro-header" >
+    <div class="header-mask"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#架构" title="架构">架构</a>
+                        
+                        <a class="tag" href="/tags/#Francis 杂谈" title="Francis 杂谈">Francis 杂谈</a>
+                        
+                    </div>
+                    <h1>浅谈大型网站动态应用系统架构</h1>
+                    
+                    
+                    <h2 class="subheading"></h2>
+                    
+                    <span class="meta">Posted by Francis Soung on March 3, 2016</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>动态应用，是相对于网站静态内容而言，是指以<strong>c/c++、php、Java、perl、.net</strong>等服务器端语言开发的网络应用软件，比如<strong>论坛、网络相册、交友、BLOG</strong>等常见应用。动态应用系统通常与数据库系统、缓存系统、分布式存储系统等密不可分。</p>
+
+<p>大型动态应用系统平台主要是针对于<strong>大流量、高并发</strong>网站建立的底层系统架构。大型网站的运行需要一个<strong>可靠、安全、可扩展、易维护</strong>的应用系统平台做为支撑，以保证网站应用的平稳运行。</p>
+
+<p>大型动态应用系统又可分为几个子系统：</p>
+
+<ul>
+  <li><strong>Web前端系统</strong></li>
+  <li><strong>负载均衡系统</strong></li>
+  <li><strong>数据库集群系统</strong></li>
+  <li><strong>缓存系统</strong></li>
+  <li><strong>分布式存储系统</strong></li>
+  <li><strong>分布式服务器管理系统</strong></li>
+  <li><strong>代码分发系统</strong></li>
+</ul>
+
+<h2 id="web">Web前端系统</h2>
+
+<p>结构图：</p>
+
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016%2F03%2F03%2F23c8611eb055424faff943b5d0f0c345.jpg" alt="" /></p>
+
+<p>为了达到不同应用的服务器共享、避免单点故障、集中管理、统一配置等目的，不以应用划分服务器，而是将所有服务器做统一使用，每台服务器都可以对多个应用提供服务，当某些应用访问量升高时，通过增加服务器节点达到整个服务器集群的性能提高，同时使他应用也会受益。该Web前端系统基于Apache/Lighttpd/Eginx等的虚拟主机平台，提供PHP程序运行环境。服务器对开发人员是透明的，不需要开发人员介入服务器管理。</p>
+
+<h2 id="section">负载均衡系统</h2>
+
+<p>结构图：</p>
+
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016%2F03%2F03%2Ff1ab878d9087306ff476710079f084d9.jpg" alt="" /></p>
+
+<p>负载均衡系统分为硬件和软件两种。硬件负载均衡效率高，但是价格贵，比如F5等。软件负载均衡系统价格较低或者免费，效率较硬件负载均衡系统低，不过对于流量一般或稍大些网站来讲也足够使用，比如lvs, nginx。大多数网站都是硬件、软件负载均衡系统并用。</p>
+
+<h2 id="section-1">数据库集群系统</h2>
+
+<p>结构图：</p>
+
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016%2F03%2F03%2F5d85ae32d4ce1d69c6659aa73796d0db.jpg" alt="" /></p>
+
+<p>由于Web前端采用了负载均衡集群结构提高了服务的有效性和扩展性，因此数据库必须也是高可靠的，才能保证整个服务体系的高可靠性，如何构建一个高可靠的、可以提供大规模并发处理的数据库体系？</p>
+
+<p>我们可以采用如上图所示的方案：</p>
+
+<ul>
+  <li>
+    <p>使用 MySQL 数据库，考虑到Web应用的数据库读多写少的特点，我们主要对读数据库做了优化，提供专用的读数据库和写数据库，在应用程序中实现读操作和写操作分别访问不同的数据库。</p>
+  </li>
+  <li>
+    <p>使用 MySQL Replication 机制实现快速将主库（写库）的数据库复制到从库（读库）。一个主库对应多个从库，主库数据实时同步到从库。</p>
+  </li>
+  <li>
+    <p>写数据库有多台，每台都可以提供多个应用共同使用，这样可以解决写库的性能瓶颈问题和单点故障问题。</p>
+  </li>
+  <li>
+    <p>读数据库有多台，通过负载均衡设备实现负载均衡，从而达到读数据库的高性能、高可靠和高可扩展性。</p>
+  </li>
+  <li>
+    <p>数据库服务器和应用服务器分离。</p>
+  </li>
+  <li>
+    <p>从数据库使用BigIP做负载均衡。</p>
+  </li>
+</ul>
+
+<h2 id="section-2">缓存系统</h2>
+
+<p>结构图：</p>
+
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016%2F03%2F03%2Fd257ef6afdc2007bf729dca4a973068b.jpg" alt="" /></p>
+
+<p>缓存分为文件缓存、内存缓存、数据库缓存。在大型Web应用中使用最多且效率最高的是内存缓存。最常用的内存缓存工具是Memcached。使用正确的缓存系统可以达到实现以下目标：</p>
+
+<ol>
+  <li>
+    <p>使用缓存系统可以提高访问效率，提高服务器吞吐能力，改善用户体验。</p>
+  </li>
+  <li>
+    <p>减轻对数据库及存储集服务器的访问压力。</p>
+  </li>
+  <li>
+    <p>Memcached服务器有多台，避免单点故障，提供高可靠性和可扩展性，提高性能。</p>
+  </li>
+</ol>
+
+<h2 id="section-3">分布式存储系统</h2>
+
+<p>结构图：</p>
+
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016%2F03%2F03%2Faf947278e3d6fd5fac17af2e689b4c5c.jpg" alt="" /></p>
+
+<p>Web系统平台中的存储需求有下面两个特点：</p>
+
+<ol>
+  <li>
+    <p>存储量很大，经常会达到单台服务器无法提供的规模，比如相册、视频等应用。因此需要专业的大规模存储系统。</p>
+  </li>
+  <li>
+    <p>负载均衡cluster中的每个节点都有可能访问任何一个数据对象，每个节点对数据的处理也能被其他节点共享，因此这些节点要操作的数据从逻辑上看只能是一个整体，不是各自独立的数据资源。</p>
+  </li>
+</ol>
+
+<p>因此<strong>高性能的分布式存储系统对于大型网站应用来说是非常重要的一环</strong>。（这个地方需要加入对某个分布式存储系统的简单介绍。）</p>
+
+<h2 id="section-4">分布式服务器管理系统</h2>
+
+<p>结构图：</p>
+
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016%2F03%2F03%2F1178fd6019a70d78c813bd0d66e6304a.jpg" alt="" /></p>
+
+<p>随着网站访问流量的不断增加，大多的网络服务都是以负载均衡集群的方式对外提供服务，随之集群规模的扩大，原来基于单机的服务器管理模式已经不能够满足我们的需求，新的需求必须能够集中式的、分组的、批量的、自动化的对服务器进行管理，能够批量化的执行计划任务。</p>
+
+<p>在分布式服务器管理系统软件中有一些比较优秀的软件，其中比较理想的一个是Cfengine。它可以对服务器进行分组，不同的分组可以分别定制系统配置文件、计划任务等配置。它是基于C/S 结构的，所有的服务器配置和管理脚本程序都保存在Cfengine Server上，而被管理的服务器运行着 Cfengine Client 程序，Cfengine Client通过SSL加密的连接定期的向服务器端发送请求以获取最新的配置文件和管理命令、脚本程序、补丁安装等任务。</p>
+
+<p>有了Cfengine这种集中式的服务器管理工具，我们就可以高效的实现大规模的服务器集群管理，被管理服务器和 Cfengine Server 可以分布在任何位置，只要网络可以连通就能实现快速自动化的管理。</p>
+
+<h2 id="section-5">代码发布系统</h2>
+
+<p>结构图：</p>
+
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016%2F03%2F03%2Fd3459694dbf3e7bde14319457ea41178.jpg" alt="" /></p>
+
+<p>随着网站访问流量的不断增加，大多的网络服务都是以负载均衡集群的方式对外提供服务，随之集群规模的扩大，为了满足集群环境下程序代码的批量分发和更新，我们还需要一个程序代码发布系统。</p>
+
+<p>这个发布系统可以帮我们实现下面的目标：</p>
+
+<ul>
+  <li>
+    <p>生产环境的服务器以虚拟主机方式提供服务，不需要开发人员介入维护和直接操作，提供发布系统可以实现不需要登陆服务器就能把程序分发到目标服务器。</p>
+  </li>
+  <li>
+    <p>我们要实现内部开发、内部测试、生产环境测试、生产环境发布的4个开发阶段的管理，发布系统可以介入各个阶段的代码发布。</p>
+  </li>
+  <li>
+    <p>我们需要实现源代码管理和版本控制，SVN可以实现该需求。</p>
+  </li>
+</ul>
+
+<p>这里面可以使用常用的工具Rsync，通过开发相应的脚本工具实现服务器集群间代码同步分发。</p>
+
+
+                <hr>
+
+                
+
+                <!-- Baidu Share start-->
+                <div class="bdsharebuttonbox">
+                    <a href="#" class="bds_more" data-cmd="more"></a>
+                    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+                    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+                    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+                    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+                </div>
+                <!-- Baidu Share end -->
+
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2016/03/01/osx-xcode-c/" data-toggle="tooltip" data-placement="top" title="如何用 OS X 的 Xcode 写 C 语言程序">
+                            Previous<br>
+                            <span>如何用 OS X 的 Xcode 写 C 语言程序</span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2016/03/04/%E5%A6%82%E4%BD%95%E5%86%99%E5%87%BA%E4%BC%98%E7%BE%8E%E7%9A%84-C-%E4%BB%A3%E7%A0%81/" data-toggle="tooltip" data-placement="top" title="如何写出优美的 C 代码">
+                            Next<br>
+                            <span>如何写出优美的 C 代码</span>
+                        </a>
+                    </li>
+                    
+                </ul>
+
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        <a href="/tags/#Linux" title="Linux" rel="10">
+                            Linux
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#Francis 旅行录" title="Francis 旅行录" rel="6">
+                            Francis 旅行录
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#Francis 简单生活" title="Francis 简单生活" rel="5">
+                            Francis 简单生活
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/#PHP" title="PHP" rel="6">
+                            PHP
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#MySQL" title="MySQL" rel="2">
+                            MySQL
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#Apache" title="Apache" rel="2">
+                            Apache
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#Francis 杂谈" title="Francis 杂谈" rel="9">
+                            Francis 杂谈
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#OS X" title="OS X" rel="2">
+                            OS X
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/#Nginx" title="Nginx" rel="2">
+                            Nginx
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/#编程" title="编程" rel="3">
+                            编程
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/#C语言" title="C语言" rel="2">
+                            C语言
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+                    
+                    <li><a href="http://blog.maryopen.com/">马力全开</a></li>
+                    
+                    <li><a href="http://www.april2nd.me/">航哥</a></li>
+                    
+                    <li><a href="http://blog.ichuck.net/">鹏哥</a></li>
+                    
+                    <li><a href="http://www.shmilyx.net/">望望</a></li>
+                    
+                    <li><a href="http://www.51hsw.com/">好一网</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!--百度分享公共JS代码 start-->
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"1","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+<!--百度分享公共JS代码 end-->
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "francissoungblog";
+    var disqus_identifier = "/2016/03/03/浅谈大型网站动态应用系统架构";
+    var disqus_url = "http://www.francissoung.com/2016/03/03/%E6%B5%85%E8%B0%88%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E5%8A%A8%E6%80%81%E5%BA%94%E7%94%A8%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+        var d = document, t = 'script',
+                o = d.createElement(t),
+                s = d.getElementsByTagName(t)[0];
+        o.src = u;
+        if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+        s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("http://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+            visible: 'always',
+            placement: 'right',
+            icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="http://weibo.com/523072343">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/Franciskeke">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://segmentfault.com/u/francissoung">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa  fa-stack-1x fa-inverse">sf</i>
+                                    </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/FrancisSoung">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/francis.soung">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a href="https://twitter.com/Francis_Soung">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Francis Soung 2016
+                    <br>
+                    Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> and <a href="http://www.bootcss.com/">Bootstrap</a> | Theme © <a href="http://huangxuan.me">Hux</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=FrancisSoung&repo=francissoung.github.io&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+<p id="back-to-top"><a href="#top"><span></span></a></p>
+
+
+<script src="http://7xl0td.com1.z0.glb.clouddn.com/js%2Fjquery.min.js"></script>
+<script src="http://7xl0td.com1.z0.glb.clouddn.com/js%2Fbootstrap.min.js"></script>
+<script src="http://7xl0td.com1.z0.glb.clouddn.com/js%2Ffrancis-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- Highlight.js -->
+<script>
+    async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+        hljs.initHighlightingOnLoad();
+    })
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+<link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+
+<!--fastClick.js -->
+<script>
+    async("http://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        // var $nav = document.querySelector("nav");
+        // if($nav) FastClick.attach($nav);
+
+        // global FastClick!!
+        FastClick.attach(document.body);    
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Francis Soung
+    var _baId = '551c451674b914ab3e454205afd429a8';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- Baidu zhanzhang -->
+<script>
+    (function(){
+        var bp = document.createElement('script');
+        bp.src = '//push.zhanzhang.baidu.com/push.js';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+<!--返回顶部-->
+<script>
+    $(function(){
+        //当滚动条的位置处于距顶部100像素以下时，跳转链接出现，否则消失
+        $(function () {
+            $(window).scroll(function(){
+                if ($(window).scrollTop()>100){
+                    $("#back-to-top").fadeIn(1500);
+                }
+                else
+                {
+                    $("#back-to-top").fadeOut(1500);
+                }
+            });
+
+            //当点击跳转链接后，回到页面顶部位置
+
+            $("#back-to-top").click(function(){
+                $('body,html').animate({scrollTop:0},1000);
+                return false;
+            });
+        });
+    });
+</script>
+
+
+
+<!-- Image to hack wechat -->
+<img src="/img/icon_wechat.png" alt="Francis Soung" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

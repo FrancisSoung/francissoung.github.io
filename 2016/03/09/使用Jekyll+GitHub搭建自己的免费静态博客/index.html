@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="这是一个程序员的日记薄，记录工作与生活的点点滴滴。包括WEB程序开发、Linux服务器管理、LAMP/LNMP环境配置优化、PHP网络技术、MySQL优化等技术分享以及个人生活旅行中的所见所闻所解。">
+    <meta name="keywords"  content="WEB程序开发,Linux服务器管理,LAMP/LNMP环境配置优化,网络架构,MySQL优化,生活旅行,Francis,francissoung,php程序猿的笔记,程序员的日记薄">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>使用Jekyll+GitHub搭建自己的免费静态博客 - Francis Soung</title>
+
+    <link rel="canonical" href="http://www.francissoung.com/2016/03/09/%E4%BD%BF%E7%94%A8Jekyll+GitHub%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E5%85%8D%E8%B4%B9%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2/">
+
+    
+    <!-- css CDN to qiniu -->
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Fbootstrap.min.css">
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Ffrancis-blog.min.css">
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Fsyntax.css">
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Freturntop.css">
+    
+
+    <link href="http://cdn.staticfile.org/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Francis Soung</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/about/">About</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/portfolio/">Portfolio</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/tags/">Tags</a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    var __HuxNav__ = {
+        close: function(){
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        },
+        open: function(){
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+
+    // Bind Event
+    $toggle.addEventListener('click', function(e){
+        if ($navbar.className.indexOf('in') > 0) {
+            __HuxNav__.close()
+        }else{
+            __HuxNav__.open()
+        }
+    })
+
+    /**
+     * Since Fastclick is used to delegate 'touchstart' globally
+     * to hack 300ms delay in iOS by performing a fake 'click',
+     * Using 'e.stopPropagation' to stop 'touchstart' event from 
+     * $toggle/$collapse will break global delegation.
+     * 
+     * Instead, we use a 'e.target' filter to prevent handler
+     * added to document close HuxNav.  
+     *
+     * Also, we use 'click' instead of 'touchstart' as compromise
+     */
+    document.addEventListener('click', function(e){
+        if(e.target == $toggle) return;
+        if(e.target.className == 'icon-bar') return;
+        __HuxNav__.close();
+    })
+</script>
+
+
+    <!-- Image to hack wechat -->
+<!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="/img/post-bg-github.jpg" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        position: relative;
+        background-image: url('/img/post-bg-github.jpg')
+    }
+
+    
+</style>
+<header class="intro-header" >
+    <div class="header-mask"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#GitHub" title="GitHub">GitHub</a>
+                        
+                        <a class="tag" href="/tags/#Francis 杂谈" title="Francis 杂谈">Francis 杂谈</a>
+                        
+                    </div>
+                    <h1>使用Jekyll+GitHub搭建自己的免费静态博客</h1>
+                    
+                    
+                    <h2 class="subheading"></h2>
+                    
+                    <span class="meta">Posted by Francis Soung on March 9, 2016</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p><a href="https://github.com/">GitHub</a>是一个代码托管网站，现在很多开源项目都放在GitHub上。 利用GitHub，可以让全球各地的程序员们一起协作开发。GitHub 提供了一种功能，叫 <a href="https://help.github.com/categories/20/articles">GitHub Pages</a>, 利用这个功能，我 们可以为项目建立网站，当然，这也意味着我们可以通过 GitHub Pages 建立自己的网站。</p>
+
+<p><a href="http://jekyllrb.com/">Jekyll</a>是一个简单的，针对博客设计的静态网站生成器。使用 GitHub 和 Jekyll，我们可以打造自己的独立博客，你可以自由地定制网站的风格，并且这 一切都是免费的。</p>
+
+<p>我在GitHub上建立的<a href="http://francissoung.github.io" title="Francis Soung">博客</a>及<a href="https://github.com/FrancisSoung/francissoung.github.io" title="Francis Soung">源代码</a>，可供大家fork.</p>
+
+<p>感谢<a href="http://huangxuan.me/">Hux</a>带来这么漂亮的模板.也向对此模板做出贡献的Developer表示感谢.</p>
+
+<p>网站截图：</p>
+
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016%2F03%2F09%2Ffrancissounghomepage.jpg" alt="" /></p>
+
+<h3 id="section">入门指引</h3>
+
+<p>GitHub Pages 的 <a href="http://pages.github.com/">主页</a> 提供了一个简单的入门指引，阅读并 操作一下，会有一个直观简单的认识。</p>
+
+<p>阮一峰前辈的文章《<a href="http://www.ruanyifeng.com/blog/2012/08/blogging_with_jekyll.html">搭建一个免费的，无限流量的Blog—-github Pages和Jekyll入门</a>》是使用 GitHub 和 Jekyll 搭建独立博客非常好的入门文章，强烈建议先阅读并操作一遍。</p>
+
+<h3 id="section-1">建立自己的博客</h3>
+
+<p>在学习完阮一峰前辈的文章后，你就已经有能力搭建自己的独立博客了，但是这个博客 只有最基本的功能，并且也不好看。这时候，你面临几个选择:</p>
+
+<ol>
+  <li>完全自己定制博客</li>
+  <li>找一份框架，修改后使用</li>
+  <li>从GitHub上fork别人的博客代码，在其中添加自己的文章</li>
+</ol>
+
+<p>如果选择 2, 那么 <a href="http://jekyllbootstrap.com/">jekyll-bootstrap</a>是一个选择。</p>
+
+<p>如果选择 3, 那么自己Google一下 github.io 博客 能找到不少博客,去fork,然后修改一下就好。</p>
+
+<p>如果选择 1, 那么可以好好看看后文的内容。</p>
+
+<h3 id="github--jekyll-">GitHub + Jekyll 工作机制</h3>
+
+<h4 id="section-2">机制一</h4>
+
+<p>简单地说，你在 GitHub 上有一个账号，名为username(任意)， 有一个项目，名为 <code class="highlighter-rouge">username.github.io</code>(固定格式，username与账号名一致)， 项目分支名为 <code class="highlighter-rouge">master</code>(固定)，这个分支有着类似下面的 目录结构:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>.
+├── index.html
+├── _config.yml
+├── assets
+│   ├── blog-images
+│   ├── css
+│   ├── fonts
+│   ├── images
+│   └── javascripts
+├── _includes
+├── _layouts
+├── _plugins
+├── _posts
+└── _site
+</code></pre>
+</div>
+
+<p>这样，当你访问 <code class="highlighter-rouge">http://username.github.io/</code>时，GitHub 会使用 Jekyll 解析 用户 username名下的username.github.io项目中，分支为master 的源代码，为你构建一个静态网站，并将生成的 index.html 展示给你。</p>
+
+<p>关于这个目录更多的内容，我们还不需要关心，如果你好奇心比较重，可以先看后文源代码一节。</p>
+
+<p>看完上面的解释，你可能会有一些疑问，因为按照上面的说法，一个用户只能有一个网站，那我有很多项目，每个项目都需要一个项目网站，该怎么办呢？另外，在阮一峰前辈的文章中，特别提到，分支名应该为 <code class="highlighter-rouge">gh-pages</code>，这又是怎么回事呢？</p>
+
+<p>原来，GitHub认为，一个GitHub账号对应一个用户或者一个组织，GitHub会 给这个用户分配一个域名：<code class="highlighter-rouge">username.github.io</code>，当用户访问这个域名时， GitHub会去解析username用户下，<code class="highlighter-rouge">username.github.io</code>项目的master分支， 这与我们之前的描述一致。</p>
+
+<p>另外，GitHub还为每个项目提供了域名，例如，你有一个项目名为blog， GitHub为这个项目提供的域名为<code class="highlighter-rouge">username.github.io/blog</code>， 当你访问这个域名时，GitHub会去解析username用户下，blog项目的gh-pages 分支。</p>
+
+<p>所以，要搭建自己的博客，你可以选择建立名为 <code class="highlighter-rouge">username.github.io</code>的项目， 在<code class="highlighter-rouge">master</code>分支下存放网站源代码，也可以选择建立名为 <code class="highlighter-rouge">blog</code> 的项目，在 <code class="highlighter-rouge">gh-pages</code>分支下存放网站源代码。</p>
+
+<p>GitHub 的 Help 文档中的 <a href="https://help.github.com/articles/user-organization-and-project-pages">User, Organization and Project Pages</a>对此有 详细的描述。</p>
+
+<h4 id="section-3">机制二</h4>
+
+<p>Jekyll 提供了插件功能，在网站源代码目录下，有一个名为 _plugins的目录，你可以将一些插件放进去，这样，Jekyll在解析网站源代码时，就会运行你的插件，这样插件是 Ruby 写成的。可以为Jekyll添加功能，例如，Jekyll默认是不提供分类页面的，你可以写一个插件，根据文章内容生成分类页面。如果没有插件，你只能每次写文章添加分类时为每个分类手动写HTML页面。</p>
+
+<p>在本地运行 Jekyll 时，这些插件会自动被调用，但是GitHub在解析网站源代码时，出于安全考虑，会开启安全模式，禁用这些插件。我们既想用这些插件，又想用 GitHub，怎么办呢怎么办呢？</p>
+
+<p>GitHub还为我们提供了更一种解析网站的方式，那就是直接上传最终的静态网页，这样，我们可以在本地使用 Jeklly 把网站解析出来，然后再上传到 GitHub上， 这就使得我们既使用了插件，又使用了 GitHub。在上文的目录结构中，有一个 名为 _site 的目录，这个就是Jeklly在本地解析时最终生成的静态网站，我们把其中的内容上传到 GitHub 的项目中就可以了。</p>
+
+<h3 id="section-4">工作流</h3>
+
+<p>关于 git 和 jekyll 的安装与基本使用，这里就不多说了。</p>
+
+<h4 id="section-5">工作流一</h4>
+
+<p>如果你不使用插件，那么只需要维护一个分支就好:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>- username/username.github.io 的 master 分支
+- username/blog 的 gh-pages 分支
+</code></pre>
+</div>
+
+<p>其中 username 是你的 GitHub 帐号。</p>
+
+<p>你需要在本地维护一份网站源代码，添加新文章后，使用 jekyll 在本地测试一下，没有问题后，commit 到 GitHub 上的相应分支中就可以了。</p>
+
+<h4 id="section-6">工作流二</h4>
+
+<p>如果你需要使用插件，那么需要维护两个分支，一个是网站的源代码分支，另一个 是 Jeklly 解析源代码后生成的静态网站。</p>
+
+<p>例如，我的源代码分支名为 <code class="highlighter-rouge">master</code>，静态网站分支名为 <code class="highlighter-rouge">gh-pages</code>。平时写博客时， 首先在 <code class="highlighter-rouge">master</code> 分支下，添加新文章，然后本地使用 <code class="highlighter-rouge">jekyll build</code> 将添加文章后的网站 解析一次，这时 <code class="highlighter-rouge">_site</code> 目录下就有新网站的静态代码了。然后把这个目录下的所有内容 复制到 <code class="highlighter-rouge">gh-pages</code> 分支下。这个过程，可以写一个 <code class="highlighter-rouge">Makefile</code>，每次添加文章后 <code class="highlighter-rouge">make</code> 一下， 就自动将文章发布到 GitHub 上。</p>
+
+<p>Makefile 内容如下：</p>
+
+<p>deploy:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>git checkout master
+git add -A
+git commit -m "deploy blog"
+cp -r _site/ /tmp/
+git checkout gh-pages
+rm -r ./*
+cp -r /tmp/_site/* ./
+git add -A
+git commit -m "deploy blog"
+git push origin gh-pages
+git checkout master
+echo "deploy succeed"
+</code></pre>
+</div>
+
+<p>下面的内容涉及源代码，如果需要进一步学习，或者有问题，可以在 <a href="http://jekyllrb.com/">Jeklly</a> 官网上找到更详细的解释，或者在评论中留言。</p>
+
+<h3 id="section-7">源代码</h3>
+
+<p>再来看一下这个目录结构：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>.
+├── _config.yml
+├── index.html
+├── assets
+│   ├── blog-images
+│   ├── css
+│   ├── fonts
+│   ├── images
+│   └── javascripts
+├── _includes
+├── _layouts
+├── _plugins
+├── _posts
+└── _site
+</code></pre>
+</div>
+
+<h4 id="configyml">_config.yml</h4>
+
+<p>这是针对 Jekyll 的<a href="http://jekyllrb.com/docs/configuration/">配置文件</a>， 决定了 Jekyll 如何解析网站的源代码,下面是一个示例：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>baseurl: /StrayBirds
+markdown: redcarpet
+safe: false
+pygments: true
+excerpt_separator: "\n\n\n"
+paginate: 5
+</code></pre>
+</div>
+
+<p>我的网站建立在 StrayBirds 项目中，所以 baseurl 设置成 StrayBirds， 我的文章采用 Markdown 格式写成，可以指定 Markdown 的解析器 redcarpet。 另外，安全模式需要关闭，以便 Jekyll 解析时会运行插件。 pygments 可以使得Jekyll解析文章中源代码时加入特殊标记，例如指定代码类型， 这可以被很多 javascript 代码高度库使用。 excerpt_separator 指定了一个摘要分割符号，这样 Jekyll 可以在解析文章时， 将文章的提要提取出来。 paginate 指定了一页有几篇文章，页数太多时，我们可以将文章列表分页，我们在 后文还会提到。</p>
+
+<h4 id="layouts">_layouts</h4>
+
+<p>这个目录存放着一些网页模板文件，为网站所有网页提供一个基本模板，这样 每个网页只需要关心自己的内容就好，其它的都由模板决定。例如，这个目录下的 default.html 文件：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;!DOCTYPE html&gt;</span><span class="nt">&lt;html&gt;</span>
+  <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">'utf-8'</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;title&gt;</span>{{ page.title }}<span class="nt">&lt;/title&gt;</span>
+  <span class="nt">&lt;/head&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+    <span class="nt">&lt;header&gt;</span>
+    <span class="nt">&lt;/header&gt;</span>
+
+    <span class="nt">&lt;aside&gt;</span>
+    <span class="nt">&lt;/aside&gt;</span>
+
+    <span class="nt">&lt;article&gt;</span>
+{{ content }}
+    <span class="nt">&lt;/article&gt;</span>
+
+    <span class="nt">&lt;footer&gt;</span>
+    <span class="nt">&lt;/footer&gt;</span>
+  <span class="nt">&lt;/body&gt;&lt;/html&gt;</span>
+</code></pre>
+</div>
+
+<p>可以看出，这个文件就是所有页面共有的东西，每个页面的具体内容会被填充在<code class="highlighter-rouge">content</code>中，注意这个<code class="highlighter-rouge">content</code>两边的标记，这是一种叫<code class="highlighter-rouge">liquid</code>的标记语言。 另外，还有那个<code class="highlighter-rouge">page.title</code>，其中 page 表示引用 default.html的 那个页面，这个页面的 title 值会在 page 相应页面中被设置，例如 下面的 index.html 文件，开头部分就设置了 title值。</p>
+
+<h4 id="indexhtml">index.html</h4>
+
+<p>这是网站的首页，访问 <code class="highlighter-rouge">http://username.github.io</code> 时，会指向 <code class="highlighter-rouge">http://username.github.io/index.html</code>，我们看一下基本内容：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>---
+layout: default
+title: 首页
+---
+
+
+&lt;ul class="post-list"&gt;
+    {% for post in site.posts %}
+        &lt;a href="{{site.baseurl}}{{post.url}}"&gt; {{ post.title }}  &lt;/a&gt; &lt;br&gt;
+        {{ post.date | date: "%F" }} &lt;br&gt;
+        {{ post.category }} &lt;br&gt;
+        {{ post.excerpt }} 
+    {% endfor %}
+
+&lt;/ul&gt;
+</code></pre>
+</div>
+
+<p>注意，文件开头的描述，我们称之为 <a href="http://jekyllrb.com/docs/frontmatter/">front-matter</a>， 是对当前文件的一种描述，这里 设置的变量可以在解析时被引用，例如这里的 layout就会告诉 Jekyll, 生成 index.html 文件时，去 _layouts 目录下找 default.html 文件，然后把当前文件解析后，添加到 default.html 的 content 部分，组成最终的 index.html 文件。还有title 设置好的 值，会在 default.html 中通过 page.title 被引用。</p>
+
+<p>文件的主体部分遍历了站点的所有文章，并将他们显示出来，这些语法都是 liquid 语法， 其中的变量，例如 site, 由 Jekyll 设置我们只需要引用就可以了。而 post 中的变量， 如 post.title, post.category 是由 post 文件中的 front-matter 决定，后面马上就会看到。</p>
+
+<h4 id="posts">_posts</h4>
+
+<p>这个目录存放我们的所有博客文章，他们的名字有统一的格式：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>YEAR-MONTH-DAY-title.markdown
+</code></pre>
+</div>
+
+<p>例如，2014-02-15-github-jeklly.markdown，这个文件名会被解析，前面的 index.html 中， post.date 的值就由这里文件名中的日期而来。下面，我们看看一篇文章的内容示例：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>---
+layout: default
+title: 使用 Markdown
+category: 工具
+comments: true
+---
+</code></pre>
+</div>
+
+<p><strong>为什么使用 Markdown</strong></p>
+
+<ul>
+  <li>看上去不错</li>
+  <li>既然看上去不错，为什么不试试呢</li>
+</ul>
+
+<p><strong>如何使用 Markdown</strong></p>
+
+<p>可以看出，文章的 front-matter 部分设置了多项值，以后可以通过类似 <code class="highlighter-rouge">post.title, post.category</code> 的方式引用这些些，另外，layout部分的值和之前解释的一样， 文件的内容会被填充到 <code class="highlighter-rouge">_layouts/default.html</code> 文件的 <code class="highlighter-rouge">content</code> 变量中。</p>
+
+<p>另外，文章中 为什么不试试呢之后的有三个不可见的 \n，它决定了这三个 \n 之前的内容会被放在 post.excerpt 变量中，供其它文件使用。</p>
+
+<h4 id="includes">_includes</h4>
+
+<p>这个文件中，存放着一些模块文件，例如 categories.ext，其它文件可以通过</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="err">%</span><span class="w"> </span><span class="err">include</span><span class="w"> </span><span class="err">categories.ext</span><span class="w"> </span><span class="err">%</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>来引用这个文件的内容，方便代码模块化和重用。</p>
+
+<h4 id="plugins">_plugins</h4>
+
+<p>这个文件中存放一些Ruby插件, 例如 gen_categories.rb，这些文件会在 Jekyll 解析网站源代码时被执行。下一节讲述的就是插件。</p>
+
+<h4 id="site">_site</h4>
+
+<p>Jekyll 解析整个网站源代码后，会将最终的静态网站源代码放在这里。</p>
+
+<h3 id="section-8">插件</h3>
+
+<p>插件使用 Ruby 写成，放在 _plugins 目录下，有些 Jekyll 没有的功能，又不能 手动添加，因为页面的内容会随着文章日期类别的不同而不同，例如分类功能和归档功能， 这时，就需要使用插件自动生成一些页面和目录。</p>
+
+<p><strong>分类</strong></p>
+
+<p>分类插件推荐使用 <a href="https://github.com/shigeya/jekyll-category-archive-plugin/tree/master/_plugins">jekyll-category-archive-plugin</a>, 它会根据网站文章的分类信息，为每个类别生成一个页面。</p>
+
+<p>使用方法是，把 <code class="highlighter-rouge">plugins/categoryarchive_plugin.rb</code> 放在 <code class="highlighter-rouge">plugins</code> 目录下， 把 <code class="highlighter-rouge">_layouts/categoryarchive.html</code> 放在 <code class="highlighter-rouge">layouts</code> 目录下， 这样，这个插件会在Jekyll解析网站时，生成相应categories目录，目录下是各个分类， 每个分类下都有一个 <code class="highlighter-rouge">index.html</code> 文件，这个文件是根据模板文件 <code class="highlighter-rouge">categoryarchive.html</code> 生成的，例如：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>_site/categories/
+├── 工具
+│   └── index.html
+├── 思想
+│   └── index.html
+├── 技术
+│   └── index.html
+└── 源代码阅读
+    └── index.html
+</code></pre>
+</div>
+
+<p>然后，你就可以通过 <code class="highlighter-rouge">http://username.github.io/blog/categories/工具/</code> 访问 工具类下的 <code class="highlighter-rouge">index.html</code> 文件。</p>
+
+<p><strong>归档</strong></p>
+
+<p>归档插件推荐使用 <a href="https://github.com/shigeya/jekyll-monthly-archive-plugin">jekyll-monthly-archive-plugin</a>,它会根据网站 _posts目录下的文章日期，为每个月生成一个页面。</p>
+
+<p>使用方法同上。注意，这个插件在 jekyll-1.4.2 中可能会出错，在 jekyll-1.2.0 中没有错误。</p>
+
+<h3 id="section-9">组件</h3>
+
+<p><strong>分页</strong></p>
+
+<p>当文章很多时，就需要使用分页功能，在 Jekyll 官网上提供了一种 <a href="http://jekyllrb.com/docs/pagination/">实现</a>，把相应代码放在 主页上，然后在 <code class="highlighter-rouge">_config.yml</code> 中设置 <code class="highlighter-rouge">paginate</code> 值就行了。</p>
+
+<p><strong>评论</strong></p>
+
+<p>评论功能需要使用社会化评论系统，我使用的是 <a href="http://disqus.com/">DISQUS</a>, 注册 之后，将评论区的一段代码放在你需要使用评论功能的页面上, 然后，通过在页面的 front-matter 部分使用</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>comments: true
+</code></pre>
+</div>
+
+<p>启用评论。</p>
+
+<p>评论区截图：</p>
+
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016%2F03%2F09%2Fdisqus.jpg" alt="" /></p>
+
+<h3 id="section-10">自定义域名解析</h3>
+
+<p>这里很简单了，在你的网站根目录中新建一个<code class="highlighter-rouge">CNAME</code>的文件，<strong>注：一定要大写</strong>。</p>
+
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016%2F03%2F09%2FCNAME.jpg" alt="" /></p>
+
+<p>在CNAME文件中添加你要解析的域名。</p>
+
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016%2F03%2F09%2FCNAME1.jpg" alt="" /></p>
+
+<p>获取GitHub Page的IP地址，最好的方法就是ping一下你的 <code class="highlighter-rouge">username.github.io</code> 域名。</p>
+
+<p>最后在你的域名提供商域名管理系统中添加对应的解析。我这里做了一个CNAME，可直接解析到A记录到IP即可。</p>
+
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016%2F03%2F09%2FCNAME3.jpg" alt="" /></p>
+
+<p>基本的内容就介绍到这里，任何问题，欢迎留言。</p>
+
+
+
+                <hr>
+
+                
+
+                <!-- Baidu Share start-->
+                <div class="bdsharebuttonbox">
+                    <a href="#" class="bds_more" data-cmd="more"></a>
+                    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+                    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+                    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+                    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+                </div>
+                <!-- Baidu Share end -->
+
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2016/03/07/nginx.conf%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" data-toggle="tooltip" data-placement="top" title="nginx.conf配置文件详解">
+                            Previous<br>
+                            <span>nginx.conf配置文件详解</span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2016/03/14/%E5%B8%B8%E7%94%A8%E5%85%AC%E5%85%B1DNS%E6%9C%8D%E5%8A%A1%E5%99%A8/" data-toggle="tooltip" data-placement="top" title="国内常用公共DNS服务器、各省运营商DNS服务器汇总">
+                            Next<br>
+                            <span>国内常用公共DNS服务器、各省运营商DNS服务器汇总</span>
+                        </a>
+                    </li>
+                    
+                </ul>
+
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        <a href="/tags/#Linux" title="Linux" rel="10">
+                            Linux
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#Francis 旅行录" title="Francis 旅行录" rel="6">
+                            Francis 旅行录
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#Francis 简单生活" title="Francis 简单生活" rel="5">
+                            Francis 简单生活
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/#PHP" title="PHP" rel="6">
+                            PHP
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#MySQL" title="MySQL" rel="2">
+                            MySQL
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#Apache" title="Apache" rel="2">
+                            Apache
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#Francis 杂谈" title="Francis 杂谈" rel="9">
+                            Francis 杂谈
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#OS X" title="OS X" rel="2">
+                            OS X
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/#Nginx" title="Nginx" rel="2">
+                            Nginx
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/#编程" title="编程" rel="3">
+                            编程
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/#C语言" title="C语言" rel="2">
+                            C语言
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+                    
+                    <li><a href="http://blog.maryopen.com/">马力全开</a></li>
+                    
+                    <li><a href="http://www.april2nd.me/">航哥</a></li>
+                    
+                    <li><a href="http://blog.ichuck.net/">鹏哥</a></li>
+                    
+                    <li><a href="http://www.shmilyx.net/">望望</a></li>
+                    
+                    <li><a href="http://www.51hsw.com/">好一网</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!--百度分享公共JS代码 start-->
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"1","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+<!--百度分享公共JS代码 end-->
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "francissoungblog";
+    var disqus_identifier = "/2016/03/09/使用Jekyll+GitHub搭建自己的免费静态博客";
+    var disqus_url = "http://www.francissoung.com/2016/03/09/%E4%BD%BF%E7%94%A8Jekyll+GitHub%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E5%85%8D%E8%B4%B9%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+        var d = document, t = 'script',
+                o = d.createElement(t),
+                s = d.getElementsByTagName(t)[0];
+        o.src = u;
+        if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+        s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("http://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+            visible: 'always',
+            placement: 'right',
+            icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="http://weibo.com/523072343">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/Franciskeke">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://segmentfault.com/u/francissoung">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa  fa-stack-1x fa-inverse">sf</i>
+                                    </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/FrancisSoung">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/francis.soung">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a href="https://twitter.com/Francis_Soung">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Francis Soung 2016
+                    <br>
+                    Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> and <a href="http://www.bootcss.com/">Bootstrap</a> | Theme © <a href="http://huangxuan.me">Hux</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=FrancisSoung&repo=francissoung.github.io&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+<p id="back-to-top"><a href="#top"><span></span></a></p>
+
+
+<script src="http://7xl0td.com1.z0.glb.clouddn.com/js%2Fjquery.min.js"></script>
+<script src="http://7xl0td.com1.z0.glb.clouddn.com/js%2Fbootstrap.min.js"></script>
+<script src="http://7xl0td.com1.z0.glb.clouddn.com/js%2Ffrancis-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- Highlight.js -->
+<script>
+    async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+        hljs.initHighlightingOnLoad();
+    })
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+<link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+
+<!--fastClick.js -->
+<script>
+    async("http://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        // var $nav = document.querySelector("nav");
+        // if($nav) FastClick.attach($nav);
+
+        // global FastClick!!
+        FastClick.attach(document.body);    
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Francis Soung
+    var _baId = '551c451674b914ab3e454205afd429a8';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- Baidu zhanzhang -->
+<script>
+    (function(){
+        var bp = document.createElement('script');
+        bp.src = '//push.zhanzhang.baidu.com/push.js';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+<!--返回顶部-->
+<script>
+    $(function(){
+        //当滚动条的位置处于距顶部100像素以下时，跳转链接出现，否则消失
+        $(function () {
+            $(window).scroll(function(){
+                if ($(window).scrollTop()>100){
+                    $("#back-to-top").fadeIn(1500);
+                }
+                else
+                {
+                    $("#back-to-top").fadeOut(1500);
+                }
+            });
+
+            //当点击跳转链接后，回到页面顶部位置
+
+            $("#back-to-top").click(function(){
+                $('body,html').animate({scrollTop:0},1000);
+                return false;
+            });
+        });
+    });
+</script>
+
+
+
+<!-- Image to hack wechat -->
+<img src="/img/icon_wechat.png" alt="Francis Soung" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

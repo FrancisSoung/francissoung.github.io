@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="这是一个程序员的日记薄，记录工作与生活的点点滴滴。包括WEB程序开发、Linux服务器管理、LAMP/LNMP环境配置优化、PHP网络技术、MySQL优化等技术分享以及个人生活旅行中的所见所闻所解。">
+    <meta name="keywords"  content="WEB程序开发,Linux服务器管理,LAMP/LNMP环境配置优化,网络架构,MySQL优化,生活旅行,Francis,francissoung,php程序猿的笔记,程序员的日记薄">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>MAC OSX10.11上搭建Apache，PHP，MySQL5.6.15，phpMyAdmin开发环境 - Francis Soung</title>
+
+    <link rel="canonical" href="http://www.francissoung.com/2015/11/01/MAC-OSX10.11%E4%B8%8A%E6%90%AD%E5%BB%BA%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/">
+
+    
+    <!-- css CDN to qiniu -->
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Fbootstrap.min.css">
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Ffrancis-blog.min.css">
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Fsyntax.css">
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Freturntop.css">
+    
+
+    <link href="http://cdn.staticfile.org/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Francis Soung</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/about/">About</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/portfolio/">Portfolio</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/tags/">Tags</a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    var __HuxNav__ = {
+        close: function(){
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        },
+        open: function(){
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+
+    // Bind Event
+    $toggle.addEventListener('click', function(e){
+        if ($navbar.className.indexOf('in') > 0) {
+            __HuxNav__.close()
+        }else{
+            __HuxNav__.open()
+        }
+    })
+
+    /**
+     * Since Fastclick is used to delegate 'touchstart' globally
+     * to hack 300ms delay in iOS by performing a fake 'click',
+     * Using 'e.stopPropagation' to stop 'touchstart' event from 
+     * $toggle/$collapse will break global delegation.
+     * 
+     * Instead, we use a 'e.target' filter to prevent handler
+     * added to document close HuxNav.  
+     *
+     * Also, we use 'click' instead of 'touchstart' as compromise
+     */
+    document.addEventListener('click', function(e){
+        if(e.target == $toggle) return;
+        if(e.target.className == 'icon-bar') return;
+        __HuxNav__.close();
+    })
+</script>
+
+
+    <!-- Image to hack wechat -->
+<!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="/img/post-bg-rwd.jpg" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        position: relative;
+        background-image: url('/img/post-bg-rwd.jpg')
+    }
+
+    
+</style>
+<header class="intro-header" >
+    <div class="header-mask"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#OS X" title="OS X">OS X</a>
+                        
+                        <a class="tag" href="/tags/#PHP" title="PHP">PHP</a>
+                        
+                        <a class="tag" href="/tags/#Apache" title="Apache">Apache</a>
+                        
+                        <a class="tag" href="/tags/#MySQL" title="MySQL">MySQL</a>
+                        
+                    </div>
+                    <h1>MAC OSX10.11上搭建Apache，PHP，MySQL5.6.15，phpMyAdmin开发环境</h1>
+                    
+                    
+                    <h2 class="subheading"></h2>
+                    
+                    <span class="meta">Posted by Francis Soung on November 1, 2015</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>最近在本地测试网站，之前经常远程到公司进行测试，受网络限制比较严重，并且效率非常低，今天就豁出去了，在我用了两年的小白上安装了开发环境。</p>
+
+<p>其实OSX上自带了apache和php，所以这两个搞起来还比较顺利。装MySQL的最新版5.6.15版颇费周折，本文详细记录之。</p>
+
+<!--more-->
+
+<h4 id="apache">apache的配置</h4>
+
+<p>apache已经自带了，只需如下三个命令就可以了。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>开启apache服务 sudo apachectl start
+停止apache服务 sudo apachectl stop
+重启服务 sudo apachectl restart
+查看版本 httpd -v
+</code></pre>
+</div>
+
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2015/11/01/3007933119.png" alt="20151101-1@2x.png" /></p>
+
+<p>手动打开apache服务后，在浏览器输入localhost，将看到如下：</p>
+
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2015/11/01/3412207876.png" alt="20151101-1@2x.png" /></p>
+
+<p>程序的根目录在<code class="highlighter-rouge">/Library/WebServer/Documents/ </code>下，这个It works 就是里面的info.php打印出来的。下面介绍如何将apache的这个默认目录更改到用户目录下。</p>
+
+<p>1、在自己的用户目录下新建一个Sites文件夹，我的用户目录为Francis</p>
+
+<p>2、进到cd /etc/apache2/users/目录下，sudo vim francis.conf，内容为：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&lt;Directory "/Users/Francis/Sites/"&gt;
+AllowOverride All
+Options Indexes MultiViews FollowSymLinks
+Require all granted
+&lt;/Directory&gt;
+</code></pre>
+</div>
+
+<p>上面第一行里的Francis就是用户目录。然后将该文件权限改为644：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>sudo chmod 644 francis.conf
+</code></pre>
+</div>
+
+<p>3、进到<code class="highlighter-rouge">/etc/apache2/</code>目录，<code class="highlighter-rouge">sudo vim httpd.conf</code> 将下面三句话的注释去掉：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>LoadModule authz_core_module libexec/apache2/mod_authz_core.so
+LoadModule authz_host_module libexec/apache2/mod_authz_host.so
+LoadModule userdir_module libexec/apache2/mod_userdir.so
+</code></pre>
+</div>
+
+<p>前两句应该已经不带注释了，把第三句注释放开。</p>
+
+<p>然后找到<code class="highlighter-rouge">Include /private/etc/apache2/extra/httpd-userdir.conf </code>注释放开。</p>
+
+<blockquote>
+  <p>PS：在vim下只要切换到命令模式，然后输入/”words you need find”就能快速找到需要查找的词。</p>
+</blockquote>
+
+<p>4、进到/etc/apache2/extra/目录，</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>sudo vim httpd-userdir.conf
+</code></pre>
+</div>
+
+<p>将<code class="highlighter-rouge">Include /private/etc/apache2/users/*.conf </code>这句话放开注释。</p>
+
+<p>然后终端输入：<code class="highlighter-rouge">sudo apachectl restart</code> 重启apache，浏览器输入： loacal/~francis/ 就能看到效果了。（francis是我的用户目录的名字,后面不用再加/Sites）
+经过以上步骤apache就搞好了。</p>
+
+<h4 id="php">PHP配置</h4>
+
+<p>PHP的配置非常简单，就一个事，进到/etc/apache2/目录，编辑httpd.conf，找到<code class="highlighter-rouge">LoadModule php5_module libexec/apache2/libphp5.so</code>将其放开注释就行了。</p>
+
+<p>然后<code class="highlighter-rouge">sudo apachectl restart</code> 重启，在用户目录的Sites文件夹下，新建一个index.php,里面<code class="highlighter-rouge">echo phpinfo()</code> ，就可以看到效果了：</p>
+
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2015/11/02/3346607926.png" alt="20151102-0@2x.png" /></p>
+
+<h4 id="mysql5615">安装MySQL5.6.15</h4>
+
+<p>在官网下载即可，版本可根据实际个人需求选择，下面是安装方法：</p>
+
+<p>1、双击安装的时候，不要勾选StartUp Item这一项：
+<img src="http://7xl0td.com1.z0.glb.clouddn.com/2015/11/02/555088672.png" alt="QQ20151102-0@2x.png" /></p>
+
+<p>如此安装完毕后，在设置－－－MySQL手动开启MySQL服务。
+<img src="http://7xl0td.com1.z0.glb.clouddn.com/2015/11/02/1072163062.png" alt="QQ20151102-1@2x.png" /></p>
+
+<p>我这里已经打开了MySQL服务。下面要将其设置为开机自动启动。</p>
+
+<p>2、默认状态下，我们用mysql的命令每次都要输入全路径，如<code class="highlighter-rouge">sudo /usr/local/mysql/support-files/mysql.server start</code> 开启mysql服务，<code class="highlighter-rouge">/usr/local/mysql/bin/mysql -v</code>查看mysql版本，得先把bin目录配到环境变量里。切换到用户根目录 ，<code class="highlighter-rouge">vim .bash_profile</code>,输入：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>export PATH=”/usr/local/mysql/bin:$PATH”
+</code></pre>
+</div>
+
+<p>保存后，<code class="highlighter-rouge">source .bash_profile</code>使环境变量生效。接着就可以直接在终端里输入mysql命令了。</p>
+
+<p>最后，通过<code class="highlighter-rouge">mysqladmin -u root password ‘yourpasswordhere’ </code>给mysql的root用户设置密码。单引号里的内容就是要设的密码。</p>
+
+<blockquote>
+  <p>备注：有时上面这个命令不能修改root密码，需要借助phpmyadmin来修改。其实mysql这个版本默认的root密码为root。</p>
+</blockquote>
+
+<p>3、修复socket error的问题。有一个负责mysql 服务器 客户端通讯的socket文件，mysql的这个版本将其放在/tmp目录，但是OSX却默认的找 /var/mysql 这个目录，所以要建个软链接。新建目录 /var/mysql， 然后<code class="highlighter-rouge">sudo ln -s /tmp/mysql.sock /var/mysql/mysql.sock</code> 就ok了。</p>
+
+<p>4、让mysql开机自动启动。</p>
+
+<p><code class="highlighter-rouge">sudo vim /Library/LaunchDaemons/com.mysql.mysql.plist</code>,里面内容输入：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>KeepAlive
+
+Label
+com.mysql.mysqld
+ProgramArguments
+
+/usr/local/mysql/bin/mysqld_safe
+–user=mysql
+</code></pre>
+</div>
+
+<p>保存后，修改权限：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>sudo chown root:wheel /Library/LaunchDaemons/com.mysql.mysql.plist
+sudo chmod 644 /Library/LaunchDaemons/com.mysql.mysql.plist
+sudo launchctl load -w /Library/LaunchDaemons/com.mysql.mysql.plist
+</code></pre>
+</div>
+
+<p>这样mysql就ok了！</p>
+
+<h4 id="phpmyadmin">phpMyAdmin的安装</h4>
+
+<p>从http://www.phpmyadmin.net/官网下载，版本自由选择，下载完成后，将其解压。然后最外层文件夹名字修改为phpmyadmin，进到<code class="highlighter-rouge">~/Sites/phpmyadmin</code>这个目录，新建文件夹：mkdir config 修改读写权限：chmod o+w config</p>
+
+<p>然后浏览器输入：http://localhost/~Francis/phpmyadmin/setup/ (注意 中间的yanzi 换成自己的用户名称)</p>
+
+<p>点击 ”新建服务器“，我上面已经新建好了，然后在这个界面：</p>
+
+<p>密码处输入mysql的root用户密码。然后点击”应用”，记得在如下界面点击保存按钮这样config文件夹下就生成了config.inc.php，将该文件拷贝到phpmyadmin的根目录下。</p>
+
+<p>然后删除整个config文件夹。输入http://localhost/~Francis/phpmyadmin/ 就可以看到登陆phpmyadmin的界面了。 如此，phpMyAdmin搞定。</p>
+
+<h5 id="section">读写权限和分组问题</h5>
+
+<p>最后遗留一个读写权限和归属问题，如果本地开发测试的话，这个步骤可以忽略。如果想让自己的mac切实作为一台服务器，那么这个还要设置下的。这个步骤等同于在布阿里云代码的时候，让public_html文件夹的所有东西可写，且归属于www一个意思。假设Sites文件夹下有个自己的项目：testsite</p>
+
+<p><code class="highlighter-rouge">sudo chmod -R a+w ~/Sites/testsite</code> 设置所有人都可以读写</p>
+
+<p><code class="highlighter-rouge">sudo chown -R _www ~/Sites/testsite</code> 设置testsite文件夹只归属_www组。</p>
+
+<p>OK，PHP在MAC上的搭建到此结束。</p>
+
+
+
+                <hr>
+
+                
+
+                <!-- Baidu Share start-->
+                <div class="bdsharebuttonbox">
+                    <a href="#" class="bds_more" data-cmd="more"></a>
+                    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+                    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+                    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+                    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+                </div>
+                <!-- Baidu Share end -->
+
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2015/10/31/%E7%94%9F%E6%B4%BB%E6%84%9F%E6%83%B3%E4%B9%8B%E4%BB%B7%E5%80%BC%E8%A7%82%E6%98%AF%E4%BD%95%E7%89%A9/" data-toggle="tooltip" data-placement="top" title="生活感想之价值观是何物">
+                            Previous<br>
+                            <span>生活感想之价值观是何物</span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2015/11/11/php%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" data-toggle="tooltip" data-placement="top" title="php配置文件详解">
+                            Next<br>
+                            <span>php配置文件详解</span>
+                        </a>
+                    </li>
+                    
+                </ul>
+
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        <a href="/tags/#Linux" title="Linux" rel="10">
+                            Linux
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#Francis 旅行录" title="Francis 旅行录" rel="6">
+                            Francis 旅行录
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#Francis 简单生活" title="Francis 简单生活" rel="5">
+                            Francis 简单生活
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/#PHP" title="PHP" rel="6">
+                            PHP
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#MySQL" title="MySQL" rel="2">
+                            MySQL
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#Apache" title="Apache" rel="2">
+                            Apache
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#Francis 杂谈" title="Francis 杂谈" rel="9">
+                            Francis 杂谈
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#OS X" title="OS X" rel="2">
+                            OS X
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/#Nginx" title="Nginx" rel="2">
+                            Nginx
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/#编程" title="编程" rel="3">
+                            编程
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/#C语言" title="C语言" rel="2">
+                            C语言
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+                    
+                    <li><a href="http://blog.maryopen.com/">马力全开</a></li>
+                    
+                    <li><a href="http://www.april2nd.me/">航哥</a></li>
+                    
+                    <li><a href="http://blog.ichuck.net/">鹏哥</a></li>
+                    
+                    <li><a href="http://www.shmilyx.net/">望望</a></li>
+                    
+                    <li><a href="http://www.51hsw.com/">好一网</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!--百度分享公共JS代码 start-->
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"1","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+<!--百度分享公共JS代码 end-->
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "francissoungblog";
+    var disqus_identifier = "/2015/11/01/MAC OSX10.11上搭建开发环境";
+    var disqus_url = "http://www.francissoung.com/2015/11/01/MAC-OSX10.11%E4%B8%8A%E6%90%AD%E5%BB%BA%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+        var d = document, t = 'script',
+                o = d.createElement(t),
+                s = d.getElementsByTagName(t)[0];
+        o.src = u;
+        if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+        s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("http://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+            visible: 'always',
+            placement: 'right',
+            icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="http://weibo.com/523072343">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/Franciskeke">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://segmentfault.com/u/francissoung">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa  fa-stack-1x fa-inverse">sf</i>
+                                    </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/FrancisSoung">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/francis.soung">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a href="https://twitter.com/Francis_Soung">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Francis Soung 2016
+                    <br>
+                    Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> and <a href="http://www.bootcss.com/">Bootstrap</a> | Theme © <a href="http://huangxuan.me">Hux</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=FrancisSoung&repo=francissoung.github.io&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+<p id="back-to-top"><a href="#top"><span></span></a></p>
+
+
+<script src="http://7xl0td.com1.z0.glb.clouddn.com/js%2Fjquery.min.js"></script>
+<script src="http://7xl0td.com1.z0.glb.clouddn.com/js%2Fbootstrap.min.js"></script>
+<script src="http://7xl0td.com1.z0.glb.clouddn.com/js%2Ffrancis-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- Highlight.js -->
+<script>
+    async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+        hljs.initHighlightingOnLoad();
+    })
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+<link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+
+<!--fastClick.js -->
+<script>
+    async("http://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        // var $nav = document.querySelector("nav");
+        // if($nav) FastClick.attach($nav);
+
+        // global FastClick!!
+        FastClick.attach(document.body);    
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Francis Soung
+    var _baId = '551c451674b914ab3e454205afd429a8';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- Baidu zhanzhang -->
+<script>
+    (function(){
+        var bp = document.createElement('script');
+        bp.src = '//push.zhanzhang.baidu.com/push.js';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+<!--返回顶部-->
+<script>
+    $(function(){
+        //当滚动条的位置处于距顶部100像素以下时，跳转链接出现，否则消失
+        $(function () {
+            $(window).scroll(function(){
+                if ($(window).scrollTop()>100){
+                    $("#back-to-top").fadeIn(1500);
+                }
+                else
+                {
+                    $("#back-to-top").fadeOut(1500);
+                }
+            });
+
+            //当点击跳转链接后，回到页面顶部位置
+
+            $("#back-to-top").click(function(){
+                $('body,html').animate({scrollTop:0},1000);
+                return false;
+            });
+        });
+    });
+</script>
+
+
+
+<!-- Image to hack wechat -->
+<img src="/img/icon_wechat.png" alt="Francis Soung" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

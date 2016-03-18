@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="这是一个程序员的日记薄，记录工作与生活的点点滴滴。包括WEB程序开发、Linux服务器管理、LAMP/LNMP环境配置优化、PHP网络技术、MySQL优化等技术分享以及个人生活旅行中的所见所闻所解。">
+    <meta name="keywords"  content="WEB程序开发,Linux服务器管理,LAMP/LNMP环境配置优化,网络架构,MySQL优化,生活旅行,Francis,francissoung,php程序猿的笔记,程序员的日记薄">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>Francis Soung</title>
+
+    <link rel="canonical" href="http://www.francissoung.com/page3/">
+
+    
+    <!-- css CDN to qiniu -->
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Fbootstrap.min.css">
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Ffrancis-blog.min.css">
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Fsyntax.css">
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Freturntop.css">
+    
+
+    <link href="http://cdn.staticfile.org/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Francis Soung</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/about/">About</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/portfolio/">Portfolio</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/tags/">Tags</a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    var __HuxNav__ = {
+        close: function(){
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        },
+        open: function(){
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+
+    // Bind Event
+    $toggle.addEventListener('click', function(e){
+        if ($navbar.className.indexOf('in') > 0) {
+            __HuxNav__.close()
+        }else{
+            __HuxNav__.open()
+        }
+    })
+
+    /**
+     * Since Fastclick is used to delegate 'touchstart' globally
+     * to hack 300ms delay in iOS by performing a fake 'click',
+     * Using 'e.stopPropagation' to stop 'touchstart' event from 
+     * $toggle/$collapse will break global delegation.
+     * 
+     * Instead, we use a 'e.target' filter to prevent handler
+     * added to document close HuxNav.  
+     *
+     * Also, we use 'click' instead of 'touchstart' as compromise
+     */
+    document.addEventListener('click', function(e){
+        if(e.target == $toggle) return;
+        if(e.target.className == 'icon-bar') return;
+        __HuxNav__.close();
+    })
+</script>
+
+
+    <!-- Page Header -->
+<header class="intro-header" style="background-image: url('/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
+                <div class="site-heading">
+                    <h1>Francis Soung</h1>
+                    <!--<hr class="small">-->
+                    <span class="subheading">用心甘情愿的态度，过随遇而安的生活</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Main Content -->
+<div class="container">
+	<div class="row">
+        
+
+<!-- USE SIDEBAR -->
+    <!-- PostList Container -->
+    		<div class="
+                col-lg-8 col-lg-offset-1
+                col-md-8 col-md-offset-1
+                col-sm-12
+                col-xs-12
+                postlist-container
+            ">
+    			
+<div class="post-preview">
+    <a href="/2015/10/13/LAMP%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E8%AF%A6%E7%BB%86%E5%8F%82%E6%95%B0%E6%96%87%E6%A1%A3/">
+        <h2 class="post-title">
+            LAMP环境搭建详细参数文档
+        </h2>
+        
+        <h3 class="post-subtitle">
+            
+        </h3>
+        
+        <div class="post-content-preview">
+            
+  共享一下学习阶段，老师分享的LAMP环境搭建的文档，非常详细，包括安装所需软件、配置相关参数、可能出现的问题以及解决方法等。请提出意见并指正。
+
+
+准备工作
+
+1、安装编译工具gcc、gcc-c++、make
+
+注意解决依赖关系，推荐使用yum安装，若不能联网可使用安装光盘做为yum源——
+1)编辑yum配置文件：
+
+Mount /dev/cdrom /media
+vi /etc/yu...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Francis Soung on October 13, 2015
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2015/10/12/Mysql%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8%E6%96%B9%E6%A1%88/">
+        <h2 class="post-title">
+            Mysql分库分表方案
+        </h2>
+        
+        <h3 class="post-subtitle">
+            
+        </h3>
+        
+        <div class="post-content-preview">
+            为什么要分表
+
+当一张表的数据达到几千万时，你查询一次所花的时间会变多，如果有联合查询的话，我想有可能会死在那儿了。分表的目的就在于此，减小数据库的负担，缩短查询时间。
+
+mysql中有一种机制是表锁定和行锁定，是为了保证数据的完整性。表锁定表示你们都不能对这张表进行操作，必须等我对表操作完才行。行锁定也一样，别的sql必须等我对这条数据操作完了，才能对这条数据进行操作。
+
+mysql pr...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Francis Soung on October 12, 2015
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2015/10/08/%E5%BE%81%E6%88%98%E5%BA%93%E5%B8%83%E9%BD%90%E6%B2%99%E6%BC%A0/">
+        <h2 class="post-title">
+            十一，征战库布齐沙漠
+        </h2>
+        
+        <h3 class="post-subtitle">
+            无边无际的沙漠像黄色的大海，太阳照在上面，万点光亮闪耀。爱一个人就带她去沙漠吧，恨一个也带她去沙漠吧。
+        </h3>
+        
+        <div class="post-content-preview">
+            
+  2015年9月30日
+
+  内蒙古库布齐沙漠
+
+  经纬度：40º17’52’‘E 109º44’51’‘N
+
+
+
+
+十一假期结束，整理下此次库布齐沙漠之行照片。由于沙漠环境较恶劣，相机无法正常进行拍摄，都是手机拍摄，清晰度并不好。
+
+前序
+
+此次沙漠之行是跟很多驴友一起，也属巧合，本来打算自己去的，经过朋友推荐询问帐篷租赁的事，正好他们组织的活动与我的想法不约而同。这里推荐一个靠谱的...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Francis Soung on October 8, 2015
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2015/08/11/%E4%BA%A6%E5%BA%84-%E6%88%91%E7%94%9F%E6%B4%BB%E4%B8%AD%E5%8F%A6%E4%B8%80%E5%BA%A7%E9%83%BD%E5%B8%82/">
+        <h2 class="post-title">
+            亦庄，我生活中另一座“都市”
+        </h2>
+        
+        <h3 class="post-subtitle">
+            搬到亦庄后的生活
+        </h3>
+        
+        <div class="post-content-preview">
+            亦庄俨然已经成为我生活中另一座“城市”。
+
+
+从大学毕业实习到现在，在北京待了已经有将近四个年头，其中在Bii度过了自己职业生涯中的三个年头，三年中大家各有变化，所有的一切都在变，适时要改变一下自己，根据当前状况，重新评估一下自己，对整体的人生进行一个规划。
+
+三年中我也收获了很多，也见到了很多来来去去。
+
+来亦庄之后，一直坚持一项运动–羽毛球，这是我最快乐的时光也是我最放松的时刻。每天跟同...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Francis Soung on August 11, 2015
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2015/08/10/%E5%91%A8%E6%9D%B0%E4%BC%A6%E6%BC%94%E5%94%B1%E4%BC%9A-%E7%AE%80%E5%8D%95%E7%88%B1/">
+        <h2 class="post-title">
+            周杰伦演唱会-简单爱
+        </h2>
+        
+        <h3 class="post-subtitle">
+            人生中参加的第一场演唱会。陪伴走过了自己最青春的岁月，每一首歌都是一个回忆，总能唤起我对某个时刻的记忆。只是风起那年忆犹在，阑珊已陌却路人。
+        </h3>
+        
+        <div class="post-content-preview">
+            陪伴走过了自己最青春的岁月，每一首歌都是一个回忆，总能唤起我对某个时刻的记忆。只是风起那年忆犹在，阑珊已陌却路人。
+
+很多的时候，我甚至不认为自己是一个杰伦迷，不去关注他的什么中文网，不去搜他的八卦新闻，今年唯一一次去听他的演唱会。
+
+只是纯粹的，听他的旋律，品他的歌词，在骑自行车时，挂着两个大耳塞，耳里充斥着他的声音。
+
+用他的歌来做手机铃声，做彩铃，还要一遍又一遍的用别人的手机打自己的电...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Francis Soung on August 10, 2015
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2015/07/31/%E5%85%B3%E4%BA%8Eimagemagick%E4%BD%BF%E7%94%A8%E7%9A%84%E4%B8%80%E4%BA%9B%E5%BF%83%E5%BE%97/">
+        <h2 class="post-title">
+            关于imagemagick使用的一些心得
+        </h2>
+        
+        <h3 class="post-subtitle">
+            
+        </h3>
+        
+        <div class="post-content-preview">
+            
+  之前旅行回来拍了许多照片，使我我萌生了要做一个旅行博客的想法，展示我的旅行瞬间。
+
+  但是每张照片都超过3MB，图片越大需要的带宽和流量也就越大，服务器空间也是有限的，原图太占资源。
+
+
+于是乎，我考虑到压缩图片，起初我是在mac上使用自带的图片处理工具，修改图片的大小来实现压缩处理，可是这样实在是太麻烦，需要一个个去修改，图片一多，我这太浪费时间，然后网上查询mac上图片压缩工具（...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Francis Soung on July 31, 2015
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2015/04/15/travel-Jeju-Island/">
+        <h2 class="post-title">
+            五一，我在济州岛
+        </h2>
+        
+        <h3 class="post-subtitle">
+            夕阳，美女，落日，大海，自由
+        </h3>
+        
+        <div class="post-content-preview">
+            
+  2015年5月1日
+
+  韩国济州岛
+
+  经纬度：126°08′～126°58′E 36°06′～33°00′N
+
+
+天津出发，直飞济州岛
+
+
+
+
+
+夕阳西下，美女，落日，大海，可惜济州岛没有沙滩，济州岛本是一个火山岛，海滩全是黑色火山岩。
+
+
+
+瞧瞧这海滩，没有人会下去冲浪的，跟国内的海边相比也是另一番景色。
+
+
+
+济州岛周边有很多小岛屿，水清澈的要命，天气晴朗的时候看上去一片绿。...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Francis Soung on April 15, 2015
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2015/01/04/%E5%85%83%E6%97%A6%E9%9B%AA%E4%B9%A1%E6%A2%A6%E5%B9%BB%E4%B9%8B%E6%97%85/">
+        <h2 class="post-title">
+            元旦雪乡梦幻之旅
+        </h2>
+        
+        <h3 class="post-subtitle">
+            这是去过的最北边了，感受过的最寒冷的地方。雪中的景色壮丽无比，天地之间浑然一色，只能看见一片银色，好像整个世界都是用银子来装饰而成的。
+        </h3>
+        
+        <div class="post-content-preview">
+            2015年元旦，我们踏上了北上的列车，目的地-雪乡。第一次去东北，一路向北，感受到了东北寒冷的气息。
+
+目的地第一站，哈尔滨。
+
+
+
+
+  抵达哈尔滨
+
+
+
+  下了火车之后，打车直奔酒店，把所有带来的厚衣服都穿上了，裹得严严实实的出门了。
+
+
+
+
+
+  中央大街
+
+
+
+
+
+  冰雕,也只有东北这种极其寒冷的天气才会有的景观
+
+
+
+
+目的地第二站，中国雪乡。
+
+
+  前往雪乡的路上，傍晚落日...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Francis Soung on January 4, 2015
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2014/10/05/%E5%9D%9D%E4%B8%8A%E8%8D%89%E5%8E%9F/">
+        <h2 class="post-title">
+            坝上草原-Bii Home
+        </h2>
+        
+        <h3 class="post-subtitle">
+            在BII待了三年，成长了不少，从毕业到2015，感谢所有帮助过我的同事，曾经的片段都留在脑海中，参加的最后一次集体活动。
+        </h3>
+        
+        <div class="post-content-preview">
+            
+  2015年9月11日
+丰宁坝上草原
+经纬度：116º4’51’‘E 41º33’4’‘N
+海拔（近似值）：1542米
+
+
+风吹草低现牛羊，雨过天晴的草原
+
+
+
+清晨，日出草原，度假村外的麦子田
+
+
+
+蓝天，白云，马儿
+
+
+
+草原略景留影
+
+
+
+虽然乌云密布，也挡不住自由自在的心情
+
+
+
+
+
+大汗行宫前
+
+
+
+奔向自由，奔向未来，年轻活力
+
+
+
+大部队合影，自己找我在哪吧，O(∩_∩)O...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Francis Soung on October 5, 2014
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2014/10/05/%E5%8D%81%E4%B8%80%E6%B3%B0%E5%9B%BD%E8%87%AA%E7%94%B1%E8%A1%8C/">
+        <h2 class="post-title">
+            2014十一泰国自由行
+        </h2>
+        
+        <h3 class="post-subtitle">
+            人生的第一次远行，曾经的自己并不知道什么是旅行，旅行简单的说就是背上包，带着自己的身心出发，奔向向往的那种宁静和自由。
+        </h3>
+        
+        <div class="post-content-preview">
+            
+  2014年10月3号
+泰国（曼谷、芭堤雅）、成都、昆明
+第一次出国之旅
+
+
+
+
+凌晨4点，从住处出发，打车到北京南苑机场，到了机场连人都没有，第一次到这样的机场，竟然在一个类似于林场里面，从进入机场门口到看到飞机全是树林，阴森森的。。哈哈。。
+
+早上7点50飞机起飞，北京到成都，人生中第一次坐飞机，感觉很不错。。。将近11点到达成都双流机场。
+
+下面就打车飞奔到四川火锅店，很出名的一家...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Francis Soung on October 5, 2014
+    </p>
+</div>
+<hr>
+
+
+<!-- Pager -->
+
+<ul class="pager">
+    
+    <li class="previous">
+        <a href="/page2">&larr; Newer Posts</a>
+    </li>
+    
+    
+    <li class="next">
+        <a href="/page4">Older Posts &rarr;</a>
+    </li>
+    
+</ul>
+
+
+    		</div>
+    <!-- Sidebar Container -->
+            <div class="
+                col-lg-3 col-lg-offset-0
+                col-md-3 col-md-offset-0
+                col-sm-12
+                col-xs-12
+                sidebar-container
+            ">
+                <!-- Featured Tags -->
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                            
+                                <a href="/tags/#Linux" title="Linux" rel="10">
+                                    Linux
+                                </a>
+                            
+                        
+                            
+                                <a href="/tags/#Francis 旅行录" title="Francis 旅行录" rel="6">
+                                    Francis 旅行录
+                                </a>
+                            
+                        
+                            
+                                <a href="/tags/#Francis 简单生活" title="Francis 简单生活" rel="5">
+                                    Francis 简单生活
+                                </a>
+                            
+                        
+                            
+                        
+                            
+                                <a href="/tags/#PHP" title="PHP" rel="6">
+                                    PHP
+                                </a>
+                            
+                        
+                            
+                                <a href="/tags/#MySQL" title="MySQL" rel="2">
+                                    MySQL
+                                </a>
+                            
+                        
+                            
+                                <a href="/tags/#Apache" title="Apache" rel="2">
+                                    Apache
+                                </a>
+                            
+                        
+                            
+                                <a href="/tags/#Francis 杂谈" title="Francis 杂谈" rel="9">
+                                    Francis 杂谈
+                                </a>
+                            
+                        
+                            
+                                <a href="/tags/#OS X" title="OS X" rel="2">
+                                    OS X
+                                </a>
+                            
+                        
+                            
+                        
+                            
+                                <a href="/tags/#Nginx" title="Nginx" rel="2">
+                                    Nginx
+                                </a>
+                            
+                        
+                            
+                        
+                            
+                                <a href="/tags/#编程" title="编程" rel="3">
+                                    编程
+                                </a>
+                            
+                        
+                            
+                        
+                            
+                                <a href="/tags/#C语言" title="C语言" rel="2">
+                                    C语言
+                                </a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Short About -->
+                <section class="visible-md visible-lg">
+                    <hr><h5><a href="">ABOUT ME</a></h5>
+                    <div class="short-about">
+                        
+                            <img src="/img/avatar-francis.jpg" alt="Francis Soung" />
+                        
+                        
+                            <p>爱好旅行，摄影和运动，更热爱我现在的coding。世界那么大，我想去看看。</p>
+                        
+                        <!-- SNS Link -->
+                        <ul class="list-inline">
+                            
+                            
+                            <li>
+                                <a target="_blank" href="http://weibo.com/523072343">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            
+                            
+                            <li>
+                                <a target="_blank" href="https://www.zhihu.com/people/Franciskeke">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa  fa-stack-1x fa-inverse">知</i>
+                                    </span>
+                                </a>
+                            </li>
+                            
+                            
+                            <li>
+                                <a target="_blank" href="https://segmentfault.com/u/francissoung">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa  fa-stack-1x fa-inverse">sf</i>
+                                    </span>
+                                </a>
+                            </li>
+                            
+                            
+                            <li>
+                                <a target="_blank" href="https://github.com/FrancisSoung">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            
+                            
+                            <li>
+                                <a target="_blank" href="https://www.facebook.com/francis.soung">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            
+                            
+                            <li>
+                                <a href="https://twitter.com/Francis_Soung">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            
+
+                        </ul>
+                    </div>
+                </section>
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+                    
+                        <li><a href="http://blog.maryopen.com/">马力全开</a></li>
+                    
+                        <li><a href="http://www.april2nd.me/">航哥</a></li>
+                    
+                        <li><a href="http://blog.ichuck.net/">鹏哥</a></li>
+                    
+                        <li><a href="http://www.shmilyx.net/">望望</a></li>
+                    
+                        <li><a href="http://www.51hsw.com/">好一网</a></li>
+                    
+                </ul>
+                
+    		</div>
+        
+	</div>
+</div>
+
+
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="http://weibo.com/523072343">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/Franciskeke">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://segmentfault.com/u/francissoung">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa  fa-stack-1x fa-inverse">sf</i>
+                                    </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/FrancisSoung">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/francis.soung">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a href="https://twitter.com/Francis_Soung">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Francis Soung 2016
+                    <br>
+                    Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> and <a href="http://www.bootcss.com/">Bootstrap</a> | Theme © <a href="http://huangxuan.me">Hux</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=FrancisSoung&repo=francissoung.github.io&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+<p id="back-to-top"><a href="#top"><span></span></a></p>
+
+
+<script src="http://7xl0td.com1.z0.glb.clouddn.com/js%2Fjquery.min.js"></script>
+<script src="http://7xl0td.com1.z0.glb.clouddn.com/js%2Fbootstrap.min.js"></script>
+<script src="http://7xl0td.com1.z0.glb.clouddn.com/js%2Ffrancis-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- Highlight.js -->
+<script>
+    async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+        hljs.initHighlightingOnLoad();
+    })
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+<link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+
+<!--fastClick.js -->
+<script>
+    async("http://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        // var $nav = document.querySelector("nav");
+        // if($nav) FastClick.attach($nav);
+
+        // global FastClick!!
+        FastClick.attach(document.body);    
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Francis Soung
+    var _baId = '551c451674b914ab3e454205afd429a8';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- Baidu zhanzhang -->
+<script>
+    (function(){
+        var bp = document.createElement('script');
+        bp.src = '//push.zhanzhang.baidu.com/push.js';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+<!--返回顶部-->
+<script>
+    $(function(){
+        //当滚动条的位置处于距顶部100像素以下时，跳转链接出现，否则消失
+        $(function () {
+            $(window).scroll(function(){
+                if ($(window).scrollTop()>100){
+                    $("#back-to-top").fadeIn(1500);
+                }
+                else
+                {
+                    $("#back-to-top").fadeOut(1500);
+                }
+            });
+
+            //当点击跳转链接后，回到页面顶部位置
+
+            $("#back-to-top").click(function(){
+                $('body,html').animate({scrollTop:0},1000);
+                return false;
+            });
+        });
+    });
+</script>
+
+
+
+<!-- Image to hack wechat -->
+<img src="/img/icon_wechat.png" alt="Francis Soung" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

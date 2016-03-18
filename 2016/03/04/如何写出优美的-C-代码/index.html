@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="这是一个程序员的日记薄，记录工作与生活的点点滴滴。包括WEB程序开发、Linux服务器管理、LAMP/LNMP环境配置优化、PHP网络技术、MySQL优化等技术分享以及个人生活旅行中的所见所闻所解。">
+    <meta name="keywords"  content="WEB程序开发,Linux服务器管理,LAMP/LNMP环境配置优化,网络架构,MySQL优化,生活旅行,Francis,francissoung,php程序猿的笔记,程序员的日记薄">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>如何写出优美的 C 代码 - Francis Soung</title>
+
+    <link rel="canonical" href="http://www.francissoung.com/2016/03/04/%E5%A6%82%E4%BD%95%E5%86%99%E5%87%BA%E4%BC%98%E7%BE%8E%E7%9A%84-C-%E4%BB%A3%E7%A0%81/">
+
+    
+    <!-- css CDN to qiniu -->
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Fbootstrap.min.css">
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Ffrancis-blog.min.css">
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Fsyntax.css">
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Freturntop.css">
+    
+
+    <link href="http://cdn.staticfile.org/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Francis Soung</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/about/">About</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/portfolio/">Portfolio</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/tags/">Tags</a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    var __HuxNav__ = {
+        close: function(){
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        },
+        open: function(){
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+
+    // Bind Event
+    $toggle.addEventListener('click', function(e){
+        if ($navbar.className.indexOf('in') > 0) {
+            __HuxNav__.close()
+        }else{
+            __HuxNav__.open()
+        }
+    })
+
+    /**
+     * Since Fastclick is used to delegate 'touchstart' globally
+     * to hack 300ms delay in iOS by performing a fake 'click',
+     * Using 'e.stopPropagation' to stop 'touchstart' event from 
+     * $toggle/$collapse will break global delegation.
+     * 
+     * Instead, we use a 'e.target' filter to prevent handler
+     * added to document close HuxNav.  
+     *
+     * Also, we use 'click' instead of 'touchstart' as compromise
+     */
+    document.addEventListener('click', function(e){
+        if(e.target == $toggle) return;
+        if(e.target.className == 'icon-bar') return;
+        __HuxNav__.close();
+    })
+</script>
+
+
+    <!-- Image to hack wechat -->
+<!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="/img/post-bg-c.jpg" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        position: relative;
+        background-image: url('/img/post-bg-c.jpg')
+    }
+
+    
+</style>
+<header class="intro-header" >
+    <div class="header-mask"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#C语言" title="C语言">C语言</a>
+                        
+                        <a class="tag" href="/tags/#编程" title="编程">编程</a>
+                        
+                        <a class="tag" href="/tags/#Francis 杂谈" title="Francis 杂谈">Francis 杂谈</a>
+                        
+                    </div>
+                    <h1>如何写出优美的 C 代码</h1>
+                    
+                    
+                    <h2 class="subheading"></h2>
+                    
+                    <span class="meta">Posted by Francis Soung on March 4, 2016</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>面向对象的语言更接近人的思维方式，而且在很大程度上降低了代码的复杂性，同时提高了代码的可读性和可维护性，传统的 C 代码同样可以设计出比较易读，易维护，复杂度较低的优美代码，本文将通过一个实际的例子来说明这一点。</p>
+
+<h2 id="section">基础知识</h2>
+
+<h3 id="section-1">结构体</h3>
+
+<p>除了提供基本数据类型外，C 语言还提供给用户自己定制数据类型的能力，那就是结构体，在 C 语言中，你可以用结构体来表示任何实体。结构体正是面向对象语言中的类的概念的雏形，比如：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>typedef struct{ 
+    float x; 
+    float y; 
+ }Point;
+</code></pre>
+</div>
+
+<p>定义了一个平面坐标系中的一个点，点中有两个域，x 坐标和 y 坐标。</p>
+
+<p>结构体中的域称为结构体的成员。结构体中的数据类型可以是简单数据类型，也可以是其他的结构体，甚至结构体本身还可以嵌套，比如，一个标准的链表结构可以进行如下定义：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>typedef struct node{ 
+    void *data;
+// 数据指针
+
+    int dataLength;
+// 数据长度
+
+    struct node *next;
+// 指向下一个节点
+
+ }Node;
+</code></pre>
+</div>
+
+<p>可以看到，结构体 node 中的 next 指针的类型又是 node 类型。</p>
+
+<h3 id="section-2">函数指针</h3>
+
+<p>指针是 C 语言的灵魂，是 C 比其他语言更灵活，更强大的地方。所以学习 C 语言必须很好的掌握指针。函数指针，即指向函数在内存映射中的首地址的指针，通过函数指针，可以将函数作为参数传递给另一个函数，并在适当的时候调用，从而实现异步通信等功能。</p>
+
+<p>比如， UNIX/Linux 系统中的信号注册函数，其原型如下：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>void (*signal(int signo,void (*func)(int))) (int)
+</code></pre>
+</div>
+
+<p>使用的时候，需要自己在外部定义一个信号处理函数 (signal handler), 然后使用 signal(sigNo, handler) 将处理程序注册在进程上，当信号发生时，进程就可以回调信号处理函数。</p>
+
+<h3 id="section-3">将函数指针作为结构体的成员</h3>
+
+<p>正如前面提到的，结构体的成员可以是简单的数据结构，也可以是其他的结构体，当然，也可以是指针。当将函数指针作为结构体的成员，并且这些函数只用来操作本结构体中的数据时，就可以形成一个独立的实体，这个实体中既有数据，也有对数据的操作，这样自然就可以引出类(class)的概念。</p>
+
+<h2 id="section-4">面向对象语言的特性</h2>
+
+<p>一般而言，继承，封装和多态被认为是面向对象语言所必须支持的三种特征，也正是通过这三种特征才可以体现出面向对象在哪些方面优于面向过程。由于语言开发商的宣传或其他的各种原因，使的表面上面向对象的思想要通过语言为载体而得以实现，然而实际上，面向对象是一种软件设计思想，完全是可以与具体实现无关的。</p>
+
+<p>虽然如此，但是不可否认，这些所谓的纯面向对象的语言，在其代码的可读性以及与人的自然思维的匹配方面，比面向过程的语言要好的多。</p>
+
+<h3 id="section-5">语言层次的面向对象</h3>
+
+<p>我们一般要描述一个对象，一般需要描述这个对象的一些属性，比如盒子(box) 是一个实体，它有 6 个面，有颜色，重量，是否为空等属性，并且可以放东西进去，可以取东西出来。在面向对象的语言中，通常将这样的对象抽象成一个类 (class):</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>class Box{ 
+    clolr color; 
+    int weight; 
+    boolean empty; 
+ 
+    put(something); 
+    something get(); 
+ }
+</code></pre>
+</div>
+
+<p>对盒子进行操作时，可以做一下动作：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Box.put(cake); 
+Box.get();
+// 取到某个东西，从盒子中。
+</code></pre>
+</div>
+
+<p>而面向过程的语言中，通常是将实体传递给一个贯穿全局的函数来进行的，同样以 Box 为例，对 Box 进行操作时，往往是这样：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Put(Box, cake);
+// 将一个蛋糕放到盒子中
+
+Get(Box);
+// 从盒子中取出某个东西来
+</code></pre>
+</div>
+
+<p>而显然，第一种代码形式更符合常理，所以面向对象的语言大都提供这种语言层面的细节的支持，使得代码的可读性，可理解性大大增加。 C 语言，作为一个灵活而简单的语言，我们完全可以通过 C 提供的简单机制，实现这样的比较优美的代码形式。</p>
+
+<h2 id="c-">C 语言的面向对象</h2>
+
+<p>如前所说，面向对象是一种软件设计的思想，是语言无关的。在本节中，我举一个链表(list)的例子来说明如何在 C 语言中的设计出有面向对象风格的代码。</p>
+
+<h3 id="section-6">定义接口</h3>
+
+<p>接口是面向对象语言中的一个比较重要的概念，接口只对外部承诺实现该接口的实体可以完成什么样的功能，但是不暴露实现的方式。这样的好处是，实现者可以在不接触接口使用者的代码的情况下，对实现进行调整。</p>
+
+<p>我们来看看链表的接口定义：</p>
+
+<p><strong>清单 1. 链表的接口定义</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>#ifndef _ILIST_H 
+ #define     _ILIST_H 
+ 
+ 
+// 定义链表中的节点结构
+
+ typedef struct node{ 
+    void *data; 
+    struct node *next; 
+ }Node; 
+ 
+ 
+// 定义链表结构
+
+ typedef struct list{ 
+    struct list *_this; 
+    Node *head; 
+    int size; 
+    void (*insert)(void *node);
+// 函数指针
+
+    void (*drop)(void *node); 
+    void (*clear)(); 
+    int (*getSize)(); 
+    void* (*get)(int index); 
+    void (*print)(); 
+ }List; 
+ 
+ void insert(void *node); 
+ void drop(void *node); 
+ void clear(); 
+ int getSize(); 
+ void* get(int index); 
+ void print(); 
+ 
+ #endif      /* _ILIST_H */
+</code></pre>
+</div>
+
+<p>IList 接口中，可以清晰的看到，对于一个 list 实体 ( 也就是对象 ) 来说，可以在其上进行 insert, drop, clear, getSize, get(index) 以及 print 等操作。</p>
+
+<h3 id="section-7">接口的实现</h3>
+
+<p><strong>清单 2. 构造方法</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Node *node = NULL; 
+List *list = NULL; 
+ 
+void insert(void *node); 
+void drop(void *node); 
+void clear(); 
+int getSize(); 
+void print(); 
+void* get(int index); 
+ 
+List *ListConstruction(){ 
+   list = (List*)malloc(sizeof(List)); 
+   node = (Node*)malloc(sizeof(Node)); 
+   list-&gt;head = node; 
+   list-&gt;insert = insert;
+// 将 insert 函数实现注册在 list 实体上
+
+   list-&gt;drop = drop; 
+   list-&gt;clear = clear; 
+   list-&gt;size = 0; 
+   list-&gt;getSize = getSize; 
+   list-&gt;get = get; 
+   list-&gt;print = print; 
+   list-&gt;_this = list;
+// 用 _this 指针将 list 本身保存起来
+
+ 
+   return (List*)list; 
+}
+</code></pre>
+</div>
+
+<p>需要注意的是此处的 _this 指针，_this 指针可以保证外部对 list 的操作映射到对 _this 的操作上，从而使得代码得到简化。</p>
+
+<p><strong>清单 3. 插入及删除</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>// 将一个 node 插入到一个 list 对象上
+
+ void insert(void *node){ 
+    Node *current = (Node*)malloc(sizeof(Node)); 
+ 
+    current-&gt;data = node; 
+    current-&gt;next = list-&gt;_this-&gt;head-&gt;next; 
+    list-&gt;_this-&gt;head-&gt;next = current; 
+    (list-&gt;_this-&gt;size)++; 
+ } 
+ 
+ 
+// 删除一个指定的节点 node 
+
+ void drop(void *node){ 
+    Node *t = list-&gt;_this-&gt;head; 
+    Node *d = NULL; 
+    int i = 0; 
+    for(i;i &lt; list-&gt;_this-&gt;size;i++){ 
+        d = list-&gt;_this-&gt;head-&gt;next; 
+        if(d-&gt;data == ((Node*)node)-&gt;data){ 
+            list-&gt;_this-&gt;head-&gt;next = d-&gt;next; 
+            free(d); 
+            (list-&gt;_this-&gt;size)--; 
+            break; 
+        }else{ 
+            list-&gt;_this-&gt;head = list-&gt;_this-&gt;head-&gt;next; 
+        } 
+    } 
+    list-&gt;_this-&gt;head = t; 
+ }
+</code></pre>
+</div>
+
+<p>其他的实现代码可以参看下载部分，这里限于篇幅就不再意义列举出来。</p>
+
+<h2 id="section-8">测试</h2>
+
+<h3 id="section-9">测试代码</h3>
+
+<p>好了，前面做的一切工作都是为了保证我们的暴露给使用者的 API 可以尽量的简洁，优美，现在到测试的时候了：</p>
+
+<p><strong>清单 4. 测试代码</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>int main(int argc, char** argv) { 
+    List *list = (List*)ListConstruction();
+// 构造一个新的链表
+
+ 
+ 
+// 插入一些值做测试
+
+    list-&gt;insert("Apple"); 
+    list-&gt;insert("Borland"); 
+    list-&gt;insert("Cisco"); 
+    list-&gt;insert("Dell"); 
+    list-&gt;insert("Electrolux"); 
+    list-&gt;insert("FireFox"); 
+    list-&gt;insert("Google"); 
+ 
+    list-&gt;print();
+// 打印整个列表
+
+ 
+    printf("list size = %d\n",list-&gt;getSize()); 
+ 
+    Node node; 
+    node.data = "Electrolux"; 
+    node.next = NULL;  
+    list-&gt;drop(&amp;node);
+// 删除一个节点
+
+ 
+    node.data = "Cisco"; 
+    node.next = NULL; 
+    list-&gt;drop(&amp;node);
+// 删除另一个节点
+
+ 
+    list-&gt;print();
+// 再次打印
+
+    printf("list size = %d\n",list-&gt;getSize()); 
+    list-&gt;clear();
+// 清空列表
+
+ 
+    return 0; 
+ }
+</code></pre>
+</div>
+
+<p><strong>图 1. 运行结果</strong></p>
+
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016%2F03%2F04%2F0064cTs2jw1ezvcsyh916g309y0740sj.gif" alt="" /></p>
+
+<h2 id="section-10">结束语</h2>
+
+<p>C 语言所诞生的UNIX平台提倡这样一种设计哲学：尽量进行简单的设计，让使用者如同搭积木一样的将这些简单的工具连接成强大的，完整的应用。 应该说，C 比较好的继承了这一点，C 语言非常简洁，非常强大，而由于 C 语言诞生的比较早，当时的面向对象的思想还不成熟，所以出现了大量的过程式的 C 应用，从而给人们一种 C 语言是面向过程的语言的错觉，其实 C 只是提供了一些简单，强大而通用的能力，至于你想将其搭成什么样的积木，则全靠你自己了。</p>
+
+
+                <hr>
+
+                
+
+                <!-- Baidu Share start-->
+                <div class="bdsharebuttonbox">
+                    <a href="#" class="bds_more" data-cmd="more"></a>
+                    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+                    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+                    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+                    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+                </div>
+                <!-- Baidu Share end -->
+
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2016/03/03/%E6%B5%85%E8%B0%88%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E5%8A%A8%E6%80%81%E5%BA%94%E7%94%A8%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/" data-toggle="tooltip" data-placement="top" title="浅谈大型网站动态应用系统架构">
+                            Previous<br>
+                            <span>浅谈大型网站动态应用系统架构</span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2016/03/04/%E5%A6%82%E4%BD%95%E5%B0%86DISQUS%E7%A4%BE%E4%BC%9A%E5%8C%96%E8%AF%84%E8%AE%BA%E8%AE%BE%E7%BD%AE%E4%B8%BA%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87/" data-toggle="tooltip" data-placement="top" title="如何将DISQUS社会化评论设置为简体中文">
+                            Next<br>
+                            <span>如何将DISQUS社会化评论设置为简体中文</span>
+                        </a>
+                    </li>
+                    
+                </ul>
+
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        <a href="/tags/#Linux" title="Linux" rel="10">
+                            Linux
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#Francis 旅行录" title="Francis 旅行录" rel="6">
+                            Francis 旅行录
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#Francis 简单生活" title="Francis 简单生活" rel="5">
+                            Francis 简单生活
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/#PHP" title="PHP" rel="6">
+                            PHP
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#MySQL" title="MySQL" rel="2">
+                            MySQL
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#Apache" title="Apache" rel="2">
+                            Apache
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#Francis 杂谈" title="Francis 杂谈" rel="9">
+                            Francis 杂谈
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#OS X" title="OS X" rel="2">
+                            OS X
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/#Nginx" title="Nginx" rel="2">
+                            Nginx
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/#编程" title="编程" rel="3">
+                            编程
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/#C语言" title="C语言" rel="2">
+                            C语言
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+                    
+                    <li><a href="http://blog.maryopen.com/">马力全开</a></li>
+                    
+                    <li><a href="http://www.april2nd.me/">航哥</a></li>
+                    
+                    <li><a href="http://blog.ichuck.net/">鹏哥</a></li>
+                    
+                    <li><a href="http://www.shmilyx.net/">望望</a></li>
+                    
+                    <li><a href="http://www.51hsw.com/">好一网</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!--百度分享公共JS代码 start-->
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"1","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+<!--百度分享公共JS代码 end-->
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "francissoungblog";
+    var disqus_identifier = "/2016/03/04/如何写出优美的 C 代码";
+    var disqus_url = "http://www.francissoung.com/2016/03/04/%E5%A6%82%E4%BD%95%E5%86%99%E5%87%BA%E4%BC%98%E7%BE%8E%E7%9A%84-C-%E4%BB%A3%E7%A0%81/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+        var d = document, t = 'script',
+                o = d.createElement(t),
+                s = d.getElementsByTagName(t)[0];
+        o.src = u;
+        if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+        s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("http://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+            visible: 'always',
+            placement: 'right',
+            icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="http://weibo.com/523072343">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/Franciskeke">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://segmentfault.com/u/francissoung">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa  fa-stack-1x fa-inverse">sf</i>
+                                    </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/FrancisSoung">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/francis.soung">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a href="https://twitter.com/Francis_Soung">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Francis Soung 2016
+                    <br>
+                    Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> and <a href="http://www.bootcss.com/">Bootstrap</a> | Theme © <a href="http://huangxuan.me">Hux</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=FrancisSoung&repo=francissoung.github.io&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+<p id="back-to-top"><a href="#top"><span></span></a></p>
+
+
+<script src="http://7xl0td.com1.z0.glb.clouddn.com/js%2Fjquery.min.js"></script>
+<script src="http://7xl0td.com1.z0.glb.clouddn.com/js%2Fbootstrap.min.js"></script>
+<script src="http://7xl0td.com1.z0.glb.clouddn.com/js%2Ffrancis-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- Highlight.js -->
+<script>
+    async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+        hljs.initHighlightingOnLoad();
+    })
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+<link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+
+<!--fastClick.js -->
+<script>
+    async("http://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        // var $nav = document.querySelector("nav");
+        // if($nav) FastClick.attach($nav);
+
+        // global FastClick!!
+        FastClick.attach(document.body);    
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Francis Soung
+    var _baId = '551c451674b914ab3e454205afd429a8';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- Baidu zhanzhang -->
+<script>
+    (function(){
+        var bp = document.createElement('script');
+        bp.src = '//push.zhanzhang.baidu.com/push.js';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+<!--返回顶部-->
+<script>
+    $(function(){
+        //当滚动条的位置处于距顶部100像素以下时，跳转链接出现，否则消失
+        $(function () {
+            $(window).scroll(function(){
+                if ($(window).scrollTop()>100){
+                    $("#back-to-top").fadeIn(1500);
+                }
+                else
+                {
+                    $("#back-to-top").fadeOut(1500);
+                }
+            });
+
+            //当点击跳转链接后，回到页面顶部位置
+
+            $("#back-to-top").click(function(){
+                $('body,html').animate({scrollTop:0},1000);
+                return false;
+            });
+        });
+    });
+</script>
+
+
+
+<!-- Image to hack wechat -->
+<img src="/img/icon_wechat.png" alt="Francis Soung" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

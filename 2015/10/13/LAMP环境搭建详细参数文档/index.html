@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="这是一个程序员的日记薄，记录工作与生活的点点滴滴。包括WEB程序开发、Linux服务器管理、LAMP/LNMP环境配置优化、PHP网络技术、MySQL优化等技术分享以及个人生活旅行中的所见所闻所解。">
+    <meta name="keywords"  content="WEB程序开发,Linux服务器管理,LAMP/LNMP环境配置优化,网络架构,MySQL优化,生活旅行,Francis,francissoung,php程序猿的笔记,程序员的日记薄">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>LAMP环境搭建详细参数文档 - Francis Soung</title>
+
+    <link rel="canonical" href="http://www.francissoung.com/2015/10/13/LAMP%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E8%AF%A6%E7%BB%86%E5%8F%82%E6%95%B0%E6%96%87%E6%A1%A3/">
+
+    
+    <!-- css CDN to qiniu -->
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Fbootstrap.min.css">
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Ffrancis-blog.min.css">
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Fsyntax.css">
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Freturntop.css">
+    
+
+    <link href="http://cdn.staticfile.org/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Francis Soung</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/about/">About</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/portfolio/">Portfolio</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/tags/">Tags</a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    var __HuxNav__ = {
+        close: function(){
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        },
+        open: function(){
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+
+    // Bind Event
+    $toggle.addEventListener('click', function(e){
+        if ($navbar.className.indexOf('in') > 0) {
+            __HuxNav__.close()
+        }else{
+            __HuxNav__.open()
+        }
+    })
+
+    /**
+     * Since Fastclick is used to delegate 'touchstart' globally
+     * to hack 300ms delay in iOS by performing a fake 'click',
+     * Using 'e.stopPropagation' to stop 'touchstart' event from 
+     * $toggle/$collapse will break global delegation.
+     * 
+     * Instead, we use a 'e.target' filter to prevent handler
+     * added to document close HuxNav.  
+     *
+     * Also, we use 'click' instead of 'touchstart' as compromise
+     */
+    document.addEventListener('click', function(e){
+        if(e.target == $toggle) return;
+        if(e.target.className == 'icon-bar') return;
+        __HuxNav__.close();
+    })
+</script>
+
+
+    <!-- Image to hack wechat -->
+<!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="/img/post-bg-lamp.jpg" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        position: relative;
+        background-image: url('/img/post-bg-lamp.jpg')
+    }
+
+    
+</style>
+<header class="intro-header" >
+    <div class="header-mask"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#Linux" title="Linux">Linux</a>
+                        
+                        <a class="tag" href="/tags/#LAMP" title="LAMP">LAMP</a>
+                        
+                        <a class="tag" href="/tags/#PHP" title="PHP">PHP</a>
+                        
+                        <a class="tag" href="/tags/#MySQL" title="MySQL">MySQL</a>
+                        
+                        <a class="tag" href="/tags/#Apache" title="Apache">Apache</a>
+                        
+                    </div>
+                    <h1>LAMP环境搭建详细参数文档</h1>
+                    
+                    
+                    <h2 class="subheading"></h2>
+                    
+                    <span class="meta">Posted by Francis Soung on October 13, 2015</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <blockquote>
+  <p>共享一下学习阶段，老师分享的LAMP环境搭建的文档，非常详细，包括安装所需软件、配置相关参数、可能出现的问题以及解决方法等。请提出意见并指正。</p>
+</blockquote>
+
+<h2 id="section">准备工作</h2>
+
+<p><strong>1、安装编译工具gcc、gcc-c++、make</strong></p>
+
+<p>注意解决依赖关系，推荐使用yum安装，若不能联网可使用安装光盘做为yum源——
+1)编辑yum配置文件：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Mount /dev/cdrom /media
+vi /etc/yum.repos.d/CentOS-Media.repo 
+[c5-media] 
+name=CentOS-$releasever - Media
+baseurl=file:///media   * 修改为光盘挂载点
+enabled=1  * 改为1意为启用
+gpgcheck=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-5
+</code></pre>
+</div>
+
+<p>2)设置alias值:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Vi /etc/bashrc
+alias yum="yum --disablerepo=\* --enablerepo=c5-media"
+</code></pre>
+</div>
+
+<p>3)依次安装gcc、gcc-c++</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Yum -y install gcc*
+</code></pre>
+</div>
+
+<p><strong>2、卸载系统Apache、MySQL和PHP的RPM安装包</strong></p>
+
+<p><em>下载前需关闭启动的服务，如httpd、mysqld</em></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>service httpd stop
+service mysqld stop
+</code></pre>
+</div>
+
+<p><em>卸载RPM包的Apache、MySQL、PHP</em></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>yum remove httpd
+yum remove mysql
+</code></pre>
+</div>
+
+<p>建议使用rpm –e http-1.2.3.rpm –nodeps (截断这个rpm包的依赖性)</p>
+
+<p><strong>3、关闭SELinux，允许防火墙80端口访问</strong></p>
+
+<p>1）关闭SELinux</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>vi /etc/selinux/config
+SELINUX=disabled   * 若安装时没有禁用SELinux ，将enforcing改为disabled
+</code></pre>
+</div>
+
+<p>修改后需重新启动Linux方可生效！</p>
+
+<p>2）关闭防火墙Netfilter/iptables
+因尚未做防火墙讲解，直接简单的关闭所有防火墙设置：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>iptables -F     * 如果没有禁用防火墙，默认80端口禁止访问
+service iptables save   防火墙策略写到/etc/sysconfig/iptables,以后计算机重启再加载这个文件时，防火墙策略就会永久清空.
+</code></pre>
+</div>
+
+<h2 id="section-1">编译安装</h2>
+
+<ul>
+  <li>每个源码包配置编译安装完成后，确认安装目录下是否生成安装文件</li>
+</ul>
+
+<p><strong>1、安装libxml2</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code> cd /lamp/libxml2-2.6.30
+./configure --prefix=/usr/local/libxml2/
+ make 
+ make install
+</code></pre>
+</div>
+
+<p><strong>2、安装libmcrypt</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>cd /lamp/libmcrypt-2.5.8
+ ./configure --prefix=/usr/local/libmcrypt/
+ make 
+ make install
+ * 需调用gcc-c++编译器，未安装会报错
+</code></pre>
+</div>
+
+<p><strong>3、安装libltdl，也在libmcrypt源码目录中，非新软件</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>cd /lamp/libmcrypt-2.5.8/libltdl
+ ./configure --enable-ltdl-install
+ make
+ make install
+</code></pre>
+</div>
+
+<p><strong>4、安装zlib</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code> cd /lamp/zlib-1.2.3
+./configure
+ make
+ make install 
+ * zlib指定安装目录可能造成libpng安装失败，故不指定，为卸载方便，建议make install执行结果输出到安装日志文件，便于日后卸载
+</code></pre>
+</div>
+
+<p><strong>5、安装libpng</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>cd /lamp/libpng-1.2.31
+ ./configure --prefix=/usr/local/libpng/
+ make
+ make install
+</code></pre>
+</div>
+
+<p><strong>6、安装jpeg6</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>mkdir /usr/local/jpeg6
+mkdir /usr/local/jpeg6/bin
+mkdir /usr/local/jpeg6/lib
+mkdir /usr/local/jpeg6/include
+mkdir -p /usr/local/jpeg6/man/man1
+cd /lamp/jpeg-6b
+./configure --prefix=/usr/local/jpeg6/ --enable-shared --enable-static
+make
+make install
+* --enable-shared与--enable-static参数分别为建立共享库和静态库使用的libtool
+</code></pre>
+</div>
+
+<p><strong>7、安装freetype</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code> cd /lamp/freetype-2.3.5
+ ./configure --prefix=/usr/local/freetype/
+ make
+ make install
+</code></pre>
+</div>
+
+<p><strong>8、安装autoconf</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code> cd /lamp/autoconf-2.61
+ ./configure
+ make 
+ make install
+</code></pre>
+</div>
+
+<p><strong>9、安装GD库</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>mkdir /usr/local/gd2
+cd /lamp/gd-2.0.35
+</code></pre>
+</div>
+
+<p><em>png错误，修改方法:</em></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>vi gd_png.c
+把#include “png.h”替换
+#include "/usr/local/libpng/include/png.h"
+
+
+./configure --prefix=/usr/local/gd2/ --with-jpeg=/usr/local/jpeg6/ --with-freetype=/usr/local/freetype/
+ --with-png=/usr/local/libpng/
+ Make
+#如果出现错误，把上面的两步重新执行一次.
+ make install
+ * 若前面配置zlib时没有指定安装目录，gd配置时不要添加--with-zlib=/usr/local/zlib/参数
+</code></pre>
+</div>
+
+<p><strong>10、安装Apache</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code> cd /lamp/httpd-2.2.9
+ ./configure --prefix=/usr/local/apache2/ --sysconfdir=/usr/local/apache2/etc/ --with-included-apr --enable-so --enable-deflate=shared --enable-expires=shared --enable-rewrite=shared
+ make
+ make install
+*若前面配置zlib时没有指定安装目录，Apache配置时不要添加--with-z=/usr/local/zlib/参数*
+</code></pre>
+</div>
+
+<p><em>启动Apache测试：</em></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>/usr/local/apache2/bin/apachectl start
+ps -le | grep httpd
+</code></pre>
+</div>
+
+<p>若启动时提示/usr/local/apache2/modules/mod_deflate.so无权限，可关闭SELinux或者执行命令chcon -t texrel_shlib_t /usr/local/apache2/modules/mod_deflate.so ，类似此类.so文件不能载入或没有权限的问题，都是SELinux问题，使用命令：“chcon -t texrel_shlib_t 文件名”即可解决，MySQL和Apache也可能有类似问题。</p>
+
+<p>通过浏览器输入地址访问：http://Apache服务器地址，若显示“It works”即表明Apache正常工作</p>
+
+<p>设置Apache系统引导时启动：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>echo "/usr/local/apache2/bin/apachectl start" &gt;&gt; /etc/rc.d/rc.local
+</code></pre>
+</div>
+
+<p><strong>11、安装nurses</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>（1）yum –y install ncurses*
+（2）源代码编译:
+cd /lamp/ncurses-5.6
+./configure --with-shared --without-debug --without-ada --enable-overwrite
+make 
+make install
+* 若不安装ncurses编译MySQL时会报错
+* --without-ada参数为设定不编译为ada绑定，因进入chroot环境不能使用ada ；--enable-overwrite参数为定义把头文件安装到/tools/include下而不是/tools/include/ncurses目录
+</code></pre>
+</div>
+
+<p><strong>12、安装MySQL</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>useradd mysql
+*添加用户组mysql ，将mysql用户默认组设置为mysql用户组*
+cd /lamp/mysql-5.0.41
+./configure --prefix=/usr/local/mysql --without-debug --enable-thread-safe-client --with-pthread --enable-assembler --enable-profiling --with-mysqld-ldflags=-all-static --with-client-ldflags=-all-static --with-extra-charsets=all --with-plugins=all --with-mysqld-user=mysql --without-embedded-server --with-server-suffix=-community --with-unix-socket-path=/tmp/mysql.sock
+ make
+ make install
+*--with-extra-charsets=all参数为安装所有字符集*
+</code></pre>
+</div>
+
+<p>#如果不行的话,make clean 后再make ;make install,这样去试一下,默认是不支持innodb存储引擎的.其中–with-plugins=all可以把innodb加载进来.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>cp /usr/local/mysql/share/mysql/my-medium.cnf   /etc/my.cnf
+</code></pre>
+</div>
+
+<p>修改mysql配置文件</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>（1）[client]
+default-character-set=utf8
+（2）[ mysqld]
+character-set-server = utf8
+collation-server = utf8_general_ci
+#default-storage-engine=innodb
+（3）打开innodb配置
+#innodb_data_home_dir = /usr/local/mysql/var
+#innodb_data_file_path = ibdata1:10M:autoextend
+#innodb_log_group_home_dir = /usr/local/mysql/var
+#innodb_buffer_pool_size = 16M
+#innodb_additional_mem_pool_size = 2M
+#innodb_log_file_size = 5M
+#innodb_log_buffer_size = 8M
+#innodb_flush_log_at_trx_commit = 1
+#innodb_lock_wait_timeout = 50
+ * 生成MySQL配置文件
+ 
+ Setfacl –m u:mysql:rwx –R /usr/local/mysql
+ Setfacl –m d:u:mysql:rwx –R /usr/local/mysql
+ * 用acl来让mysql用户对/usr/local/mysql有所有权限
+* 在FreeBSD下以上不成功的话用
+ 修改 /usr/local/mysql 目录属主及其属组为mysql 
+  chown -R mysql:mysql /usr/local/mysql
+/usr/local/mysql/bin/mysql_install_db --user=mysql
+ * 创建数据库授权表
+</code></pre>
+</div>
+
+<p><strong>启动MySQL服务</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>（1）用原本源代码的方式去使用和启动mysql
+/usr/local/mysql/bin/mysqld_safe --user=mysql &amp;
+（2）重启以后还要生效:
+Vi /etc/rc.local
+/usr/local/mysql/bin/mysqld_safe --user=mysql &amp;
+
+/usr/local/mysql/bin/mysqladmin -uroot password kkk  
+#给mysql用户root加密码.密码为kkk
+
+ /usr/local/mysql/bin/mysql -u root -pkkk test 
+mysql&gt;show databases;
+mysql&gt;use test
+mysql&gt;show tables;
+#进入mysql以后用set来改密码.
+ mysql&gt; exit
+ * 登录MySQL客户端控制台设置指定root密码
+</code></pre>
+</div>
+
+<p><strong>13、安装PHP</strong></p>
+
+<p>编译前确保系统已经安装了libtool和libtool-ltdl软件包，若没有安装使用yum或rpm安装下：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>yum install libtool*
+yum install libtool-ltdl*
+
+ cd /lamp/php-5.2.6
+./configure --prefix=/usr/local/php/ --with-config-file-path=/usr/local/php/etc/ --with-apxs2=/usr/local/apache2/bin/apxs --with-mysql=/usr/local/mysql/ --with-libxml-dir=/usr/local/libxml2/ --with-jpeg-dir=/usr/local/jpeg6/ --with-png-dir=/usr/local/libpng/ --with-freetype-dir=/usr/local/freetype/ --with-gd=/usr/local/gd2/ --with-mcrypt=/usr/local/libmcrypt/ --with-mysqli=/usr/local/mysql/bin/mysql_config --enable-soap --enable-mbstring=all --enable-sockets
+* 若前面配置zlib时没有指定安装目录，PHP配置时不要添加--with-zlib-dir=/usr/local/zlib/参数
+make
+make install
+</code></pre>
+</div>
+
+<p>生成php.ini(php的配置文件)</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>cp /lamp/php-5.2.6/php.ini-dist /usr/local/php/etc/php.ini
+</code></pre>
+</div>
+
+<p>测试apache与php的连通性,看apache是否能解析php文件</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>vi /usr/local/apache2/etc//httpd.conf
+ AddType application/x-httpd-php .php .phtml .phps 	(注意T的大小写)
+</code></pre>
+</div>
+
+<p><em>.phtml为将.phps做为PHP源文件进行语法高亮显示</em></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>重启Apache服务：/usr/local/apache2/bin/apachectl restart
+</code></pre>
+</div>
+
+<p>#php生效, /usr/local/apache2/bin/apachectl stop/start</p>
+
+<p>Apache无法启动，提示cannot restore segment prot after reloc: Permission denied错误，为SELinux问题，可关闭SELinux或者执行命令chcon -t 
+texrel_shlib_t /usr/local/apache2/modules/libphp5.so</p>
+
+<p>测试：vi /usr/local/apache2/htdocs/test.php</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&lt;?
+    phpinfo();
+?&gt;
+</code></pre>
+</div>
+
+<p>通过浏览器输入地址访问：http://Apache服务器地址/test.php</p>
+
+<p><em>有时第一次浏览器测试会失败，关闭浏览器重启再尝试即可，非编译错误</em></p>
+
+<p><strong>14、编译安装memcache</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>tar zxvf memcache-2.2.5.tgz
+cd memcache-2.2.5
+/usr/local/php/bin/phpize
+./configure --with-php-config=/usr/local/php/bin/php-config
+make &amp;&amp; make install
+</code></pre>
+</div>
+
+<p><strong>15、编译安装 PDO_MYSQL</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>tar zxvf /lamp/PDO_MYSQL-1.0.2.tgz
+cd /lamp/PDO_MYSQL-1.0.2/
+/usr/local/php/bin/phpize
+./configure --with-php-config=/usr/local/php/bin/php-config --with-pdo-mysql=/usr/local/mysql
+make &amp;&amp; make install
+
+修改php.ini
+extension_dir = "/usr/local/php//lib/php/extensions/no-debug-non-zts-20060613/"
+extension="memcache.so";
+extension="pdo.so";
+extension="pdo_mysql.so";
+* 生成PHP配置文件
+</code></pre>
+</div>
+
+<p><strong>16、安装Zend加速器</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>cd /lamp/ZendOptimizer-3.2.6-linux-glibc21-i386
+./install.sh
+* 注意PHP配置文件和Apache启动脚本所在目录指定正确即可
+</code></pre>
+</div>
+
+<p><strong>17、安装memcache源代码</strong></p>
+
+<p>http://memcached.googlecode.com/files/memcached-1.4.10.tar.gz
+首先安装依赖包libevent</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Yum –y install libevent
+</code></pre>
+</div>
+
+<p><em>主包已经安装,别忘记安装libevent-devel</em>,不然./configure过不去*</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Tar xzf /lamp/memcached-1.4.10.tar.gz
+Cd /lamp/memcached-1.4.10
+./configure --prefix=/usr/local/memcache
+Make &amp;&amp; make install
+Useradd memcache
+Passwd memcache
+</code></pre>
+</div>
+
+<p><em>因为系统不能用root运行memcache软件</em></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>/usr/local/memcache/bin/memcache –umemcache &amp;     #后台运行
+Netstat –tunpl|grep :11211
+telnet 192.168.10.1 11211
+stats
+</code></pre>
+</div>
+
+<p>写入自启动：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Vi /etc/rc.local
+/usr/local/memcache/bin/memcache –umemcache &amp;
+</code></pre>
+</div>
+
+<p><em>如何杀掉后台进程，用kill %1,查看进程用jobs</em></p>
+
+<p><em>#要注意memcache,因为它有两个源代码包，一个是php驱动库包(memcache-2.2.5.tgz),另一个是memcache主程序源代码包(memcached-1.4.10.tar.gz);</em></p>
+
+
+                <hr>
+
+                
+
+                <!-- Baidu Share start-->
+                <div class="bdsharebuttonbox">
+                    <a href="#" class="bds_more" data-cmd="more"></a>
+                    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+                    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+                    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+                    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+                </div>
+                <!-- Baidu Share end -->
+
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2015/10/12/Mysql%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8%E6%96%B9%E6%A1%88/" data-toggle="tooltip" data-placement="top" title="Mysql分库分表方案">
+                            Previous<br>
+                            <span>Mysql分库分表方案</span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2015/10/31/%E7%94%9F%E6%B4%BB%E6%84%9F%E6%83%B3%E4%B9%8B%E4%BB%B7%E5%80%BC%E8%A7%82%E6%98%AF%E4%BD%95%E7%89%A9/" data-toggle="tooltip" data-placement="top" title="生活感想之价值观是何物">
+                            Next<br>
+                            <span>生活感想之价值观是何物</span>
+                        </a>
+                    </li>
+                    
+                </ul>
+
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        <a href="/tags/#Linux" title="Linux" rel="10">
+                            Linux
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#Francis 旅行录" title="Francis 旅行录" rel="6">
+                            Francis 旅行录
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#Francis 简单生活" title="Francis 简单生活" rel="5">
+                            Francis 简单生活
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/#PHP" title="PHP" rel="6">
+                            PHP
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#MySQL" title="MySQL" rel="2">
+                            MySQL
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#Apache" title="Apache" rel="2">
+                            Apache
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#Francis 杂谈" title="Francis 杂谈" rel="9">
+                            Francis 杂谈
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#OS X" title="OS X" rel="2">
+                            OS X
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/#Nginx" title="Nginx" rel="2">
+                            Nginx
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/#编程" title="编程" rel="3">
+                            编程
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/#C语言" title="C语言" rel="2">
+                            C语言
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+                    
+                    <li><a href="http://blog.maryopen.com/">马力全开</a></li>
+                    
+                    <li><a href="http://www.april2nd.me/">航哥</a></li>
+                    
+                    <li><a href="http://blog.ichuck.net/">鹏哥</a></li>
+                    
+                    <li><a href="http://www.shmilyx.net/">望望</a></li>
+                    
+                    <li><a href="http://www.51hsw.com/">好一网</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!--百度分享公共JS代码 start-->
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"1","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+<!--百度分享公共JS代码 end-->
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "francissoungblog";
+    var disqus_identifier = "/2015/10/13/LAMP环境搭建详细参数文档";
+    var disqus_url = "http://www.francissoung.com/2015/10/13/LAMP%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E8%AF%A6%E7%BB%86%E5%8F%82%E6%95%B0%E6%96%87%E6%A1%A3/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+        var d = document, t = 'script',
+                o = d.createElement(t),
+                s = d.getElementsByTagName(t)[0];
+        o.src = u;
+        if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+        s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("http://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+            visible: 'always',
+            placement: 'right',
+            icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="http://weibo.com/523072343">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/Franciskeke">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://segmentfault.com/u/francissoung">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa  fa-stack-1x fa-inverse">sf</i>
+                                    </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/FrancisSoung">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/francis.soung">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a href="https://twitter.com/Francis_Soung">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Francis Soung 2016
+                    <br>
+                    Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> and <a href="http://www.bootcss.com/">Bootstrap</a> | Theme © <a href="http://huangxuan.me">Hux</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=FrancisSoung&repo=francissoung.github.io&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+<p id="back-to-top"><a href="#top"><span></span></a></p>
+
+
+<script src="http://7xl0td.com1.z0.glb.clouddn.com/js%2Fjquery.min.js"></script>
+<script src="http://7xl0td.com1.z0.glb.clouddn.com/js%2Fbootstrap.min.js"></script>
+<script src="http://7xl0td.com1.z0.glb.clouddn.com/js%2Ffrancis-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- Highlight.js -->
+<script>
+    async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+        hljs.initHighlightingOnLoad();
+    })
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+<link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+
+<!--fastClick.js -->
+<script>
+    async("http://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        // var $nav = document.querySelector("nav");
+        // if($nav) FastClick.attach($nav);
+
+        // global FastClick!!
+        FastClick.attach(document.body);    
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Francis Soung
+    var _baId = '551c451674b914ab3e454205afd429a8';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- Baidu zhanzhang -->
+<script>
+    (function(){
+        var bp = document.createElement('script');
+        bp.src = '//push.zhanzhang.baidu.com/push.js';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+<!--返回顶部-->
+<script>
+    $(function(){
+        //当滚动条的位置处于距顶部100像素以下时，跳转链接出现，否则消失
+        $(function () {
+            $(window).scroll(function(){
+                if ($(window).scrollTop()>100){
+                    $("#back-to-top").fadeIn(1500);
+                }
+                else
+                {
+                    $("#back-to-top").fadeOut(1500);
+                }
+            });
+
+            //当点击跳转链接后，回到页面顶部位置
+
+            $("#back-to-top").click(function(){
+                $('body,html').animate({scrollTop:0},1000);
+                return false;
+            });
+        });
+    });
+</script>
+
+
+
+<!-- Image to hack wechat -->
+<img src="/img/icon_wechat.png" alt="Francis Soung" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

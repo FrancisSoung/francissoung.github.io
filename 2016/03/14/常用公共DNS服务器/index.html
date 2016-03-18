@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="这是一个程序员的日记薄，记录工作与生活的点点滴滴。包括WEB程序开发、Linux服务器管理、LAMP/LNMP环境配置优化、PHP网络技术、MySQL优化等技术分享以及个人生活旅行中的所见所闻所解。">
+    <meta name="keywords"  content="WEB程序开发,Linux服务器管理,LAMP/LNMP环境配置优化,网络架构,MySQL优化,生活旅行,Francis,francissoung,php程序猿的笔记,程序员的日记薄">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>国内常用公共DNS服务器、各省运营商DNS服务器汇总 - Francis Soung</title>
+
+    <link rel="canonical" href="http://www.francissoung.com/2016/03/14/%E5%B8%B8%E7%94%A8%E5%85%AC%E5%85%B1DNS%E6%9C%8D%E5%8A%A1%E5%99%A8/">
+
+    
+    <!-- css CDN to qiniu -->
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Fbootstrap.min.css">
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Ffrancis-blog.min.css">
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Fsyntax.css">
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Freturntop.css">
+    
+
+    <link href="http://cdn.staticfile.org/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Francis Soung</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/about/">About</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/portfolio/">Portfolio</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/tags/">Tags</a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    var __HuxNav__ = {
+        close: function(){
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        },
+        open: function(){
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+
+    // Bind Event
+    $toggle.addEventListener('click', function(e){
+        if ($navbar.className.indexOf('in') > 0) {
+            __HuxNav__.close()
+        }else{
+            __HuxNav__.open()
+        }
+    })
+
+    /**
+     * Since Fastclick is used to delegate 'touchstart' globally
+     * to hack 300ms delay in iOS by performing a fake 'click',
+     * Using 'e.stopPropagation' to stop 'touchstart' event from 
+     * $toggle/$collapse will break global delegation.
+     * 
+     * Instead, we use a 'e.target' filter to prevent handler
+     * added to document close HuxNav.  
+     *
+     * Also, we use 'click' instead of 'touchstart' as compromise
+     */
+    document.addEventListener('click', function(e){
+        if(e.target == $toggle) return;
+        if(e.target.className == 'icon-bar') return;
+        __HuxNav__.close();
+    })
+</script>
+
+
+    <!-- Image to hack wechat -->
+<!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="/img/post-bg-unix-linux.jpg" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        position: relative;
+        background-image: url('/img/post-bg-unix-linux.jpg')
+    }
+
+    
+</style>
+<header class="intro-header" >
+    <div class="header-mask"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#Francis 杂谈" title="Francis 杂谈">Francis 杂谈</a>
+                        
+                    </div>
+                    <h1>国内常用公共DNS服务器、各省运营商DNS服务器汇总</h1>
+                    
+                    
+                    <h2 class="subheading">不知道大家有没有过网络是正常的，QQ可以正常登录、游戏也可以正常玩，但是网页无论如何都打不开。这就是电脑网络设置的DNS服务器有问题，不是其故障就是不工作了。</h2>
+                    
+                    <span class="meta">Posted by Francis Soung on March 14, 2016</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>不知道大家有没有过网络是正常的，QQ可以正常登录、游戏也可以正常玩，但是网页无论如何都打不开。这就是电脑网络设置的DNS服务器有问题，不是其故障就是不工作了。</p>
+
+<p>换了DNS服务器成功解决问题。下边给大家分享一下国内比较大型大众常用的公共DNS服务器。</p>
+
+<blockquote>
+  <p>公共DNS服务器，即系统默认的DNS解析服务器。DNS全称Domain Name System，即域名解析系统。DNS帮助用户在互联网上寻找路径。在互联网上的每一个计算机都拥有一个唯一的地址，称作“IP地址”（即互联网协议地址）。
+由于IP地址（为一串数字）不方便记忆，DNS允许用户使用一串常见的字母（即“域名”）取代。
+公共DNS服务器，具有无广告、可以在一定程度上防止DNS劫持、不需因上网环境的改变而改变等优势，但是，使用公共DNS也可能存在系统响应慢、被劫持、隐私问题等风险。</p>
+</blockquote>
+
+<p><img src="http://source.francissoung.com/2016%2F03%2F14%2F%E5%9B%BD%E5%86%85%E5%B8%B8%E7%94%A8%E5%85%AC%E5%85%B1DNS%E6%9C%8D%E5%8A%A1%E5%99%A8%E3%80%81%E5%90%84%E7%9C%81%E8%BF%90%E8%90%A5%E5%95%86DNS%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%B1%87%E6%80%BB1.jpg" alt="" /></p>
+
+<p>这里要说一下，更换或者使用DNS服务器只能做到可以打开浏览网页，不能扶墙，博主居然还看到有极少数提供商号称支持番羽土番。</p>
+
+<p>虽然公共DNS有一定防DNS劫持作用，但是随着“墙”的升级，这种作用已经很微弱了——无论你是使用ISP的默认DNS，还是使用国外的公共DNS服务器，解析诸如twitter.com之类的域名所得到的结果均会受到DNS污染。</p>
+
+<p>114 DNS（http://www.114dns.com/），这应该是用户数量数一数二的公共DNS了，档主自己也在使用，推荐。</p>
+
+<blockquote>
+  <p>114.114.114.114</p>
+
+  <p>114.114.115.115</p>
+</blockquote>
+
+<p>阿里 AliDNS（http://www.alidns.com/），来自阿里巴巴和马云旗下的公共DNS，还没有体验过，有兴趣可以试试。</p>
+
+<blockquote>
+  <p>223.5.5.5</p>
+
+  <p>223.6.6.6</p>
+</blockquote>
+
+<p>CNNIC SDNS（http://www.sdns.cn/），来自天朝官方CNNIC的公共DNS，没使用过也没敢用……</p>
+
+<blockquote>
+  <p>1.2.4.8</p>
+
+  <p>210.2.4.8</p>
+</blockquote>
+
+<p>oneDNS（http://www.onedns.net/），2013年才新推出的一个公共DNS服务器，官网介绍由恶意网站实验室创立，没用过。</p>
+
+<blockquote>
+  <p>112.124.47.27</p>
+
+  <p>114.215.126.16</p>
+</blockquote>
+
+<p>Google DNS（https://developers.google.com/speed/public-dns/），曾经最火最热的一款公共DNS服务器，但是随着Google在中国的没落和国内官方的限制，已经不是太好用了。</p>
+
+<blockquote>
+  <p>8.8.8.8</p>
+
+  <p>8.8.4.4</p>
+</blockquote>
+
+<p>OpenDNS（https://www.opendns.com/），和Google DNS 一样，来自于国外服务商提供的公共DNS，据说同样在国内水土不服。</p>
+
+<blockquote>
+  <p>208.67.222.222</p>
+
+  <p>208.67.220.220</p>
+</blockquote>
+
+<p><strong>以下是全国各地电信 DNS 服务器 IP 地址</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>安徽电信 DNS
+
+61.132.163.68
+202.102.213.68
+
+北京电信 DNS
+
+219.141.136.10
+219.141.140.10
+
+重庆电信 DNS
+
+61.128.192.68
+61.128.128.68
+
+福建电信 DNS
+
+218.85.152.99
+218.85.157.99
+
+甘肃电信 DNS
+
+202.100.64.68
+61.178.0.93
+
+广东电信 DNS
+
+202.96.128.86
+202.96.128.166
+202.96.134.33
+202.96.128.68
+
+广西电信 DNS
+
+202.103.225.68
+202.103.224.68
+
+贵州电信 DNS
+
+202.98.192.67
+202.98.198.167
+
+河南电信 DNS
+
+222.88.88.88
+222.85.85.85
+
+黑龙江电信 DNS
+
+219.147.198.230
+219.147.198.242
+
+湖北电信 DNS
+
+202.103.24.68
+202.103.0.68
+
+湖南电信 DNS
+
+222.246.129.80
+59.51.78.211
+
+江苏电信 DNS
+
+218.2.2.2
+218.4.4.4
+61.147.37.1
+218.2.135.1
+
+江西电信 DNS
+
+202.101.224.69
+202.101.226.68
+
+内蒙古电信
+
+219.148.162.31
+222.74.39.50
+
+山东电信 DNS
+
+219.146.0.130
+219.150.32.132
+
+陕西电信 DNS
+
+218.30.19.40
+61.134.1.4
+
+上海电信 DNS
+
+202.96.209.133
+116.228.111.118
+202.96.209.5
+108.168.255.118
+
+四川电信 DNS
+
+61.139.2.69
+218.6.200.139
+
+天津电信 DNS
+
+219.150.32.132
+219.146.0.132
+
+云南电信 DNS
+
+222.172.200.68
+61.166.150.123
+
+浙江电信 DNS
+
+202.101.172.35
+61.153.177.196
+61.153.81.75
+60.191.244.5
+</code></pre>
+</div>
+
+<p><strong>以下为全国各地联通 DNS 服务器 IP 地址</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>北京联通 DNS
+
+202.106.196.115
+202.106.46.151
+202.106.0.20
+202.106.195.68
+
+重庆联通 DNS
+
+221.5.203.98
+221.7.92.98
+
+广东联通 DNS
+
+210.21.196.6
+221.5.88.88
+
+河北联通 DNS
+
+202.99.160.68
+202.99.166.4
+
+河南联通 DNS
+
+202.102.224.68
+202.102.227.68
+
+黑龙江联通
+
+202.97.224.69
+202.97.224.68
+
+吉林联通 DNS
+
+202.98.0.68
+202.98.5.68
+
+江苏联通 DNS
+
+221.6.4.66
+221.6.4.67
+
+内蒙古联通
+
+202.99.224.68
+202.99.224.8
+
+山东联通 DNS
+
+202.102.128.68
+202.102.152.3
+202.102.134.68
+202.102.154.3
+
+山西联通 DNS
+
+202.99.192.66
+202.99.192.68
+
+陕西联通 DNS
+
+221.11.1.67
+221.11.1.68
+
+上海联通 DNS
+
+210.22.70.3
+210.22.84.3
+
+四川联通 DNS
+
+119.6.6.6
+124.161.87.155
+
+天津联通 DNS
+
+202.99.104.68
+202.99.96.68
+
+浙江联通 DNS
+
+221.12.1.227
+221.12.33.227
+</code></pre>
+</div>
+
+<p>原文链接：<a href="http://www.fulidang.com/3036.html">【技术控】国内常用公共DNS服务器、各省运营商DNS服务器</a></p>
+
+
+                <hr>
+
+                
+
+                <!-- Baidu Share start-->
+                <div class="bdsharebuttonbox">
+                    <a href="#" class="bds_more" data-cmd="more"></a>
+                    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+                    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+                    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+                    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+                </div>
+                <!-- Baidu Share end -->
+
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2016/03/09/%E4%BD%BF%E7%94%A8Jekyll+GitHub%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E5%85%8D%E8%B4%B9%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2/" data-toggle="tooltip" data-placement="top" title="使用Jekyll+GitHub搭建自己的免费静态博客">
+                            Previous<br>
+                            <span>使用Jekyll+GitHub搭建自己的免费静态博客</span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2016/03/14/%E4%B8%8D%E8%A6%81%E4%B8%BA%E8%87%AA%E5%B7%B1%E9%80%89%E6%8B%A9%E7%9A%84%E9%81%93%E8%B7%AF%E8%80%8C%E5%90%8E%E6%82%94/" data-toggle="tooltip" data-placement="top" title="不要为自己选择的道路而后悔">
+                            Next<br>
+                            <span>不要为自己选择的道路而后悔</span>
+                        </a>
+                    </li>
+                    
+                </ul>
+
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        <a href="/tags/#Linux" title="Linux" rel="10">
+                            Linux
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#Francis 旅行录" title="Francis 旅行录" rel="6">
+                            Francis 旅行录
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#Francis 简单生活" title="Francis 简单生活" rel="5">
+                            Francis 简单生活
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/#PHP" title="PHP" rel="6">
+                            PHP
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#MySQL" title="MySQL" rel="2">
+                            MySQL
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#Apache" title="Apache" rel="2">
+                            Apache
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#Francis 杂谈" title="Francis 杂谈" rel="9">
+                            Francis 杂谈
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#OS X" title="OS X" rel="2">
+                            OS X
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/#Nginx" title="Nginx" rel="2">
+                            Nginx
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/#编程" title="编程" rel="3">
+                            编程
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/#C语言" title="C语言" rel="2">
+                            C语言
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+                    
+                    <li><a href="http://blog.maryopen.com/">马力全开</a></li>
+                    
+                    <li><a href="http://www.april2nd.me/">航哥</a></li>
+                    
+                    <li><a href="http://blog.ichuck.net/">鹏哥</a></li>
+                    
+                    <li><a href="http://www.shmilyx.net/">望望</a></li>
+                    
+                    <li><a href="http://www.51hsw.com/">好一网</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!--百度分享公共JS代码 start-->
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"1","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+<!--百度分享公共JS代码 end-->
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "francissoungblog";
+    var disqus_identifier = "/2016/03/14/常用公共DNS服务器";
+    var disqus_url = "http://www.francissoung.com/2016/03/14/%E5%B8%B8%E7%94%A8%E5%85%AC%E5%85%B1DNS%E6%9C%8D%E5%8A%A1%E5%99%A8/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+        var d = document, t = 'script',
+                o = d.createElement(t),
+                s = d.getElementsByTagName(t)[0];
+        o.src = u;
+        if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+        s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("http://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+            visible: 'always',
+            placement: 'right',
+            icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="http://weibo.com/523072343">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/Franciskeke">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://segmentfault.com/u/francissoung">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa  fa-stack-1x fa-inverse">sf</i>
+                                    </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/FrancisSoung">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/francis.soung">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a href="https://twitter.com/Francis_Soung">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Francis Soung 2016
+                    <br>
+                    Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> and <a href="http://www.bootcss.com/">Bootstrap</a> | Theme © <a href="http://huangxuan.me">Hux</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=FrancisSoung&repo=francissoung.github.io&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+<p id="back-to-top"><a href="#top"><span></span></a></p>
+
+
+<script src="http://7xl0td.com1.z0.glb.clouddn.com/js%2Fjquery.min.js"></script>
+<script src="http://7xl0td.com1.z0.glb.clouddn.com/js%2Fbootstrap.min.js"></script>
+<script src="http://7xl0td.com1.z0.glb.clouddn.com/js%2Ffrancis-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- Highlight.js -->
+<script>
+    async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+        hljs.initHighlightingOnLoad();
+    })
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+<link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+
+<!--fastClick.js -->
+<script>
+    async("http://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        // var $nav = document.querySelector("nav");
+        // if($nav) FastClick.attach($nav);
+
+        // global FastClick!!
+        FastClick.attach(document.body);    
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Francis Soung
+    var _baId = '551c451674b914ab3e454205afd429a8';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- Baidu zhanzhang -->
+<script>
+    (function(){
+        var bp = document.createElement('script');
+        bp.src = '//push.zhanzhang.baidu.com/push.js';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+<!--返回顶部-->
+<script>
+    $(function(){
+        //当滚动条的位置处于距顶部100像素以下时，跳转链接出现，否则消失
+        $(function () {
+            $(window).scroll(function(){
+                if ($(window).scrollTop()>100){
+                    $("#back-to-top").fadeIn(1500);
+                }
+                else
+                {
+                    $("#back-to-top").fadeOut(1500);
+                }
+            });
+
+            //当点击跳转链接后，回到页面顶部位置
+
+            $("#back-to-top").click(function(){
+                $('body,html').animate({scrollTop:0},1000);
+                return false;
+            });
+        });
+    });
+</script>
+
+
+
+<!-- Image to hack wechat -->
+<img src="/img/icon_wechat.png" alt="Francis Soung" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

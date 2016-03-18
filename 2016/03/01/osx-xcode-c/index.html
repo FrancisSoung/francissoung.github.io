@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="这是一个程序员的日记薄，记录工作与生活的点点滴滴。包括WEB程序开发、Linux服务器管理、LAMP/LNMP环境配置优化、PHP网络技术、MySQL优化等技术分享以及个人生活旅行中的所见所闻所解。">
+    <meta name="keywords"  content="WEB程序开发,Linux服务器管理,LAMP/LNMP环境配置优化,网络架构,MySQL优化,生活旅行,Francis,francissoung,php程序猿的笔记,程序员的日记薄">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>如何用 OS X 的 Xcode 写 C 语言程序 - Francis Soung</title>
+
+    <link rel="canonical" href="http://www.francissoung.com/2016/03/01/osx-xcode-c/">
+
+    
+    <!-- css CDN to qiniu -->
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Fbootstrap.min.css">
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Ffrancis-blog.min.css">
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Fsyntax.css">
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Freturntop.css">
+    
+
+    <link href="http://cdn.staticfile.org/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Francis Soung</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/about/">About</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/portfolio/">Portfolio</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/tags/">Tags</a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    var __HuxNav__ = {
+        close: function(){
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        },
+        open: function(){
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+
+    // Bind Event
+    $toggle.addEventListener('click', function(e){
+        if ($navbar.className.indexOf('in') > 0) {
+            __HuxNav__.close()
+        }else{
+            __HuxNav__.open()
+        }
+    })
+
+    /**
+     * Since Fastclick is used to delegate 'touchstart' globally
+     * to hack 300ms delay in iOS by performing a fake 'click',
+     * Using 'e.stopPropagation' to stop 'touchstart' event from 
+     * $toggle/$collapse will break global delegation.
+     * 
+     * Instead, we use a 'e.target' filter to prevent handler
+     * added to document close HuxNav.  
+     *
+     * Also, we use 'click' instead of 'touchstart' as compromise
+     */
+    document.addEventListener('click', function(e){
+        if(e.target == $toggle) return;
+        if(e.target.className == 'icon-bar') return;
+        __HuxNav__.close();
+    })
+</script>
+
+
+    <!-- Image to hack wechat -->
+<!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="/img/post-bg-os-metro.jpg" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        position: relative;
+        background-image: url('/img/post-bg-os-metro.jpg')
+    }
+
+    
+</style>
+<header class="intro-header" >
+    <div class="header-mask"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#编程" title="编程">编程</a>
+                        
+                        <a class="tag" href="/tags/#Xcode" title="Xcode">Xcode</a>
+                        
+                        <a class="tag" href="/tags/#C语言" title="C语言">C语言</a>
+                        
+                        <a class="tag" href="/tags/#OS X" title="OS X">OS X</a>
+                        
+                    </div>
+                    <h1>如何用 OS X 的 Xcode 写 C 语言程序</h1>
+                    
+                    
+                    <h2 class="subheading">OS X，Xcode，C语言</h2>
+                    
+                    <span class="meta">Posted by Francis Soung on March 1, 2016</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>如果你在 Windows 习惯使用 Visual C++ 或 Dev-C++ 的话，到了 Mac OS X 可能会突然不知道要怎么写程序，尤其当你已经用 Visual C++ 的 Debugger 用得很上手的话。</p>
+
+<p>要对自己重新进修了，最近上的课充满了 C programming，虽然大学学过，但是那时候并没有钱买Mac，现在有机会了，我也稍微摸懂了 Xcode 的若干功能，至少我可以拿它来写 C 语言的程序了，就像在 Windows 使用 Visual C++ 那样。</p>
+
+<p>如果这篇只是要教你怎么按 Compile 的话，那我就是来骗阅读数的了，因此这篇的内容还包括 <strong>怎么使用 Xcode 的 Debugger</strong> 。</p>
+
+<h3 id="xcode">安裝 Xcode</h3>
+
+<p>Xcode 是在 OS X 上面写 C 语言程序最简单的方式。首先是去 Mac App Store 下载安装 Xcode ，网址： <a href="https://itunes.apple.com/cn/app/xcode/id497799835?mt=12">https://itunes.apple.com/cn/app/xcode/id497799835?mt=12</a> 。免费的，只是要装很久。安装完成后，可以在 Launch Pad 里面找到 Xcode ，按一下开启。如果找不到的话，可以在 Spotlight （屏幕右上角的放大镜）里面搜寻 “Xcode” ，也可以找到。</p>
+
+<p>第一次打开 Xcode 你会看到 Welcome to Xcode 的画面，做为第一次尝试，请先按下 <strong>Create a new Xcode Project</strong> 。</p>
+
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016/03/01/1881336444.png" alt="XMH0eBTHTtCbw0brEgdY_Screen Shot 2013-12-01 at 15.27.42.png" /></p>
+
+<p>Welcome to Xcode 這个界面若以后不想看到，可以取消勾选 <strong>Show this window when Xcode launches</strong> 來永久关闭，以后若要创建新项目，可以按下功能表的 <strong>File → New → Project</strong> … 。</p>
+
+<h3 id="c-">新建 C 语言项目</h3>
+
+<p>刚刚说按下 <strong>「Create a new Xcode Project」</strong>，接着会跳出一个视窗，问你要创建什么项目。对于一般 <strong>C</strong> 程序来说，它被归类在 <strong>OS X</strong> 的命令列工具里面，所以，在左侧选 <strong>OS X</strong>里面的 <strong>Application</strong> ，然后在右边选 Command Line Tool 。</p>
+
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016/03/01/3206407604.png" alt="7oyl8cvvSWKa56Lob40B_Screen Shot 2013-12-01 at 15.41.16.png" /></p>
+
+<p>接着会要你输入项目名称，<strong>Organization Name</strong> 写你的名字就行， <strong>Company Identifier</strong> 我不知道是做什么的（我不是专门写 OS X 程序的），但并不会影响接下来的操作，所以像我这样填一个看起来像样的（？）就行。最下面的 Type 可以选 C 或 C++ ，还有其他 Objective-C-based Frameworks，这里我直接选 C 。</p>
+
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016/03/01/2252698502.png" alt="OeFtlK2TRugmCdMiXVKg_Screen Shot 2013-12-01 at 15.42.58.png" /></p>
+
+<p>最后按下 Next ，会要你找一个地方放这个项目，你就找个地方放就行了。</p>
+
+<h3 id="xcode-ide">认识 Xcode IDE</h3>
+
+<p>Xcode IDE 的界面一打开跟 <strong>Visual Studio</strong>、 <strong>Dev-C++</strong> 都不一样，从 Windows 来的人可能会不太习惯，不过不要紧，只要认识几个东西就好了。</p>
+
+<p>但在开始认识之前，请先到 <strong>Xcode → Preferences…</strong> 里面的 Behaviors ，选 <strong>Running → Starts</strong> ，把 <strong>Show debugger</strong> 打开，并且把 Debug Area 打开，在 <strong>View → Debug Area → Show Debug Area</strong> 。这个预设没开，但接下来会用到，非常重要，所以先打开。</p>
+
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016/03/01/4216545304.png" alt="NqjAUPYTiiB6d4qg0IXv_Screen Shot 2013-12-01 at 16.47.13.png" /></p>
+
+<p>接下来来认识一下 Xcode Project 视窗的基本配置：</p>
+
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016/03/01/2848521779.png" alt="eSqQS2rtTqC38sou72Ul_Screen Shot 2013-12-01 at 15.54.26.png" /></p>
+
+<p>请先认识：</p>
+
+<ul>
+  <li>
+    <p><strong>「执行」按钮 (Run)</strong> ，长得像音乐软件的 <strong>Play</strong> ，按下去就是执行程序程序</p>
+  </li>
+  <li>
+    <p><strong>「停止」按钮 (Stop)</strong> ，长得像音乐软件的 <strong>Stop</strong> ，在程序执行的时候可以强制停止</p>
+  </li>
+  <li>
+    <p><strong>「状态列」</strong> ，在最上方，会出现的状态像是编译或执行的成功与否</p>
+  </li>
+  <li>
+    <p><strong>「左侧栏」</strong> ，现在是显示档案列表（有其他列表可以切换）</p>
+  </li>
+  <li>
+    <p><strong>「主要工作区」</strong> ，现在里面是看不懂的东西，等下会切换到程序码编辑</p>
+  </li>
+  <li>
+    <p><strong>「除错区」</strong> ，让你方便对程序码除错，我会特别讲这一个区域。</p>
+  </li>
+</ul>
+
+<h3 id="section">第一次执行程序</h3>
+
+<p>写程序除了撰写程序码本身，最重要的就是要跑程序来看结果。刚刚介绍了<strong>「执行」</strong>按钮，看起来可以按它来执行程序，那么就按按看吧。按下去之后，你会看到状态列的信息有所改变，提示 <strong>Building</strong> 、 <strong>Build Success</strong> 、<strong>Running</strong> 等等，最后，你会在 Debug Area 的右边看到这个：</p>
+
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016/03/01/4271991838.png" alt="C3XtPoWbT6mkeePOvNPg_Screen Shot 2013-12-01 at 16.03.27.png" /></p>
+
+<p>嗯，程序可以执行，可以看到输出了。</p>
+
+<h3 id="section-1">第一次修改程序</h3>
+
+<p>但是到现在还没看到程序码，刚刚说了左侧栏是切换到<strong>「档案列表」</strong>，也就是说档案藏在里面，请找一下** main.c** ，按一下可以打开，主要工作区会变成程序码：</p>
+
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016/03/01/3382825878.png" alt="sEU0GDnJSNSDiiIygHVg_Screen Shot 2013-12-01 at 16.07.13.png" /></p>
+
+<p>这个程序码你应该很熟悉，就是普通的 C 语言 Hello World 而已。</p>
+
+<h3 id="section-2">自动完成</h3>
+
+<p>接下来请试试看修改程序。假如我想要改成印出 10 次 Hello World 的内容，想必你会在 <code class="highlighter-rouge">// insert code here</code> 这边加 for loop：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>int i;
+
+for (i = 0; i &lt; 10; i++) {
+
+  printf("Hello, World\n");
+
+}
+</code></pre>
+</div>
+
+<p>你打到一半的时候应该会出现这样子的东西：</p>
+
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016/03/01/3672500730.png" alt="gI4TrStRjCKpsqOM6ZYw_Screen Shot 2013-12-01 at 16.09.45.png" /></p>
+
+<p>这个功能叫做 「自动完成」 (Auto Complete) ，是 Xcode 好用的功能之一，如果你从 <strong>Visual Studio</strong> 过来应该不陌生，就是打到一半，Xcode 会自动提示你可以写什么程序码，并且按下 Tab 就可以自动跳到圆框来打字。你可以试试看，按 Tab 来切换，然后按 Enter 来确认。</p>
+
+<p>自动完成其实无所不在，除了可以自动展开 <strong>Syntax</strong> 之外，还可以展开变量名称、function 名称（统称 identifiers）、提示有哪些 .h 档可以 <strong>include</strong> 、提示 <strong>struct</strong> 的结构。展开 identifers 的例子像是，你想要用 <strong>fputs</strong> ，打 <strong>fp</strong> ，它会自动出现所有 <strong>fp</strong> 开头的函式（因为有 <strong>include stdio.h</strong> ，所以抓得到），按键盘的上下键可以选择，除此之外，还会在右侧栏出现简单的说明。</p>
+
+<p>如果你按 More 的话，还会出现完整的说明文档，这样子就不需要上网查文件了。</p>
+
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016/03/01/3094034774.png" alt="LmAI0OiKQ0eyFFsTWESI_Screen Shot 2013-12-01 at 16.28.08.png" /></p>
+
+<p>再提一个秘诀，想要手动 <strong>trigger</strong> 自动完成的话，可以按 <strong>Esc</strong> 。例如我先声明了 var1, var2, var3 ，想要对其中一个指定某值，打到一半只有 <strong>var</strong> 就跑到别行，再回来的话，可以在 <strong>var</strong> 的后方按 <strong>Esc</strong> ，就会跳出自动完成：</p>
+
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016/03/01/607366666.png" alt="YuMTYksOQZ2PDtlkIB9M_Screen Shot 2013-12-01 at 16.34.47.png" /></p>
+
+<p>附带一提，大小写随便打，它也认得出来。</p>
+
+<p>你可以随便试，你应该会感受到<strong>「他好像很聪明的样子」</strong>。</p>
+
+<h3 id="section-3">自动错误提示</h3>
+
+<p>我改好了，结果 oops ，好像忘记什么东西？</p>
+
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016/03/01/3862308590.png" alt="ao21Ze16Q0u5KhLD9Jfi_Screen Shot 2013-12-01 at 16.12.08.png" /></p>
+
+<p>老师有教过变量要声明！</p>
+
+<p>程序写错，不用到编译才知道， Xcode 会一直自动编译，检查你程序码是否可以编译通过，并且自动 <strong>标示错误</strong> ，如果你按下行号旁边的红色惊叹号，它会告诉你错在哪：</p>
+
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016/03/01/2086906167.png" alt="arO3fNDURbOtN2k9nmhR_Screen Shot 2013-12-01 at 16.14.16 (1).png" /></p>
+
+<p>对，忘记声明了，补起来之后，这个错误信息就会消失了。</p>
+
+<p>错误信息除了程序写错无法编译之外，还会有编译器来的警告，例如有个变量声明了但没使用：</p>
+
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016/03/01/1208910803.png" alt="ZsanqbuyRLmhb7e7dm2c_Screen Shot 2013-12-01 at 16.18.11.png" /></p>
+
+<p>如何，很方便吧？</p>
+
+<p>执行程序与输入资料</p>
+
+<p>现在再来 <strong>Run</strong> 一遍，这次不要动鼠标了，请按键盘上的 <strong>Command + R</strong> ，一样会跑「执行」：</p>
+
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016/03/01/558588382.png" alt="1Iz1SmUHRKWqL8R1HNdn_Screen Shot 2013-12-01 at 16.16.54.png" /></p>
+
+<p>如果是从 <strong>Visual Studio</strong> 或<strong>Dev-C++</strong> 过来的，你可能会觉得奇怪，为什么不是熟悉的黑底白字画面？其实 Xcode 在执行的时候，并不是开一个新的终端机程序，而是直接在自己的 <strong>Console</strong> 里面输入输出，我猜测这理由是因为 <strong>Xcode</strong> 是以 GUI 应用程序为主要导向，所以 <strong>Console</strong> 简略就好，并且因为 OS X 是一种 <strong>UNIX</strong> 系统，天生就有输入输出转向，可以直接接到 Xcode 里面也很自然（这个在系统程序的课会教）。话说回来 Eclipse 好像也是长这样。</p>
+
+<p>不过，预设它并不会在执行的时候自动打开 <strong>Console</strong>，你必须手动开启，所以一开始我才会请你先打开 Debug Area 。</p>
+
+<p>接下来试着执行一个具备输入输出的简单程序，输入整数 n ，输出 n 次 <code class="highlighter-rouge">"Hello, World!\n"</code>。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>int main(int argc, const char * argv[])
+{
+  int i, n;
+  
+  if (fscanf(stdin, "%d", &amp;n) == 1) {
+    for (i = 0; i &lt; n; i++) {
+      printf("Hello, World!\n");
+    }
+  }
+  
+  return 0;
+}
+</code></pre>
+</div>
+
+<p>按下 Run ，然后在 Console 里面输入 3 ，它就会输入整数 n = 3 ，并且印出 3 次 <code class="highlighter-rouge">Hello, World!</code> ，跟我们想要的行为一致。</p>
+
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016/03/01/1719871648.png" alt="1mU3yqGNSXSNj7MdHlEV_Screen Shot 2013-12-01 at 16.54.50.png" /></p>
+
+<p>如果你执行到一半想把程序关掉，只要按下 <strong>Stop</strong> 就行了。</p>
+
+<h3 id="debugger">使用 Debugger</h3>
+
+<p>跟 Visual Studio 一样，专业的 IDE 一定要有完美的 Debugger 整合，而 Xcode 当然也有，这对于我这种不熟悉命令列式 debugging 的人来说是相当棒的功能。 一般的命令列 debugger 要自己下断点（告诉它在第几行）、自己下指令，但有了 Xcode ，你只要动鼠标就行了。</p>
+
+<p>以下以一个简单的小程序做示例：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>#include &lt;stdio.h&gt;
+
+/* global variables */
+int i_am_a_global_variable = 999;
+
+/* functions */
+
+void another_function (int* a)
+{
+  (*a)++;
+  i_am_a_global_variable += *a;
+  return;
+}
+
+int some_function (int a)
+{
+  int some_local_var = a;
+  printf("some_local_var has been changed to %d\n", some_local_var);
+  another_function(&amp;some_local_var);
+  printf("some_local_var has been changed to %d\n", some_local_var);
+  return 0;
+}
+
+int main (void)
+{
+  int number;
+  printf ("enter number:");
+
+  if (fscanf(stdin, "%d", &amp;number) == 1) {
+    some_function(number);
+    printf("You’ve entered %d\n", number);
+  } else {
+    printf("No number entered. Bye.\n");
+  }
+  
+  return 0;
+}
+</code></pre>
+</div>
+
+<p>断点的定义是 <strong>「在执行这一行之前先回到 debugger」</strong> ，也就是说如果你把断点设在第 12 行，那么它会在执行第 12 行之前暂停程序执行，进入 debugger。</p>
+
+<p>设断点的方法很简单，在行号上 <strong>按一下鼠标左键</strong> 就行了。断点可以移动，用鼠标拖拽便是。断点可以暂时取消，即是点一下让它变成浅蓝色。断点可以删除，只要把它 <strong>拖曳出行号区</strong> 就行了，就像 Dock 一样直观操作。</p>
+
+<p>现在我把断点设在 <code class="highlighter-rouge">some_function(number)</code> 这一行。</p>
+
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016/03/01/3673774978.png" alt="vfg8tE4zQ7WLTmd5LaC9_Screen Shot 2013-12-01 at 17.01.39.png" /></p>
+
+<p>然后执行程序，先在 Console 里输入数字，再按下 Enter 输入到程序里。接着，程序会立刻暂停，你会看到程序码里面，标示了停在哪一行，而 Debug Area 左侧还会出现目前存在的区域变量。Debug Area 有个工具列，上面有几个重要的按钮，用途如图：</p>
+
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016/03/01/1625199242.png" alt="XWNHYGL2QOoCWmgLaVvU_Screen Shot 2013-12-01 at 17.03.13.png" /></p>
+
+<p>这里要先介绍通常 Debugger 会有的指令：</p>
+
+<ul>
+  <li><strong>Continue （继续）</strong> ：离开 Debugger 继续执行程序，可能会中断在下一个断点</li>
+  <li><strong>Step Over （跳过）</strong> ：跳过（执行）这一行，然后停在下一行</li>
+  <li><strong>Step Into （跳入）</strong> ：目前在的这一行有函式，跳进去</li>
+  <li><strong>Step Out （跳出）</strong> ：目前在的这一行是在某个函式里面，跳出去到呼叫函式的程序（也就是 <strong>return</strong> 完毕）
+熟悉这四个指令，你就可以在程序码之间游走了。</li>
+</ul>
+
+<p>接着我再多设两个断点，分别在 <code class="highlighter-rouge">i_am_a_global_variable +=</code> 和 <code class="highlighter-rouge">another_function(&amp;some_local_var);</code> 这两行（不必先把程序停下来，直接按鼠标左键加断点）。然后按下 <strong>Continue</strong> ，当它执行到 <code class="highlighter-rouge">another_function</code> 这行之前，就会再停下来进入 <strong>Debugger</strong> 。</p>
+
+<p>你会发现左边也有变化，因为进入了 <strong>Function Call</strong> 的 Stack 。你可以在不同的 <strong>Stack</strong> 之间切换，左边也会出现不同的 <strong>Local Variables</strong>，切换的方式是按下 <strong>Debugger</strong> 浏览列的 <strong>function name</strong>。</p>
+
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016/03/01/519360877.png" alt="KdsfA4OIR2ypOq0icUvz_Screen Shot 2013-12-01 at 17.22.23.png" /></p>
+
+<p>接着再按一下 <strong>Continue</strong>，会跑进 <strong>another_function</strong> 里面，你会发现在左边窗格会显示传进去的指标的记忆体位址和指标所指的记忆体内容，以及，因为这个 <strong>function</strong> 有参照 (reference) 到全域变量 <code class="highlighter-rouge">i_am_a_global_variable</code> ，所以 Xcode 也会自动列出：</p>
+
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016/03/01/3230502856.png" alt="77lVASa8Qkuz5L0HFF7H_Screen Shot 2013-12-01 at 17.39.20.png" /></p>
+
+<p>再来一个小示例，这次是阵列：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>#include &lt;stdio.h&gt;
+
+int main(void)
+{
+  int array[] = {1, 2, 3, 4, 5};
+  int i;
+  for (i = 0; i &lt; 5; i++) {
+    printf ("array #%d is %d\n", i, array[i]);
+  }
+  return 0;
+}
+</code></pre>
+</div>
+
+<p>断点设在 printf 那一行，然后执行，你会发现它把阵列的内容也列出来了（按 ▼ 可以展开）：</p>
+
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016/03/01/2686494002.png" alt="yjLIoJnRZyBaafGPSLsB_Screen Shot 2013-12-01 at 17.42.55.png" /></p>
+
+<p>那如果是动态产生的阵列呢？</p>
+
+<p>我们知道 malloc, calloc, realloc 传回来的是它所分配到的记忆体的开头位址，那 Xcode 会不会很聪明的把它当作阵列呢？</p>
+
+<p>我们把上面这段程序修改成 <code class="highlighter-rouge">calloc</code> 的方式：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int main(void)
+{
+  int *array = (int *) calloc(5, sizeof(int));
+  int i;
+  for (i = 0; i &lt; 5; i++) {
+    array[i] = i + 1;
+    printf ("array #%d is %d\n", i, array[i]);
+  }
+  free(array);
+  return 0;
+}
+</code></pre>
+</div>
+
+<p>把断点设在 free(array) 那一行，然后执行，你会发现 Debugger 并不会列出 array 的内容，而是只有指标：</p>
+
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016/03/01/2268931632.png" alt="doMqxDEeQhWlg2qsvKPI_Screen Shot 2013-12-01 at 17.48.49.png" /></p>
+
+<p>从上图我们知道两件事：</p>
+
+<ul>
+  <li>array 声明成 <code class="highlighter-rouge">int *</code>，所以 Xcode 抓的是它的记忆体位址。</li>
+  <li>它用 int 去解读 <code class="highlighter-rouge">*array</code> 指向的记忆体内容，所以得到的是首项的值 1，因为 array 的内容是 1, 2, 3, 4, 5。
+那如果要看 array<a href="http://7xl0td.com1.z0.glb.clouddn.com/2016/03/01/1881336444.png">1</a> 或其他内容的话怎么办呢？这时候就要用 <code class="highlighter-rouge">Expression Monitor </code>了，可以在这个 <code class="highlighter-rouge">variable</code> 列表里面按右键选 <code class="highlighter-rouge">Add Expresssion...</code> ，然后输入 <code class="highlighter-rouge">array[1]</code> 就行了。另外，既然是 <code class="highlighter-rouge">Expression</code> ，当然可以输入运算式，例如 <code class="highlighter-rouge">array[1] + 2</code> 。</li>
+</ul>
+
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016/03/01/1120655467.png" alt="fkWkuuYTIetHNbUsvbc7_Screen Shot 2013-12-01 at 17.57.08.png" /></p>
+
+<p>Debugger 我会用的功能大概就这样… 不过我觉得这样也就够了，用这些就足以抓出逻辑上的错误。</p>
+
+<h3 id="section-4">字型设定</h3>
+
+<p>我们每天看 code 的人，总是希望它们要长得顺眼，才看得下去。Xcode 当然也可以调整字型。</p>
+
+<p>进入 Xcode 的 Preferences 设置，在 Fonts &amp; Colors 分页里面。不过每个项目是分开的，要一次改的话，是先按 Command + A 全选，然后按下 T 那个 icon ，就可以一次改全部了。附带一提， Console 的字型是在同一个画面的<strong>「Console」</strong>分页里面。</p>
+
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016/03/01/1437300829.png" alt="aZSJS60pQsOMmAJqywGb_Screen Shot 2013-12-01 at 18.18.32.png" /></p>
+
+<p>再附带一提，我用的字体是 Adobe 出的 <strong>Source Code Pro</strong> ，可以免费下载。</p>
+
+<p>我会的大概也就这些，不知道算不算新手入门了…</p>
+
+
+
+                <hr>
+
+                
+
+                <!-- Baidu Share start-->
+                <div class="bdsharebuttonbox">
+                    <a href="#" class="bds_more" data-cmd="more"></a>
+                    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+                    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+                    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+                    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+                </div>
+                <!-- Baidu Share end -->
+
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2016/01/19/%E4%BD%BF%E7%94%A8-Nginx-%E6%8F%90%E5%8D%87%E7%BD%91%E7%AB%99%E8%AE%BF%E9%97%AE%E9%80%9F%E5%BA%A6/" data-toggle="tooltip" data-placement="top" title="使用 Nginx 提升网站访问速度">
+                            Previous<br>
+                            <span>使用 Nginx 提升网站访问速度</span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2016/03/03/%E6%B5%85%E8%B0%88%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E5%8A%A8%E6%80%81%E5%BA%94%E7%94%A8%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/" data-toggle="tooltip" data-placement="top" title="浅谈大型网站动态应用系统架构">
+                            Next<br>
+                            <span>浅谈大型网站动态应用系统架构</span>
+                        </a>
+                    </li>
+                    
+                </ul>
+
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        <a href="/tags/#Linux" title="Linux" rel="10">
+                            Linux
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#Francis 旅行录" title="Francis 旅行录" rel="6">
+                            Francis 旅行录
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#Francis 简单生活" title="Francis 简单生活" rel="5">
+                            Francis 简单生活
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/#PHP" title="PHP" rel="6">
+                            PHP
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#MySQL" title="MySQL" rel="2">
+                            MySQL
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#Apache" title="Apache" rel="2">
+                            Apache
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#Francis 杂谈" title="Francis 杂谈" rel="9">
+                            Francis 杂谈
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#OS X" title="OS X" rel="2">
+                            OS X
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/#Nginx" title="Nginx" rel="2">
+                            Nginx
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/#编程" title="编程" rel="3">
+                            编程
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/#C语言" title="C语言" rel="2">
+                            C语言
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+                    
+                    <li><a href="http://blog.maryopen.com/">马力全开</a></li>
+                    
+                    <li><a href="http://www.april2nd.me/">航哥</a></li>
+                    
+                    <li><a href="http://blog.ichuck.net/">鹏哥</a></li>
+                    
+                    <li><a href="http://www.shmilyx.net/">望望</a></li>
+                    
+                    <li><a href="http://www.51hsw.com/">好一网</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!--百度分享公共JS代码 start-->
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"1","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+<!--百度分享公共JS代码 end-->
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "francissoungblog";
+    var disqus_identifier = "/2016/03/01/osx-xcode-c";
+    var disqus_url = "http://www.francissoung.com/2016/03/01/osx-xcode-c/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+        var d = document, t = 'script',
+                o = d.createElement(t),
+                s = d.getElementsByTagName(t)[0];
+        o.src = u;
+        if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+        s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("http://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+            visible: 'always',
+            placement: 'right',
+            icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="http://weibo.com/523072343">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/Franciskeke">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://segmentfault.com/u/francissoung">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa  fa-stack-1x fa-inverse">sf</i>
+                                    </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/FrancisSoung">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/francis.soung">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a href="https://twitter.com/Francis_Soung">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Francis Soung 2016
+                    <br>
+                    Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> and <a href="http://www.bootcss.com/">Bootstrap</a> | Theme © <a href="http://huangxuan.me">Hux</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=FrancisSoung&repo=francissoung.github.io&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+<p id="back-to-top"><a href="#top"><span></span></a></p>
+
+
+<script src="http://7xl0td.com1.z0.glb.clouddn.com/js%2Fjquery.min.js"></script>
+<script src="http://7xl0td.com1.z0.glb.clouddn.com/js%2Fbootstrap.min.js"></script>
+<script src="http://7xl0td.com1.z0.glb.clouddn.com/js%2Ffrancis-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- Highlight.js -->
+<script>
+    async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+        hljs.initHighlightingOnLoad();
+    })
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+<link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+
+<!--fastClick.js -->
+<script>
+    async("http://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        // var $nav = document.querySelector("nav");
+        // if($nav) FastClick.attach($nav);
+
+        // global FastClick!!
+        FastClick.attach(document.body);    
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Francis Soung
+    var _baId = '551c451674b914ab3e454205afd429a8';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- Baidu zhanzhang -->
+<script>
+    (function(){
+        var bp = document.createElement('script');
+        bp.src = '//push.zhanzhang.baidu.com/push.js';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+<!--返回顶部-->
+<script>
+    $(function(){
+        //当滚动条的位置处于距顶部100像素以下时，跳转链接出现，否则消失
+        $(function () {
+            $(window).scroll(function(){
+                if ($(window).scrollTop()>100){
+                    $("#back-to-top").fadeIn(1500);
+                }
+                else
+                {
+                    $("#back-to-top").fadeOut(1500);
+                }
+            });
+
+            //当点击跳转链接后，回到页面顶部位置
+
+            $("#back-to-top").click(function(){
+                $('body,html').animate({scrollTop:0},1000);
+                return false;
+            });
+        });
+    });
+</script>
+
+
+
+<!-- Image to hack wechat -->
+<img src="/img/icon_wechat.png" alt="Francis Soung" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
