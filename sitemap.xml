@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>http://www.francissoung.com/2016/03/23/%25E5%25A6%2582%25E4%25BD%2595%25E4%25B8%258B%25E8%25BD%25BDTumblr%25E7%259A%2584%25E8%25A7%2586%25E9%25A2%2591/</loc>
+<lastmod>2016-03-23T00:00:00+08:00</lastmod>
+</url>
+<url>
 <loc>http://www.francissoung.com/2016/03/16/%25E5%25A6%2582%25E4%25BD%2595%25E5%2587%258F%25E5%25B0%2591%25E6%258E%25A5%25E5%258F%25A3%25E5%2593%258D%25E5%25BA%2594%25E6%2597%25B6%25E9%2597%25B4/</loc>
 <lastmod>2016-03-16T00:00:00+08:00</lastmod>
 </url>
@@ -135,6 +139,9 @@
 <loc>http://www.francissoung.com/about/</loc>
 </url>
 <url>
+<loc>http://www.francissoung.com/archives/</loc>
+</url>
+<url>
 <loc>http://www.francissoung.com/portfolio/</loc>
 </url>
 <url>
@@ -142,14 +149,5 @@
 </url>
 <url>
 <loc>http://www.francissoung.com/tags/</loc>
-</url>
-<url>
-<loc>http://www.francissoung.com/page2/</loc>
-</url>
-<url>
-<loc>http://www.francissoung.com/page3/</loc>
-</url>
-<url>
-<loc>http://www.francissoung.com/page4/</loc>
 </url>
 </urlset>
