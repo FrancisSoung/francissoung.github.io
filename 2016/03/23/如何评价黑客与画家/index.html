@@ -9,9 +9,9 @@
     <meta name="keywords"  content="WEB程序开发,Linux服务器管理,LAMP/LNMP环境配置优化,网络架构,MySQL优化,生活旅行,Francis,francissoung,php程序猿的笔记,程序员的日记薄">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>LAMP环境搭建详细参数文档 - Francis Soung</title>
+    <title>如何评价『黑客与画家』 - Francis Soung</title>
 
-    <link rel="canonical" href="http://www.francissoung.com/2015/10/13/LAMP%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E8%AF%A6%E7%BB%86%E5%8F%82%E6%95%B0%E6%96%87%E6%A1%A3/">
+    <link rel="canonical" href="http://www.francissoung.com/2016/03/23/%E5%A6%82%E4%BD%95%E8%AF%84%E4%BB%B7%E9%BB%91%E5%AE%A2%E4%B8%8E%E7%94%BB%E5%AE%B6/">
 
     
     <!-- css CDN to qiniu -->
@@ -137,13 +137,13 @@
 
     <!-- Image to hack wechat -->
 <!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
-<!-- <img src="/img/post-bg-lamp.jpg" width="0" height="0"> -->
+<!-- <img src="/img/post-bg-tumblr.jpg" width="0" height="0"> -->
 
 <!-- Post Header -->
 <style type="text/css">
     header.intro-header{
         position: relative;
-        background-image: url('/img/post-bg-lamp.jpg')
+        background-image: url('/img/post-bg-tumblr.jpg')
     }
 
     
@@ -156,23 +156,17 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#Linux" title="Linux">Linux</a>
+                        <a class="tag" href="/tags/#Francis 杂谈" title="Francis 杂谈">Francis 杂谈</a>
                         
-                        <a class="tag" href="/tags/#LAMP" title="LAMP">LAMP</a>
-                        
-                        <a class="tag" href="/tags/#PHP" title="PHP">PHP</a>
-                        
-                        <a class="tag" href="/tags/#MySQL" title="MySQL">MySQL</a>
-                        
-                        <a class="tag" href="/tags/#Apache" title="Apache">Apache</a>
+                        <a class="tag" href="/tags/#读书笔记" title="读书笔记">读书笔记</a>
                         
                     </div>
-                    <h1>LAMP环境搭建详细参数文档</h1>
+                    <h1>如何评价『黑客与画家』</h1>
                     
                     
-                    <h2 class="subheading"></h2>
+                    <h2 class="subheading">书呆子也并非不想让自己不受欢迎，他们只是更愿意把时间投入到让自己聪明上去罢了。</h2>
                     
-                    <span class="meta">Posted by Francis Soung on October 13, 2015</span>
+                    <span class="meta">Posted by Francis Soung on March 23, 2016</span>
                 </div>
             </div>
         </div>
@@ -190,422 +184,24 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <blockquote>
-  <p>共享一下学习阶段，老师分享的LAMP环境搭建的文档，非常详细，包括安装所需软件、配置相关参数、可能出现的问题以及解决方法等。请提出意见并指正。</p>
-</blockquote>
+                <p>一本好的书，让我们收获的不单单是某种技巧，或者某种方法论， <strong>他教给我们的是一种严密的思维方式，是一种学会把自己的眼光放得更加长远的决策习惯，他促使我们养成独立思考的习惯。</strong> 他没有送给我们一条大鱼，却把捕捉大鱼的方法交给了我们， <strong>授人以鱼，不如授人以渔</strong>。</p>
 
-<h2 id="section">准备工作</h2>
+<p><img src="http://source.francissoung.com/2016%2F03%2F24%2F%E5%A6%82%E4%BD%95%E8%AF%84%E4%BB%B7%E9%BB%91%E5%AE%A2%E4%B8%8E%E7%94%BB%E5%AE%B61.jpg" alt="如何评价黑客与画家" /></p>
 
-<p><strong>1、安装编译工具gcc、gcc-c++、make</strong></p>
+<p>我一直觉得把一个我们所熟知的很普通的问题讲的非常透彻而且非常清楚是一种相当了不起的能力， 保罗·格雷尔姆 不仅把问题讲的非常透彻，而且还非常有趣， 让我们在读的时候感觉趣味盎然，这一点是非常不容易的。</p>
 
-<p>注意解决依赖关系，推荐使用yum安装，若不能联网可使用安装光盘做为yum源——
-1)编辑yum配置文件：</p>
+<p>很多的互联网从业者想必早就听说过这本书，而且大部分人应该都已经阅读过这本书了， 所以我就简单的从其他的角度来谈一下我读完本书的一些感想，希望对大家有所帮助。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>Mount /dev/cdrom /media
-vi /etc/yum.repos.d/CentOS-Media.repo 
-[c5-media] 
-name=CentOS-$releasever - Media
-baseurl=file:///media   * 修改为光盘挂载点
-enabled=1  * 改为1意为启用
-gpgcheck=0
-gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-5
-</code></pre>
-</div>
+<p>在阅读「为什么书呆子不受欢迎」这章时，我想到了这么一句话，<strong>「你的时间在哪里，你的成就就在哪里」</strong>。 生活中的我们，总是喜欢羡慕那些成功人士，我们总觉得那些成功人士与我们普通人不一样， 他们必然懂得某种通往成功的诀窍，他们生下来就与周围的人们有所不同。 我们也总是希望能从这些成功人士那里获得某些珍贵的建议，获得那些能使人最终功成名就的万用妙方。 在武侠小说里面， <strong>渴望成为武林高手的人，都希望得到一本有着盖世神功的武林秘籍</strong>。 因为这秘籍一旦得手，只要依葫芦画瓢，就可大功告成。</p>
 
-<p>2)设置alias值:</p>
+<p>但是世事又怎会如此简单，也永远不会有这样或者那样的武林秘诀。 <strong>所谓的成功人士不过是把自己的时间投入到那些他们感兴趣的领域里面罢了</strong>。 其实， <strong>我们每一个人也许都是我们所投入时间的那个领域的成功人士</strong>。 有的同学，可能在学校里没有把时间投入学习中，但是呢，投入了很多的时间在游戏领域，每天花费大量的时间去玩游戏， 看游戏讲解视频，研究游戏的战略，思考游戏的玩法，在这个游戏里面，他就是王者； 有的人呢，可能喜欢计算机，他喜欢与程序打交道，他希望了解计算机是如何思考的，于是最终他就成了黑客。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>Vi /etc/bashrc
-alias yum="yum --disablerepo=\* --enablerepo=c5-media"
-</code></pre>
-</div>
+<p>画家能够把画画的比我们更好，只是因为他把他的时间都投入到里面罢了，田径运动员跑的比我们更快， 同样只不过因为他把他的时间都投入到跑步里面罢了。 <strong>书呆子也并非不想让自己不受欢迎，他们只是更愿意把时间投入到让自己聪明上去罢了</strong>。 我们每一个人，都可以自己去决定把自己的时间投入到哪个领域，我们所投入的时间最终也会成就我们。</p>
 
-<p>3)依次安装gcc、gcc-c++</p>
+<p>在阅读本书的其他章节的时候，我更加深刻的发觉，黑客们，其实与我们并没有多大的不同， <strong>他们只是比我们普通人更加崇尚分享、开放和民主，他们对任何被禁止的东西都怀有特别强烈的好奇心，他们喜欢去思考那些似乎不应该被思考的问题，他们相信计算机将会深刻的改变人们的生活</strong>。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>Yum -y install gcc*
-</code></pre>
-</div>
+<p>虽然这是一本讲述黑客的书，不过个人觉得每个人都应该看看。 如同译者阮一峰所言：未来的人类生活不仅是人与人的互动，而且更多的将是人与计算机的互动。 想要把握这个时代，就必须理解计算机。 理解计算机的关键，则是要理解计算机背后的人。 表面上这是一个机器的时代，但是实际上机器的设计者决定了我们的时代。 <strong>程序员的审美决定了你看到的软件界面，程序员的爱好决定了你有什么样的软件可以使用</strong>。</p>
 
-<p><strong>2、卸载系统Apache、MySQL和PHP的RPM安装包</strong></p>
-
-<p><em>下载前需关闭启动的服务，如httpd、mysqld</em></p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>service httpd stop
-service mysqld stop
-</code></pre>
-</div>
-
-<p><em>卸载RPM包的Apache、MySQL、PHP</em></p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>yum remove httpd
-yum remove mysql
-</code></pre>
-</div>
-
-<p>建议使用rpm –e http-1.2.3.rpm –nodeps (截断这个rpm包的依赖性)</p>
-
-<p><strong>3、关闭SELinux，允许防火墙80端口访问</strong></p>
-
-<p>1）关闭SELinux</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>vi /etc/selinux/config
-SELINUX=disabled   * 若安装时没有禁用SELinux ，将enforcing改为disabled
-</code></pre>
-</div>
-
-<p>修改后需重新启动Linux方可生效！</p>
-
-<p>2）关闭防火墙Netfilter/iptables
-因尚未做防火墙讲解，直接简单的关闭所有防火墙设置：</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>iptables -F     * 如果没有禁用防火墙，默认80端口禁止访问
-service iptables save   防火墙策略写到/etc/sysconfig/iptables,以后计算机重启再加载这个文件时，防火墙策略就会永久清空.
-</code></pre>
-</div>
-
-<h2 id="section-1">编译安装</h2>
-
-<ul>
-  <li>每个源码包配置编译安装完成后，确认安装目录下是否生成安装文件</li>
-</ul>
-
-<p><strong>1、安装libxml2</strong></p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code> cd /lamp/libxml2-2.6.30
-./configure --prefix=/usr/local/libxml2/
- make 
- make install
-</code></pre>
-</div>
-
-<p><strong>2、安装libmcrypt</strong></p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>cd /lamp/libmcrypt-2.5.8
- ./configure --prefix=/usr/local/libmcrypt/
- make 
- make install
- * 需调用gcc-c++编译器，未安装会报错
-</code></pre>
-</div>
-
-<p><strong>3、安装libltdl，也在libmcrypt源码目录中，非新软件</strong></p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>cd /lamp/libmcrypt-2.5.8/libltdl
- ./configure --enable-ltdl-install
- make
- make install
-</code></pre>
-</div>
-
-<p><strong>4、安装zlib</strong></p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code> cd /lamp/zlib-1.2.3
-./configure
- make
- make install 
- * zlib指定安装目录可能造成libpng安装失败，故不指定，为卸载方便，建议make install执行结果输出到安装日志文件，便于日后卸载
-</code></pre>
-</div>
-
-<p><strong>5、安装libpng</strong></p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>cd /lamp/libpng-1.2.31
- ./configure --prefix=/usr/local/libpng/
- make
- make install
-</code></pre>
-</div>
-
-<p><strong>6、安装jpeg6</strong></p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>mkdir /usr/local/jpeg6
-mkdir /usr/local/jpeg6/bin
-mkdir /usr/local/jpeg6/lib
-mkdir /usr/local/jpeg6/include
-mkdir -p /usr/local/jpeg6/man/man1
-cd /lamp/jpeg-6b
-./configure --prefix=/usr/local/jpeg6/ --enable-shared --enable-static
-make
-make install
-* --enable-shared与--enable-static参数分别为建立共享库和静态库使用的libtool
-</code></pre>
-</div>
-
-<p><strong>7、安装freetype</strong></p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code> cd /lamp/freetype-2.3.5
- ./configure --prefix=/usr/local/freetype/
- make
- make install
-</code></pre>
-</div>
-
-<p><strong>8、安装autoconf</strong></p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code> cd /lamp/autoconf-2.61
- ./configure
- make 
- make install
-</code></pre>
-</div>
-
-<p><strong>9、安装GD库</strong></p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>mkdir /usr/local/gd2
-cd /lamp/gd-2.0.35
-</code></pre>
-</div>
-
-<p><em>png错误，修改方法:</em></p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>vi gd_png.c
-把#include “png.h”替换
-#include "/usr/local/libpng/include/png.h"
-
-
-./configure --prefix=/usr/local/gd2/ --with-jpeg=/usr/local/jpeg6/ --with-freetype=/usr/local/freetype/
- --with-png=/usr/local/libpng/
- Make
-#如果出现错误，把上面的两步重新执行一次.
- make install
- * 若前面配置zlib时没有指定安装目录，gd配置时不要添加--with-zlib=/usr/local/zlib/参数
-</code></pre>
-</div>
-
-<p><strong>10、安装Apache</strong></p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code> cd /lamp/httpd-2.2.9
- ./configure --prefix=/usr/local/apache2/ --sysconfdir=/usr/local/apache2/etc/ --with-included-apr --enable-so --enable-deflate=shared --enable-expires=shared --enable-rewrite=shared
- make
- make install
-*若前面配置zlib时没有指定安装目录，Apache配置时不要添加--with-z=/usr/local/zlib/参数*
-</code></pre>
-</div>
-
-<p><em>启动Apache测试：</em></p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>/usr/local/apache2/bin/apachectl start
-ps -le | grep httpd
-</code></pre>
-</div>
-
-<p>若启动时提示/usr/local/apache2/modules/mod_deflate.so无权限，可关闭SELinux或者执行命令chcon -t texrel_shlib_t /usr/local/apache2/modules/mod_deflate.so ，类似此类.so文件不能载入或没有权限的问题，都是SELinux问题，使用命令：“chcon -t texrel_shlib_t 文件名”即可解决，MySQL和Apache也可能有类似问题。</p>
-
-<p>通过浏览器输入地址访问：http://Apache服务器地址，若显示“It works”即表明Apache正常工作</p>
-
-<p>设置Apache系统引导时启动：</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>echo "/usr/local/apache2/bin/apachectl start" &gt;&gt; /etc/rc.d/rc.local
-</code></pre>
-</div>
-
-<p><strong>11、安装nurses</strong></p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>（1）yum –y install ncurses*
-（2）源代码编译:
-cd /lamp/ncurses-5.6
-./configure --with-shared --without-debug --without-ada --enable-overwrite
-make 
-make install
-* 若不安装ncurses编译MySQL时会报错
-* --without-ada参数为设定不编译为ada绑定，因进入chroot环境不能使用ada ；--enable-overwrite参数为定义把头文件安装到/tools/include下而不是/tools/include/ncurses目录
-</code></pre>
-</div>
-
-<p><strong>12、安装MySQL</strong></p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>useradd mysql
-*添加用户组mysql ，将mysql用户默认组设置为mysql用户组*
-cd /lamp/mysql-5.0.41
-./configure --prefix=/usr/local/mysql --without-debug --enable-thread-safe-client --with-pthread --enable-assembler --enable-profiling --with-mysqld-ldflags=-all-static --with-client-ldflags=-all-static --with-extra-charsets=all --with-plugins=all --with-mysqld-user=mysql --without-embedded-server --with-server-suffix=-community --with-unix-socket-path=/tmp/mysql.sock
- make
- make install
-*--with-extra-charsets=all参数为安装所有字符集*
-</code></pre>
-</div>
-
-<p>#如果不行的话,make clean 后再make ;make install,这样去试一下,默认是不支持innodb存储引擎的.其中–with-plugins=all可以把innodb加载进来.</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>cp /usr/local/mysql/share/mysql/my-medium.cnf   /etc/my.cnf
-</code></pre>
-</div>
-
-<p>修改mysql配置文件</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>（1）[client]
-default-character-set=utf8
-（2）[ mysqld]
-character-set-server = utf8
-collation-server = utf8_general_ci
-#default-storage-engine=innodb
-（3）打开innodb配置
-#innodb_data_home_dir = /usr/local/mysql/var
-#innodb_data_file_path = ibdata1:10M:autoextend
-#innodb_log_group_home_dir = /usr/local/mysql/var
-#innodb_buffer_pool_size = 16M
-#innodb_additional_mem_pool_size = 2M
-#innodb_log_file_size = 5M
-#innodb_log_buffer_size = 8M
-#innodb_flush_log_at_trx_commit = 1
-#innodb_lock_wait_timeout = 50
- * 生成MySQL配置文件
- 
- Setfacl –m u:mysql:rwx –R /usr/local/mysql
- Setfacl –m d:u:mysql:rwx –R /usr/local/mysql
- * 用acl来让mysql用户对/usr/local/mysql有所有权限
-* 在FreeBSD下以上不成功的话用
- 修改 /usr/local/mysql 目录属主及其属组为mysql 
-  chown -R mysql:mysql /usr/local/mysql
-/usr/local/mysql/bin/mysql_install_db --user=mysql
- * 创建数据库授权表
-</code></pre>
-</div>
-
-<p><strong>启动MySQL服务</strong></p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>（1）用原本源代码的方式去使用和启动mysql
-/usr/local/mysql/bin/mysqld_safe --user=mysql &amp;
-（2）重启以后还要生效:
-Vi /etc/rc.local
-/usr/local/mysql/bin/mysqld_safe --user=mysql &amp;
-
-/usr/local/mysql/bin/mysqladmin -uroot password kkk  
-#给mysql用户root加密码.密码为kkk
-
- /usr/local/mysql/bin/mysql -u root -pkkk test 
-mysql&gt;show databases;
-mysql&gt;use test
-mysql&gt;show tables;
-#进入mysql以后用set来改密码.
- mysql&gt; exit
- * 登录MySQL客户端控制台设置指定root密码
-</code></pre>
-</div>
-
-<p><strong>13、安装PHP</strong></p>
-
-<p>编译前确保系统已经安装了libtool和libtool-ltdl软件包，若没有安装使用yum或rpm安装下：</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>yum install libtool*
-yum install libtool-ltdl*
-
- cd /lamp/php-5.2.6
-./configure --prefix=/usr/local/php/ --with-config-file-path=/usr/local/php/etc/ --with-apxs2=/usr/local/apache2/bin/apxs --with-mysql=/usr/local/mysql/ --with-libxml-dir=/usr/local/libxml2/ --with-jpeg-dir=/usr/local/jpeg6/ --with-png-dir=/usr/local/libpng/ --with-freetype-dir=/usr/local/freetype/ --with-gd=/usr/local/gd2/ --with-mcrypt=/usr/local/libmcrypt/ --with-mysqli=/usr/local/mysql/bin/mysql_config --enable-soap --enable-mbstring=all --enable-sockets
-* 若前面配置zlib时没有指定安装目录，PHP配置时不要添加--with-zlib-dir=/usr/local/zlib/参数
-make
-make install
-</code></pre>
-</div>
-
-<p>生成php.ini(php的配置文件)</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>cp /lamp/php-5.2.6/php.ini-dist /usr/local/php/etc/php.ini
-</code></pre>
-</div>
-
-<p>测试apache与php的连通性,看apache是否能解析php文件</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>vi /usr/local/apache2/etc//httpd.conf
- AddType application/x-httpd-php .php .phtml .phps 	(注意T的大小写)
-</code></pre>
-</div>
-
-<p><em>.phtml为将.phps做为PHP源文件进行语法高亮显示</em></p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>重启Apache服务：/usr/local/apache2/bin/apachectl restart
-</code></pre>
-</div>
-
-<p>#php生效, /usr/local/apache2/bin/apachectl stop/start</p>
-
-<p>Apache无法启动，提示cannot restore segment prot after reloc: Permission denied错误，为SELinux问题，可关闭SELinux或者执行命令chcon -t 
-texrel_shlib_t /usr/local/apache2/modules/libphp5.so</p>
-
-<p>测试：vi /usr/local/apache2/htdocs/test.php</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>&lt;?
-    phpinfo();
-?&gt;
-</code></pre>
-</div>
-
-<p>通过浏览器输入地址访问：http://Apache服务器地址/test.php</p>
-
-<p><em>有时第一次浏览器测试会失败，关闭浏览器重启再尝试即可，非编译错误</em></p>
-
-<p><strong>14、编译安装memcache</strong></p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>tar zxvf memcache-2.2.5.tgz
-cd memcache-2.2.5
-/usr/local/php/bin/phpize
-./configure --with-php-config=/usr/local/php/bin/php-config
-make &amp;&amp; make install
-</code></pre>
-</div>
-
-<p><strong>15、编译安装 PDO_MYSQL</strong></p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>tar zxvf /lamp/PDO_MYSQL-1.0.2.tgz
-cd /lamp/PDO_MYSQL-1.0.2/
-/usr/local/php/bin/phpize
-./configure --with-php-config=/usr/local/php/bin/php-config --with-pdo-mysql=/usr/local/mysql
-make &amp;&amp; make install
-
-修改php.ini
-extension_dir = "/usr/local/php//lib/php/extensions/no-debug-non-zts-20060613/"
-extension="memcache.so";
-extension="pdo.so";
-extension="pdo_mysql.so";
-* 生成PHP配置文件
-</code></pre>
-</div>
-
-<p><strong>16、安装Zend加速器</strong></p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>cd /lamp/ZendOptimizer-3.2.6-linux-glibc21-i386
-./install.sh
-* 注意PHP配置文件和Apache启动脚本所在目录指定正确即可
-</code></pre>
-</div>
-
-<p><strong>17、安装memcache源代码</strong></p>
-
-<p>http://memcached.googlecode.com/files/memcached-1.4.10.tar.gz
-首先安装依赖包libevent</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>Yum –y install libevent
-</code></pre>
-</div>
-
-<p><em>主包已经安装,别忘记安装libevent-devel</em>,不然./configure过不去*</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>Tar xzf /lamp/memcached-1.4.10.tar.gz
-Cd /lamp/memcached-1.4.10
-./configure --prefix=/usr/local/memcache
-Make &amp;&amp; make install
-Useradd memcache
-Passwd memcache
-</code></pre>
-</div>
-
-<p><em>因为系统不能用root运行memcache软件</em></p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>/usr/local/memcache/bin/memcache –umemcache &amp;     #后台运行
-Netstat –tunpl|grep :11211
-telnet 192.168.10.1 11211
-stats
-</code></pre>
-</div>
-
-<p>写入自启动：</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>Vi /etc/rc.local
-/usr/local/memcache/bin/memcache –umemcache &amp;
-</code></pre>
-</div>
-
-<p><em>如何杀掉后台进程，用kill %1,查看进程用jobs</em></p>
-
-<p><em>#要注意memcache,因为它有两个源代码包，一个是php驱动库包(memcache-2.2.5.tgz),另一个是memcache主程序源代码包(memcached-1.4.10.tar.gz);</em></p>
 
 
                 <hr>
@@ -626,17 +222,17 @@ stats
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2015/10/12/Mysql%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8%E6%96%B9%E6%A1%88/" data-toggle="tooltip" data-placement="top" title="Mysql分库分表方案">
+                        <a href="/2016/03/16/%E5%A6%82%E4%BD%95%E5%87%8F%E5%B0%91%E6%8E%A5%E5%8F%A3%E5%93%8D%E5%BA%94%E6%97%B6%E9%97%B4/" data-toggle="tooltip" data-placement="top" title="如何减少接口响应时间">
                             Previous<br>
-                            <span>Mysql分库分表方案</span>
+                            <span>如何减少接口响应时间</span>
                         </a>
                     </li>
                     
                     
                     <li class="next">
-                        <a href="/2015/10/31/%E7%94%9F%E6%B4%BB%E6%84%9F%E6%83%B3%E4%B9%8B%E4%BB%B7%E5%80%BC%E8%A7%82%E6%98%AF%E4%BD%95%E7%89%A9/" data-toggle="tooltip" data-placement="top" title="生活感想之价值观是何物">
+                        <a href="/2016/03/23/%E5%A6%82%E4%BD%95%E4%B8%8B%E8%BD%BDTumblr%E7%9A%84%E8%A7%86%E9%A2%91/" data-toggle="tooltip" data-placement="top" title="[福利]如何下载Tumblr的视频">
                             Next<br>
-                            <span>生活感想之价值观是何物</span>
+                            <span>[福利]如何下载Tumblr的视频</span>
                         </a>
                     </li>
                     
@@ -790,8 +386,8 @@ stats
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = "francissoungblog";
-    var disqus_identifier = "/2015/10/13/LAMP环境搭建详细参数文档";
-    var disqus_url = "http://www.francissoung.com/2015/10/13/LAMP%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E8%AF%A6%E7%BB%86%E5%8F%82%E6%95%B0%E6%96%87%E6%A1%A3/";
+    var disqus_identifier = "/2016/03/23/如何评价黑客与画家";
+    var disqus_url = "http://www.francissoung.com/2016/03/23/%E5%A6%82%E4%BD%95%E8%AF%84%E4%BB%B7%E9%BB%91%E5%AE%A2%E4%B8%8E%E7%94%BB%E5%AE%B6/";
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
