@@ -166,6 +166,35 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2016/03/24/App%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E7%BB%8F%E9%AA%8C%E8%B0%88-%E6%8E%A5%E5%8F%A3%E7%9A%84%E8%AE%BE%E8%AE%A1/">
+        <h2 class="post-title">
+            App架构设计经验谈:接口的设计
+        </h2>
+        
+        <h3 class="post-subtitle">
+            App与服务器的通信接口如何设计得好，需要考虑的地方挺多的，在此根据我的一些经验做一些总结分享，旨在抛砖引玉。
+        </h3>
+        
+        <div class="post-content-preview">
+            安全机制的设计
+
+现在，大部分App的接口都采用RESTful架构，RESTFul最重要的一个设计原则就是，客户端与服务器的交互在请求之间是无状态的，也就是说，当涉及到用户状态时，每次请求都要带上身份验证信息。实现上，大部分都采用token的认证方式，一般流程是：
+
+
+  
+    用户用密码登录成功后，服务器返回token给客户端；
+  
+  
+    客户端将token保存在本地，发起后...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Francis Soung on March 24, 2016
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2016/03/24/%E5%A6%82%E4%BD%95%E8%AF%84%E4%BB%B7%E9%BB%91%E5%AE%A2%E4%B8%8E%E7%94%BB%E5%AE%B6/">
         <h2 class="post-title">
             如何评价『黑客与画家』
@@ -392,42 +421,6 @@ Jekyll是一个简单的，针对博客设计的静态网站生成器。使用 G
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/2016/03/04/%E5%A6%82%E4%BD%95%E5%B0%86DISQUS%E7%A4%BE%E4%BC%9A%E5%8C%96%E8%AF%84%E8%AE%BA%E8%AE%BE%E7%BD%AE%E4%B8%BA%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87/">
-        <h2 class="post-title">
-            如何将DISQUS社会化评论设置为简体中文
-        </h2>
-        
-        <h3 class="post-subtitle">
-            
-        </h3>
-        
-        <div class="post-content-preview">
-            1、首先要打开Disqus的网站，点击右上角的 Sign-in 登录。
-
-
-
-2、进入后台。
-
-登录后回到首页，点击右上角你的头像，选择 Admin，进入管理后台。
-
-3、选择右上角“Settings”：
-
-
-
-先给大家看看这些设置都是什么意思：
-
-APPEARANCE：评论区的样式
-COMMENT COUNT LINK： 当评论、回应条数分别为 0、1 时的显示
-DEFAULT SORT：...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Francis Soung on March 4, 2016
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
 
@@ -496,7 +489,7 @@ DEFAULT SORT：...
                             
                         
                             
-                                <a href="/tags/#Francis 杂谈" title="Francis 杂谈" rel="11">
+                                <a href="/tags/#Francis 杂谈" title="Francis 杂谈" rel="12">
                                     Francis 杂谈
                                 </a>
                             
@@ -531,6 +524,10 @@ DEFAULT SORT：...
                                 </a>
                             
                         
+                            
+                                <a href="/tags/#架构" title="架构" rel="2">
+                                    架构
+                                </a>
                             
                         
                             
