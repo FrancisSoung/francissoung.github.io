@@ -9,9 +9,9 @@
     <meta name="keywords"  content="WEB程序开发,Linux服务器管理,LAMP/LNMP环境配置优化,网络架构,MySQL优化,生活旅行,Francis,francissoung,php程序猿的笔记,程序员的日记薄">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>MAC OSX10.11上搭建Apache，PHP，MySQL5.6.15，phpMyAdmin开发环境 - Francis Soung</title>
+    <title>似水年华之回炉再造 - Francis Soung</title>
 
-    <link rel="canonical" href="http://www.francissoung.com/2015/11/01/MAC-OSX10.11%E4%B8%8A%E6%90%AD%E5%BB%BA%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/">
+    <link rel="canonical" href="http://www.francissoung.com/2016/03/24/%E4%BC%BC%E6%B0%B4%E5%B9%B4%E5%8D%8E%E4%B9%8B%E5%9B%9E%E7%82%89%E5%86%8D%E9%80%A0/">
 
     
     <!-- css CDN to qiniu -->
@@ -137,13 +137,13 @@
 
     <!-- Image to hack wechat -->
 <!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
-<!-- <img src="/img/post-bg-rwd.jpg" width="0" height="0"> -->
+<!-- <img src="/img/post-bg-android.jpg" width="0" height="0"> -->
 
 <!-- Post Header -->
 <style type="text/css">
     header.intro-header{
         position: relative;
-        background-image: url('/img/post-bg-rwd.jpg')
+        background-image: url('/img/post-bg-android.jpg')
     }
 
     
@@ -156,21 +156,17 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#OS X" title="OS X">OS X</a>
+                        <a class="tag" href="/tags/#Francis 杂谈" title="Francis 杂谈">Francis 杂谈</a>
                         
-                        <a class="tag" href="/tags/#PHP" title="PHP">PHP</a>
-                        
-                        <a class="tag" href="/tags/#Apache" title="Apache">Apache</a>
-                        
-                        <a class="tag" href="/tags/#MySQL" title="MySQL">MySQL</a>
+                        <a class="tag" href="/tags/#架构" title="架构">架构</a>
                         
                     </div>
-                    <h1>MAC OSX10.11上搭建Apache，PHP，MySQL5.6.15，phpMyAdmin开发环境</h1>
+                    <h1>似水年华之回炉再造</h1>
                     
                     
-                    <h2 class="subheading"></h2>
+                    <h2 class="subheading">App与服务器的通信接口如何设计得好，需要考虑的地方挺多的，在此根据我的一些经验做一些总结分享，旨在抛砖引玉。</h2>
                     
-                    <span class="meta">Posted by Francis Soung on November 1, 2015</span>
+                    <span class="meta">Posted by Francis Soung on March 24, 2016</span>
                 </div>
             </div>
         </div>
@@ -188,159 +184,29 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <p>最近在本地测试网站，之前经常远程到公司进行测试，受网络限制比较严重，并且效率非常低，今天就豁出去了，在我用了两年的小白上安装了开发环境。</p>
+                <p>在犹豫了两年之后，报考了北大的成人教育。曾经的自己非常的迷茫，不知道自己想要什么，只是过着随遇而安的生活。在跌跌撞撞的北漂生活中对自己的未来有了新的认识，也许这种认识才使我重新定位自己。</p>
 
-<p>其实OSX上自带了apache和php，所以这两个搞起来还比较顺利。装MySQL的最新版5.6.15版颇费周折，本文详细记录之。</p>
+<p>经过全国统一考试之后，2016年伊始，开始了三年的北大学习之旅。</p>
 
-<!--more-->
+<p>提到北大，大家第一印象便是中国最一流的高等学府。不知道为什么，我并为此而特别兴奋，也许只是为了学位？我相信很多人都会这样想。</p>
 
-<h4 id="apache">apache的配置</h4>
+<p>当进入北大之后，没有那种大学自由自在的感觉，反而多了更大的压力，管理严格和要求高是一方面，更多的是经过几年的社会，自己曾经熟知的知识已经忘得差不多了。不过我相信这些都是可以改善的。</p>
 
-<p>apache已经自带了，只需如下三个命令就可以了。</p>
+<p>今天提前下课了，来到了大名鼎鼎的未名湖畔。很多游人游览，我想大家也是慕名而来，感受百年老校的文化和艺术气息。我对于北大不是很熟，虽现在是北大的一员，但总是有区别的。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>开启apache服务 sudo apachectl start
-停止apache服务 sudo apachectl stop
-重启服务 sudo apachectl restart
-查看版本 httpd -v
-</code></pre>
-</div>
+<p>坐在未名湖畔的休息椅上，呼吸到了春天的气息，看到湖对面的柳树想起了一首中学时期学过的诗–【碧玉妆成一树高 ，万条垂下绿丝绦。不知细叶谁裁出 ，二月春风似剪刀。】不过现在是三月，可依然有些凉（前几日的温度让本人去除了不少衣物）。</p>
 
-<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2015/11/01/3007933119.png" alt="20151101-1@2x.png" /></p>
+<p>开始羡慕在北大读书的同学，能进入北大的同学多半都是全国的精英吧（较真的同学请掠过）。学术氛围和文化气息确实能影响一个人求知欲望。我只能奋起直追了。</p>
 
-<p>手动打开apache服务后，在浏览器输入localhost，将看到如下：</p>
+<p>也许每个人对我报考北大成人教育态度不一，我也不去在意他人的看法了，对我来说，学位固然重要，但更重要的是这段旅程。我相信不久的将来这趟文化之旅给我带来的不仅仅是那一张薄薄的证书。</p>
 
-<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2015/11/01/3412207876.png" alt="20151101-1@2x.png" /></p>
+<p>因为住的远，每天5点就起床奔向北大，8点开始上课，今后的周末基本都在这里度过了。</p>
 
-<p>程序的根目录在<code class="highlighter-rouge">/Library/WebServer/Documents/ </code>下，这个It works 就是里面的info.php打印出来的。下面介绍如何将apache的这个默认目录更改到用户目录下。</p>
+<p>周末对于程序员来说是难得的休息时间，牺牲了周末对本来就紧张的生活来说添了更多的劳累。我不再去追究它到底值不值得，过去的犹豫不决让自己失去了很多了，不能再犯如此错误了。</p>
 
-<p>1、在自己的用户目录下新建一个Sites文件夹，我的用户目录为Francis</p>
+<p>我相信自己的选择，如同这春意盎然的时节。</p>
 
-<p>2、进到cd /etc/apache2/users/目录下，sudo vim francis.conf，内容为：</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>&lt;Directory "/Users/Francis/Sites/"&gt;
-AllowOverride All
-Options Indexes MultiViews FollowSymLinks
-Require all granted
-&lt;/Directory&gt;
-</code></pre>
-</div>
-
-<p>上面第一行里的Francis就是用户目录。然后将该文件权限改为644：</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>sudo chmod 644 francis.conf
-</code></pre>
-</div>
-
-<p>3、进到<code class="highlighter-rouge">/etc/apache2/</code>目录，<code class="highlighter-rouge">sudo vim httpd.conf</code> 将下面三句话的注释去掉：</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>LoadModule authz_core_module libexec/apache2/mod_authz_core.so
-LoadModule authz_host_module libexec/apache2/mod_authz_host.so
-LoadModule userdir_module libexec/apache2/mod_userdir.so
-</code></pre>
-</div>
-
-<p>前两句应该已经不带注释了，把第三句注释放开。</p>
-
-<p>然后找到<code class="highlighter-rouge">Include /private/etc/apache2/extra/httpd-userdir.conf </code>注释放开。</p>
-
-<blockquote>
-  <p>PS：在vim下只要切换到命令模式，然后输入/”words you need find”就能快速找到需要查找的词。</p>
-</blockquote>
-
-<p>4、进到/etc/apache2/extra/目录，</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>sudo vim httpd-userdir.conf
-</code></pre>
-</div>
-
-<p>将<code class="highlighter-rouge">Include /private/etc/apache2/users/*.conf </code>这句话放开注释。</p>
-
-<p>然后终端输入：<code class="highlighter-rouge">sudo apachectl restart</code> 重启apache，浏览器输入： loacal/~francis/ 就能看到效果了。（francis是我的用户目录的名字,后面不用再加/Sites）
-经过以上步骤apache就搞好了。</p>
-
-<h4 id="php">PHP配置</h4>
-
-<p>PHP的配置非常简单，就一个事，进到/etc/apache2/目录，编辑httpd.conf，找到<code class="highlighter-rouge">LoadModule php5_module libexec/apache2/libphp5.so</code>将其放开注释就行了。</p>
-
-<p>然后<code class="highlighter-rouge">sudo apachectl restart</code> 重启，在用户目录的Sites文件夹下，新建一个index.php,里面<code class="highlighter-rouge">echo phpinfo()</code> ，就可以看到效果了：</p>
-
-<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2015/11/02/3346607926.png" alt="20151102-0@2x.png" /></p>
-
-<h4 id="mysql5615">安装MySQL5.6.15</h4>
-
-<p>在官网下载即可，版本可根据实际个人需求选择，下面是安装方法：</p>
-
-<p>1、双击安装的时候，不要勾选StartUp Item这一项：
-<img src="http://7xl0td.com1.z0.glb.clouddn.com/2015/11/02/555088672.png" alt="QQ20151102-0@2x.png" /></p>
-
-<p>如此安装完毕后，在设置－－－MySQL手动开启MySQL服务。
-<img src="http://7xl0td.com1.z0.glb.clouddn.com/2015/11/02/1072163062.png" alt="QQ20151102-1@2x.png" /></p>
-
-<p>我这里已经打开了MySQL服务。下面要将其设置为开机自动启动。</p>
-
-<p>2、默认状态下，我们用mysql的命令每次都要输入全路径，如<code class="highlighter-rouge">sudo /usr/local/mysql/support-files/mysql.server start</code> 开启mysql服务，<code class="highlighter-rouge">/usr/local/mysql/bin/mysql -v</code>查看mysql版本，得先把bin目录配到环境变量里。切换到用户根目录 ，<code class="highlighter-rouge">vim .bash_profile</code>,输入：</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>export PATH=”/usr/local/mysql/bin:$PATH”
-</code></pre>
-</div>
-
-<p>保存后，<code class="highlighter-rouge">source .bash_profile</code>使环境变量生效。接着就可以直接在终端里输入mysql命令了。</p>
-
-<p>最后，通过<code class="highlighter-rouge">mysqladmin -u root password ‘yourpasswordhere’ </code>给mysql的root用户设置密码。单引号里的内容就是要设的密码。</p>
-
-<blockquote>
-  <p>备注：有时上面这个命令不能修改root密码，需要借助phpmyadmin来修改。其实mysql这个版本默认的root密码为root。</p>
-</blockquote>
-
-<p>3、修复socket error的问题。有一个负责mysql 服务器 客户端通讯的socket文件，mysql的这个版本将其放在/tmp目录，但是OSX却默认的找 /var/mysql 这个目录，所以要建个软链接。新建目录 /var/mysql， 然后<code class="highlighter-rouge">sudo ln -s /tmp/mysql.sock /var/mysql/mysql.sock</code> 就ok了。</p>
-
-<p>4、让mysql开机自动启动。</p>
-
-<p><code class="highlighter-rouge">sudo vim /Library/LaunchDaemons/com.mysql.mysql.plist</code>,里面内容输入：</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>KeepAlive
-
-Label
-com.mysql.mysqld
-ProgramArguments
-
-/usr/local/mysql/bin/mysqld_safe
-–user=mysql
-</code></pre>
-</div>
-
-<p>保存后，修改权限：</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>sudo chown root:wheel /Library/LaunchDaemons/com.mysql.mysql.plist
-sudo chmod 644 /Library/LaunchDaemons/com.mysql.mysql.plist
-sudo launchctl load -w /Library/LaunchDaemons/com.mysql.mysql.plist
-</code></pre>
-</div>
-
-<p>这样mysql就ok了！</p>
-
-<h4 id="phpmyadmin">phpMyAdmin的安装</h4>
-
-<p>从http://www.phpmyadmin.net/官网下载，版本自由选择，下载完成后，将其解压。然后最外层文件夹名字修改为phpmyadmin，进到<code class="highlighter-rouge">~/Sites/phpmyadmin</code>这个目录，新建文件夹：mkdir config 修改读写权限：chmod o+w config</p>
-
-<p>然后浏览器输入：http://localhost/~Francis/phpmyadmin/setup/ (注意 中间的yanzi 换成自己的用户名称)</p>
-
-<p>点击 ”新建服务器“，我上面已经新建好了，然后在这个界面：</p>
-
-<p>密码处输入mysql的root用户密码。然后点击”应用”，记得在如下界面点击保存按钮这样config文件夹下就生成了config.inc.php，将该文件拷贝到phpmyadmin的根目录下。</p>
-
-<p>然后删除整个config文件夹。输入http://localhost/~Francis/phpmyadmin/ 就可以看到登陆phpmyadmin的界面了。 如此，phpMyAdmin搞定。</p>
-
-<h5 id="section">读写权限和分组问题</h5>
-
-<p>最后遗留一个读写权限和归属问题，如果本地开发测试的话，这个步骤可以忽略。如果想让自己的mac切实作为一台服务器，那么这个还要设置下的。这个步骤等同于在布阿里云代码的时候，让public_html文件夹的所有东西可写，且归属于www一个意思。假设Sites文件夹下有个自己的项目：testsite</p>
-
-<p><code class="highlighter-rouge">sudo chmod -R a+w ~/Sites/testsite</code> 设置所有人都可以读写</p>
-
-<p><code class="highlighter-rouge">sudo chown -R _www ~/Sites/testsite</code> 设置testsite文件夹只归属_www组。</p>
-
-<p>OK，PHP在MAC上的搭建到此结束。</p>
-
+<p>继续奋进，在这条路上！</p>
 
 
                 <hr>
@@ -361,19 +227,12 @@ sudo launchctl load -w /Library/LaunchDaemons/com.mysql.mysql.plist
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2015/10/31/%E7%94%9F%E6%B4%BB%E6%84%9F%E6%83%B3%E4%B9%8B%E4%BB%B7%E5%80%BC%E8%A7%82%E6%98%AF%E4%BD%95%E7%89%A9/" data-toggle="tooltip" data-placement="top" title="生活感想之价值观是何物">
+                        <a href="/2016/03/24/App%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E7%BB%8F%E9%AA%8C%E8%B0%88-%E6%8E%A5%E5%8F%A3%E7%9A%84%E8%AE%BE%E8%AE%A1/" data-toggle="tooltip" data-placement="top" title="App架构设计经验谈:接口的设计">
                             Previous<br>
-                            <span>生活感想之价值观是何物</span>
+                            <span>App架构设计经验谈:接口的设计</span>
                         </a>
                     </li>
                     
-                    
-                    <li class="next">
-                        <a href="/2015/11/11/php%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/" data-toggle="tooltip" data-placement="top" title="php配置文件详解">
-                            Next<br>
-                            <span>php配置文件详解</span>
-                        </a>
-                    </li>
                     
                 </ul>
 
@@ -416,7 +275,7 @@ sudo launchctl load -w /Library/LaunchDaemons/com.mysql.mysql.plist
                         
                         
                         
-                        <a href="/tags/#Francis 简单生活" title="Francis 简单生活" rel="6">
+                        <a href="/tags/#Francis 简单生活" title="Francis 简单生活" rel="5">
                             Francis 简单生活
                         </a>
                         
@@ -442,7 +301,7 @@ sudo launchctl load -w /Library/LaunchDaemons/com.mysql.mysql.plist
                         
                         
                         
-                        <a href="/tags/#Francis 杂谈" title="Francis 杂谈" rel="12">
+                        <a href="/tags/#Francis 杂谈" title="Francis 杂谈" rel="13">
                             Francis 杂谈
                         </a>
                         
@@ -478,7 +337,7 @@ sudo launchctl load -w /Library/LaunchDaemons/com.mysql.mysql.plist
                         
                         
                         
-                        <a href="/tags/#架构" title="架构" rel="2">
+                        <a href="/tags/#架构" title="架构" rel="3">
                             架构
                         </a>
                         
@@ -531,8 +390,8 @@ sudo launchctl load -w /Library/LaunchDaemons/com.mysql.mysql.plist
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = "francissoungblog";
-    var disqus_identifier = "/2015/11/01/MAC OSX10.11上搭建开发环境";
-    var disqus_url = "http://www.francissoung.com/2015/11/01/MAC-OSX10.11%E4%B8%8A%E6%90%AD%E5%BB%BA%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/";
+    var disqus_identifier = "/2016/03/24/似水年华之回炉再造";
+    var disqus_url = "http://www.francissoung.com/2016/03/24/%E4%BC%BC%E6%B0%B4%E5%B9%B4%E5%8D%8E%E4%B9%8B%E5%9B%9E%E7%82%89%E5%86%8D%E9%80%A0/";
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
