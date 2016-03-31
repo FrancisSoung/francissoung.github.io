@@ -1,42 +1,859 @@
----
-layout: page
-description: "用心甘情愿的态度，过随遇而安的生活"
----
+<!DOCTYPE html>
+<html lang="zh">
 
-{% for post in paginator.posts %}
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="这是一个程序员的日记薄，记录工作与生活的点点滴滴。包括WEB程序开发、Linux服务器管理、LAMP/LNMP环境配置优化、PHP网络技术、MySQL优化等技术分享以及个人生活旅行中的所见所闻所解。">
+    <meta name="keywords"  content="WEB程序开发,Linux服务器管理,LAMP/LNMP环境配置优化,网络架构,MySQL优化,生活旅行,Francis,francissoung,php程序猿的笔记,程序员的日记薄">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>Francis Soung</title>
+
+    <link rel="canonical" href="http://www.francissoung.com/">
+
+    
+    <!-- css CDN to qiniu -->
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Fbootstrap.min.css">
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Ffrancis-blog.min.css">
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Fsyntax.css">
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Freturntop.css">
+    
+
+    <link href="http://cdn.staticfile.org/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Francis Soung</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/about/">About</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/archives/">Archives</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/portfolio/">Portfolio</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/tags/">Tags</a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    var __HuxNav__ = {
+        close: function(){
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        },
+        open: function(){
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+
+    // Bind Event
+    $toggle.addEventListener('click', function(e){
+        if ($navbar.className.indexOf('in') > 0) {
+            __HuxNav__.close()
+        }else{
+            __HuxNav__.open()
+        }
+    })
+
+    /**
+     * Since Fastclick is used to delegate 'touchstart' globally
+     * to hack 300ms delay in iOS by performing a fake 'click',
+     * Using 'e.stopPropagation' to stop 'touchstart' event from 
+     * $toggle/$collapse will break global delegation.
+     * 
+     * Instead, we use a 'e.target' filter to prevent handler
+     * added to document close HuxNav.  
+     *
+     * Also, we use 'click' instead of 'touchstart' as compromise
+     */
+    document.addEventListener('click', function(e){
+        if(e.target == $toggle) return;
+        if(e.target.className == 'icon-bar') return;
+        __HuxNav__.close();
+    })
+</script>
+
+
+    <!-- Page Header -->
+<header class="intro-header" style="background-image: url('/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
+                <div class="site-heading">
+                    <h1>Francis Soung</h1>
+                    <!--<hr class="small">-->
+                    <span class="subheading">用心甘情愿的态度，过随遇而安的生活</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Main Content -->
+<div class="container">
+	<div class="row">
+        
+
+<!-- USE SIDEBAR -->
+    <!-- PostList Container -->
+    		<div class="
+                col-lg-8 col-lg-offset-1
+                col-md-8 col-md-offset-1
+                col-sm-12
+                col-xs-12
+                postlist-container
+            ">
+    			
 <div class="post-preview">
-    <a href="{{ post.url | prepend: site.baseurl }}">
+    <a href="/2016/03/31/%E9%80%92%E5%BD%92%E7%AE%97%E6%B3%95%E4%B9%8Bn%E9%98%B6%E7%9F%A9%E9%98%B5%E8%A1%8C%E5%88%97%E5%BC%8F%E6%B1%82%E8%A7%A3/">
         <h2 class="post-title">
-            {{ post.title }}
+            递归算法之n阶矩阵行列式求解
         </h2>
-        {% if post.subtitle %}
+        
         <h3 class="post-subtitle">
-            {{ post.subtitle }}
+            最近高等代数正好讲到这里，此篇文章正好对所学知识做一个具体程序实践。
         </h3>
-        {% endif %}
+        
         <div class="post-content-preview">
-            {{ post.content | strip_html | truncate:200 }}
+            
+  设计算法时使用递归的思想是一个程序员的基本素质，递归可以把一个很庞大的问题转化为规模缩小了的同类问题的子问题，通过这一思想，我们编程时运用递归可以使用很少的代码来处理很大的问题。这篇文章将会讲到递归算法的运用。
+
+
+在数学中，很多数学函数都是由一个公式来表达的，比如 f(x) = 100x; 这个公式可以让我们把长度米转换成长度厘米。 有了这个公式，在程序中敲出一行代码，写出一个函数（...
         </div>
     </a>
     <p class="post-meta">
-        Posted by {% if post.author %}{{ post.author }}{% else %}{{ site.title }}{% endif %} on {{ post.date | date: "%B %-d, %Y" }}
+        Posted by Francis Soung on March 31, 2016
     </p>
 </div>
 <hr>
-{% endfor %}
+
+<div class="post-preview">
+    <a href="/2016/03/27/%E4%BC%BC%E6%B0%B4%E5%B9%B4%E5%8D%8E%E4%B9%8B%E5%9B%9E%E7%82%89%E5%86%8D%E9%80%A0/">
+        <h2 class="post-title">
+            似水年华之回炉再造
+        </h2>
+        
+        <h3 class="post-subtitle">
+            似水年华，让一些人找到了最初的自己，这当中也包括了我，看了它就忘不了。年华似水，匆匆一瞥，多少岁月，轻描淡写。
+        </h3>
+        
+        <div class="post-content-preview">
+            在犹豫了两年之后，报考了北大的成人教育。曾经的自己非常的迷茫，不知道自己想要什么，只是过着随遇而安的生活。在跌跌撞撞的北漂生活中对自己的未来有了新的认识，也许这种认识才使我重新定位自己。
+
+经过全国统一考试之后，2016年伊始，开始了三年的北大学习之旅。
+
+提到北大，大家第一印象便是中国最一流的高等学府。不知道为什么，我并为此而特别兴奋，也许只是为了学位？我相信很多人都会这样想。
+
+当进入北...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Francis Soung on March 27, 2016
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2016/03/24/App%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E7%BB%8F%E9%AA%8C%E8%B0%88-%E6%8E%A5%E5%8F%A3%E7%9A%84%E8%AE%BE%E8%AE%A1/">
+        <h2 class="post-title">
+            App架构设计经验谈:接口的设计
+        </h2>
+        
+        <h3 class="post-subtitle">
+            App与服务器的通信接口如何设计得好，需要考虑的地方挺多的，在此根据我的一些经验做一些总结分享，旨在抛砖引玉。
+        </h3>
+        
+        <div class="post-content-preview">
+            安全机制的设计
+
+现在，大部分App的接口都采用RESTful架构，RESTFul最重要的一个设计原则就是，客户端与服务器的交互在请求之间是无状态的，也就是说，当涉及到用户状态时，每次请求都要带上身份验证信息。实现上，大部分都采用token的认证方式，一般流程是：
+
+
+  
+    用户用密码登录成功后，服务器返回token给客户端；
+  
+  
+    客户端将token保存在本地，发起后...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Francis Soung on March 24, 2016
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2016/03/24/%E5%A6%82%E4%BD%95%E8%AF%84%E4%BB%B7%E9%BB%91%E5%AE%A2%E4%B8%8E%E7%94%BB%E5%AE%B6/">
+        <h2 class="post-title">
+            如何评价『黑客与画家』
+        </h2>
+        
+        <h3 class="post-subtitle">
+            书呆子也并非不想让自己不受欢迎，他们只是更愿意把时间投入到让自己聪明上去罢了。
+        </h3>
+        
+        <div class="post-content-preview">
+            一本好的书，让我们收获的不单单是某种技巧，或者某种方法论， 他教给我们的是一种严密的思维方式，是一种学会把自己的眼光放得更加长远的决策习惯，他促使我们养成独立思考的习惯。 他没有送给我们一条大鱼，却把捕捉大鱼的方法交给了我们， 授人以鱼，不如授人以渔。
+
+我一直觉得把一个我们所熟知的很普通的问题讲的非常透彻而且非常清楚是一种相当了不起的能力， 保罗·格雷尔姆 不仅把问题讲的非常透彻，而且还非...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Francis Soung on March 24, 2016
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2016/03/23/%E5%A6%82%E4%BD%95%E4%B8%8B%E8%BD%BDTumblr%E7%9A%84%E8%A7%86%E9%A2%91/">
+        <h2 class="post-title">
+            [福利]如何下载Tumblr的视频
+        </h2>
+        
+        <h3 class="post-subtitle">
+            最近有些需求,需要下载Tumblr的视频,也就是说对Tumblr视频文件进行本地备份,找到了一个很不错的下载的方法,详情见本文.
+        </h3>
+        
+        <div class="post-content-preview">
+            众所周知，Tumblr是Yahoo旗下的轻博客，可以让使用者写日志，也能上传视频，那如果你把视频上传后想要下载下来怎么办呢？右键好像无法另存，不用担心，现在透过线上服务也能将Tumblr上的视频轻松下载下来保存，以免Tumblr服务停止运营后，视频不知道怎么备份下来！
+
+透过国外的TubeOffline，只要将Tumblr的单篇文章网址(内含视频的)粘贴上去，就能轻松下载Tumblr视频并存...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Francis Soung on March 23, 2016
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2016/03/16/%E5%A6%82%E4%BD%95%E5%87%8F%E5%B0%91%E6%8E%A5%E5%8F%A3%E5%93%8D%E5%BA%94%E6%97%B6%E9%97%B4/">
+        <h2 class="post-title">
+            如何减少接口响应时间
+        </h2>
+        
+        <h3 class="post-subtitle">
+            接口的响应速度对于用户体验和功能使用有极大的影响，这也跟接口功能的复杂化、代码效率、带宽有关系，那我们究竟如何减少接口的效应时间呢？这里根据自己的亲身实践和想法做一个总结。
+        </h3>
+        
+        <div class="post-content-preview">
+            
+  Premature optimization is the root of all evil.
+
+  　 — Donald Knuth
+
+
+对于程序优化，我一直采取保守的态度，除非万不得已。但是随着业务的不断发展，程序越来越复杂，代码越写越多，优化似乎是终有一天会到来的事情。
+
+那么对于一个典型的后台服务接口，我们可以从那些方面入手进行优化呢？
+
+接口拆分
+
+接口垂直拆分
+
+垂直拆分可...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Francis Soung on March 16, 2016
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2016/03/15/PHP%E8%B6%85%E6%97%B6%E5%A4%84%E7%90%86%E5%85%A8%E9%9D%A2%E6%80%BB%E7%BB%93/">
+        <h2 class="post-title">
+            PHP超时处理全面总结
+        </h2>
+        
+        <h3 class="post-subtitle">
+            对于经常碰到的超时问题进行总结，列出Web服务器、PHP本身、后端&接口访问超时、Memcached、MySQL以及C/C++等对超时的处理以及解决方案。
+        </h3>
+        
+        <div class="post-content-preview">
+            概述
+
+在PHP开发中工作里非常多使用到超时处理到超时的场合，我说几个场景：
+
+
+  异步获取数据如果某个后端数据源获取不成功则跳过，不影响整个页面展现
+  为了保证Web服务器不会因为当个页面处理性能差而导致无法访问其他页面，则会对某些页面操作设置
+  对于某些上传或者不确定处理时间的场合，则需要对整个流程中所有超时设置为无限，否则任何一个环节设置不当，都会导致莫名执行中断
+  多个后端模...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Francis Soung on March 15, 2016
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2016/03/14/%E5%BF%99%E5%BF%99%E7%A2%8C%E7%A2%8C-%E8%99%9A%E8%99%9A%E5%AE%9E%E5%AE%9E%E7%9A%84%E7%94%9F%E6%B4%BB/">
+        <h2 class="post-title">
+            忙忙碌碌，虚虚实实的生活
+        </h2>
+        
+        <h3 class="post-subtitle">
+            生活赋予我们一种巨大的和无限高贵的礼品，这就是青春：充满着力量，充满着期待志愿，充满着求知和斗争的志向，充满着希望信心和青春。 —— 奥斯特洛夫斯基
+        </h3>
+        
+        <div class="post-content-preview">
+            最近太忙碌了，工作忙，学习忙，以后的三年没有周末了。现在的周末比平时都要忙，仿佛一夜之间恢复到了学生时代，在我还没有做好迎接它的时候。
+
+现在才发现时间真的是太珍贵了，虚度光阴的日子不能再重复了。也好，让自己的生活更充实一些。
+
+如果简单点想的话，其实没有那么可怕，相信自己会逐步适应这种节奏。
+
+数学中有种思想叫化归，更适合作为我现在的指导思想。
+
+来，听首我最喜欢的钢琴曲吧。继续前行！
+
+...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Francis Soung on March 14, 2016
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2016/03/14/%E4%B8%8D%E8%A6%81%E4%B8%BA%E8%87%AA%E5%B7%B1%E9%80%89%E6%8B%A9%E7%9A%84%E9%81%93%E8%B7%AF%E8%80%8C%E5%90%8E%E6%82%94/">
+        <h2 class="post-title">
+            不要为自己选择的道路而后悔
+        </h2>
+        
+        <h3 class="post-subtitle">
+            自己选择的路，再艰难也要走下去，不要为自己选择的道路而后悔，摔跤了不要哭，再爬起来，站直一笑，拍拍尘灰继续奔跑!
+        </h3>
+        
+        <div class="post-content-preview">
+            
+  自己选择的路，再艰难也要走下去，不要为自己选择的道路而后悔，摔跤了不要哭，再爬起来，站直一笑，拍拍尘灰继续奔跑!
+
+
+永远都不要去为自己选择的道路而后悔，不管是十年前还是现在。控制好心情生活才会处处祥和。好心态塑造好心情，好心情塑造最出色的自己。过去的别再遗憾;未来的无须忧虑;现在的加倍珍惜。摔跤了不要哭，再爬起来，站直一笑，拍拍尘灰继续奔跑。正视人生的每一个挫折适应人生的每一回起伏，...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Francis Soung on March 14, 2016
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2016/03/14/%E5%B8%B8%E7%94%A8%E5%85%AC%E5%85%B1DNS%E6%9C%8D%E5%8A%A1%E5%99%A8/">
+        <h2 class="post-title">
+            国内常用公共DNS服务器、各省运营商DNS服务器汇总
+        </h2>
+        
+        <h3 class="post-subtitle">
+            不知道大家有没有过网络是正常的，QQ可以正常登录、游戏也可以正常玩，但是网页无论如何都打不开。这就是电脑网络设置的DNS服务器有问题，不是其故障就是不工作了。
+        </h3>
+        
+        <div class="post-content-preview">
+            不知道大家有没有过网络是正常的，QQ可以正常登录、游戏也可以正常玩，但是网页无论如何都打不开。这就是电脑网络设置的DNS服务器有问题，不是其故障就是不工作了。
+
+换了DNS服务器成功解决问题。下边给大家分享一下国内比较大型大众常用的公共DNS服务器。
+
+
+  公共DNS服务器，即系统默认的DNS解析服务器。DNS全称Domain Name System，即域名解析系统。DNS帮助用户在互联网...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Francis Soung on March 14, 2016
+    </p>
+</div>
+<hr>
+
 
 <!-- Pager -->
-{% if paginator.total_pages > 1 %}
+
 <ul class="pager">
-    {% if paginator.previous_page %}
-    <li class="previous">
-        <a href="{{ paginator.previous_page_path | prepend: site.baseurl | replace: '//', '/' }}">&larr; Newer Posts</a>
-    </li>
-    {% endif %}
-    {% if paginator.next_page %}
+    
+    
     <li class="next">
-        <a href="{{ paginator.next_page_path | prepend: site.baseurl | replace: '//', '/' }}">Older Posts &rarr;</a>
+        <a href="/page2">Older Posts &rarr;</a>
     </li>
-    {% endif %}
+    
 </ul>
-{% endif %}
+
+
+    		</div>
+    <!-- Sidebar Container -->
+            <div class="
+                col-lg-3 col-lg-offset-0
+                col-md-3 col-md-offset-0
+                col-sm-12
+                col-xs-12
+                sidebar-container
+            ">
+                <!-- Featured Tags -->
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                            
+                                <a href="/tags/#Linux" title="Linux" rel="10">
+                                    Linux
+                                </a>
+                            
+                        
+                            
+                                <a href="/tags/#Francis 旅行录" title="Francis 旅行录" rel="6">
+                                    Francis 旅行录
+                                </a>
+                            
+                        
+                            
+                                <a href="/tags/#Francis 简单生活" title="Francis 简单生活" rel="7">
+                                    Francis 简单生活
+                                </a>
+                            
+                        
+                            
+                        
+                            
+                                <a href="/tags/#PHP" title="PHP" rel="6">
+                                    PHP
+                                </a>
+                            
+                        
+                            
+                                <a href="/tags/#MySQL" title="MySQL" rel="2">
+                                    MySQL
+                                </a>
+                            
+                        
+                            
+                                <a href="/tags/#Apache" title="Apache" rel="2">
+                                    Apache
+                                </a>
+                            
+                        
+                            
+                                <a href="/tags/#Francis 杂谈" title="Francis 杂谈" rel="12">
+                                    Francis 杂谈
+                                </a>
+                            
+                        
+                            
+                                <a href="/tags/#OS X" title="OS X" rel="2">
+                                    OS X
+                                </a>
+                            
+                        
+                            
+                        
+                            
+                                <a href="/tags/#Nginx" title="Nginx" rel="2">
+                                    Nginx
+                                </a>
+                            
+                        
+                            
+                        
+                            
+                                <a href="/tags/#编程" title="编程" rel="3">
+                                    编程
+                                </a>
+                            
+                        
+                            
+                        
+                            
+                                <a href="/tags/#C语言" title="C语言" rel="2">
+                                    C语言
+                                </a>
+                            
+                        
+                            
+                                <a href="/tags/#架构" title="架构" rel="2">
+                                    架构
+                                </a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Short About -->
+                <section class="visible-md visible-lg">
+                    <hr><h5><a href="">ABOUT ME</a></h5>
+                    <div class="short-about">
+                        
+                            <img src="/img/avatar-francis.jpg" alt="Francis Soung" />
+                        
+                        
+                            <p>爱好旅行，摄影和运动，更热爱我现在的coding。世界那么大，我想去看看。</p>
+                        
+                        <!-- SNS Link -->
+                        <ul class="list-inline">
+                            
+                            
+                            <li>
+                                <a target="_blank" href="http://weibo.com/523072343">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            
+                            
+                            <li>
+                                <a target="_blank" href="https://www.zhihu.com/people/Franciskeke">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa  fa-stack-1x fa-inverse">知</i>
+                                    </span>
+                                </a>
+                            </li>
+                            
+                            
+                            <li>
+                                <a target="_blank" href="https://segmentfault.com/u/francissoung">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa  fa-stack-1x fa-inverse">sf</i>
+                                    </span>
+                                </a>
+                            </li>
+                            
+                            
+                            <li>
+                                <a target="_blank" href="https://github.com/FrancisSoung">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            
+                            
+                            <li>
+                                <a target="_blank" href="https://www.facebook.com/francis.soung">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            
+                            
+                            <li>
+                                <a href="https://twitter.com/Francis_Soung">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            
+
+                        </ul>
+                    </div>
+                </section>
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+                    
+                        <li><a href="http://blog.maryopen.com/">马力全开</a></li>
+                    
+                        <li><a href="http://lfyqzhang.com/">宇过天勤</a></li>
+                    
+                        <li><a href="http://www.april2nd.me/">航哥</a></li>
+                    
+                        <li><a href="http://blog.ichuck.net/">鹏哥</a></li>
+                    
+                        <li><a href="http://www.shmilyx.net/">望望</a></li>
+                    
+                        <li><a href="http://www.51hsw.com/">好一网</a></li>
+                    
+                </ul>
+                
+    		</div>
+        
+	</div>
+</div>
+
+
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="http://weibo.com/523072343">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/Franciskeke">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://segmentfault.com/u/francissoung">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa  fa-stack-1x fa-inverse">sf</i>
+                                    </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/FrancisSoung">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/francis.soung">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a href="https://twitter.com/Francis_Soung">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Francis Soung 2016
+                    <br>
+                    Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> and <a href="http://www.bootcss.com/">Bootstrap</a> | Theme © <a href="http://huangxuan.me">Hux</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=FrancisSoung&repo=blog-jekyll-theme&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+<p id="back-to-top"><a href="#top"><span></span></a></p>
+
+
+<script src="http://7xl0td.com1.z0.glb.clouddn.com/js%2Fjquery.min.js"></script>
+<script src="http://7xl0td.com1.z0.glb.clouddn.com/js%2Fbootstrap.min.js"></script>
+<script src="http://7xl0td.com1.z0.glb.clouddn.com/js%2Ffrancis-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- Highlight.js -->
+<script>
+    async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+        hljs.initHighlightingOnLoad();
+    })
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+<link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+
+<!--fastClick.js -->
+<script>
+    async("http://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        // var $nav = document.querySelector("nav");
+        // if($nav) FastClick.attach($nav);
+
+        // global FastClick!!
+        FastClick.attach(document.body);    
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Francis Soung
+    var _baId = '551c451674b914ab3e454205afd429a8';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- Baidu zhanzhang -->
+<script>
+    (function(){
+        var bp = document.createElement('script');
+        bp.src = '//push.zhanzhang.baidu.com/push.js';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+<!--返回顶部-->
+<script>
+    $(function(){
+        //当滚动条的位置处于距顶部100像素以下时，跳转链接出现，否则消失
+        $(function () {
+            $(window).scroll(function(){
+                if ($(window).scrollTop()>100){
+                    $("#back-to-top").fadeIn(1500);
+                }
+                else
+                {
+                    $("#back-to-top").fadeOut(1500);
+                }
+            });
+
+            //当点击跳转链接后，回到页面顶部位置
+
+            $("#back-to-top").click(function(){
+                $('body,html').animate({scrollTop:0},1000);
+                return false;
+            });
+        });
+    });
+</script>
+
+
+
+<!-- Image to hack wechat -->
+<img src="/img/icon_wechat.png" alt="Francis Soung" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
