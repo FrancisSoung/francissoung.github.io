@@ -9,9 +9,9 @@
     <meta name="keywords"  content="WEB程序开发,Linux服务器管理,LAMP/LNMP环境配置优化,网络架构,MySQL优化,生活旅行,Francis,francissoung,php程序猿的笔记,程序员的日记薄">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>浅谈大型网站动态应用系统架构 - Francis Soung</title>
+    <title>递归算法之n阶矩阵行列式求解 - Francis Soung</title>
 
-    <link rel="canonical" href="http://www.francissoung.com/2016/03/03/%E6%B5%85%E8%B0%88%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E5%8A%A8%E6%80%81%E5%BA%94%E7%94%A8%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/">
+    <link rel="canonical" href="http://www.francissoung.com/2016/03/31/%E9%80%92%E5%BD%92%E7%AE%97%E6%B3%95%E4%B9%8Bn%E9%98%B6%E7%9F%A9%E9%98%B5%E8%A1%8C%E5%88%97%E5%BC%8F%E6%B1%82%E8%A7%A3/">
 
     
     <!-- css CDN to qiniu -->
@@ -137,13 +137,13 @@
 
     <!-- Image to hack wechat -->
 <!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
-<!-- <img src="/img/post-bg-unix-linux.jpg" width="0" height="0"> -->
+<!-- <img src="/img/post-bg-hanglieshi.jpg" width="0" height="0"> -->
 
 <!-- Post Header -->
 <style type="text/css">
     header.intro-header{
         position: relative;
-        background-image: url('/img/post-bg-unix-linux.jpg')
+        background-image: url('/img/post-bg-hanglieshi.jpg')
     }
 
     
@@ -156,17 +156,15 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#架构" title="架构">架构</a>
-                        
-                        <a class="tag" href="/tags/#Francis 杂谈" title="Francis 杂谈">Francis 杂谈</a>
+                        <a class="tag" href="/tags/#Francis 简单生活" title="Francis 简单生活">Francis 简单生活</a>
                         
                     </div>
-                    <h1>浅谈大型网站动态应用系统架构</h1>
+                    <h1>递归算法之n阶矩阵行列式求解</h1>
                     
                     
-                    <h2 class="subheading"></h2>
+                    <h2 class="subheading">最近高等代数正好讲到这里，此篇文章正好对所学知识做一个具体程序实践。</h2>
                     
-                    <span class="meta">Posted by Francis Soung on March 3, 2016</span>
+                    <span class="meta">Posted by Francis Soung on March 31, 2016</span>
                 </div>
             </div>
         </div>
@@ -184,143 +182,247 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <p>动态应用，是相对于网站静态内容而言，是指以<strong>c/c++、php、Java、perl、.net</strong>等服务器端语言开发的网络应用软件，比如<strong>论坛、网络相册、交友、BLOG</strong>等常见应用。动态应用系统通常与数据库系统、缓存系统、分布式存储系统等密不可分。</p>
+                <blockquote>
+  <p>设计算法时使用递归的思想是一个程序员的基本素质，递归可以把一个很庞大的问题转化为规模缩小了的同类问题的子问题，通过这一思想，我们编程时运用递归可以使用很少的代码来处理很大的问题。这篇文章将会讲到递归算法的运用。</p>
+</blockquote>
 
-<p>大型动态应用系统平台主要是针对于<strong>大流量、高并发</strong>网站建立的底层系统架构。大型网站的运行需要一个<strong>可靠、安全、可扩展、易维护</strong>的应用系统平台做为支撑，以保证网站应用的平稳运行。</p>
+<p>在数学中，很多数学函数都是由一个公式来表达的，比如 <em>f(x) = 100x</em>; 这个公式可以让我们把长度米转换成长度厘米。 有了这个公式，在程序中敲出一行代码，写出一个函数（function）来计算实在是太简单方便了，就像这样。</p>
 
-<p>大型动态应用系统又可分为几个子系统：</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>int convert(int m){
+    return 100*m;
+}
+</code></pre>
+</div>
 
-<ul>
-  <li><strong>Web前端系统</strong></li>
-  <li><strong>负载均衡系统</strong></li>
-  <li><strong>数据库集群系统</strong></li>
-  <li><strong>缓存系统</strong></li>
-  <li><strong>分布式存储系统</strong></li>
-  <li><strong>分布式服务器管理系统</strong></li>
-  <li><strong>代码分发系统</strong></li>
-</ul>
+<p>我们就写好了一个函数来进行米到厘米的单位换算。</p>
 
-<h2 id="web">Web前端系统</h2>
+<p>但是有的时候，数学函数会以不太标准的形式来定义，比如这个函数，他满足 <em>f(0)=0</em>而且 <em>f(x) = 2f(x-1)+x</em>; 从这个函数定义我们可以得出 <em>f(1)=1</em>;<em>f(2)=3</em>;等等。当一个函数用他自己来定义时就称为这个函数是递归的。</p>
 
-<p>结构图：</p>
+<p>通俗地讲，就是从前有个山，山里有个庙，庙里有个老和尚再给小和尚讲故事，讲的是：从前有个山，山里有个庙，庙里有个老和尚再给小和尚讲故事。。。。这就是递归。</p>
 
-<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016%2F03%2F03%2F23c8611eb055424faff943b5d0f0c345.jpg" alt="" /></p>
+<p>好了说了这么多你们肯定还是一头雾水，现在来实践一下。</p>
 
-<p>为了达到不同应用的服务器共享、避免单点故障、集中管理、统一配置等目的，不以应用划分服务器，而是将所有服务器做统一使用，每台服务器都可以对多个应用提供服务，当某些应用访问量升高时，通过增加服务器节点达到整个服务器集群的性能提高，同时使他应用也会受益。该Web前端系统基于Apache/Lighttpd/Eginx等的虚拟主机平台，提供PHP程序运行环境。服务器对开发人员是透明的，不需要开发人员介入服务器管理。</p>
+<h3 id="section">递归求阶乘</h3>
 
-<h2 id="section">负载均衡系统</h2>
+<p>刚开始学编程的同学一定会写求阶乘的函数，使用for循环或者while循环都可以，但是递归却完全用不上这两个循环。</p>
 
-<p>结构图：</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>public static int factorial(int a){
 
-<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016%2F03%2F03%2Ff1ab878d9087306ff476710079f084d9.jpg" alt="" /></p>
+    if (a==0 || a==1){
+        return 1;
+    }
 
-<p>负载均衡系统分为硬件和软件两种。硬件负载均衡效率高，但是价格贵，比如F5等。软件负载均衡系统价格较低或者免费，效率较硬件负载均衡系统低，不过对于流量一般或稍大些网站来讲也足够使用，比如lvs, nginx。大多数网站都是硬件、软件负载均衡系统并用。</p>
+    return a*factorial(a-1);
+}
+</code></pre>
+</div>
 
-<h2 id="section-1">数据库集群系统</h2>
+<p>上面的代码就是递归求阶乘的方法，a是需要传入的参数，比如我们要求5的阶乘就传入5这样factorial函数最终的返回值为120；</p>
 
-<p>结构图：</p>
+<p>分析这段代码，他的第3行到第五行处理了 <strong>基准情况（Base Case）</strong>，在这个情况下，函数的值可以直接算出而不用求出递归。就像上文提到的函数<em>f(x) = 2f(x-1)+x</em>;如果没有f(0)=0这个事实在数学上没有意义一样。 再编程中，如果没有基准情况也是无意义的。第7行执行的是递归调用。</p>
 
-<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016%2F03%2F03%2F5d85ae32d4ce1d69c6659aa73796d0db.jpg" alt="" /></p>
+<p>所以所，设计递归算法，需要包含以下两个基本法则：</p>
 
-<p>由于Web前端采用了负载均衡集群结构提高了服务的有效性和扩展性，因此数据库必须也是高可靠的，才能保证整个服务体系的高可靠性，如何构建一个高可靠的、可以提供大规模并发处理的数据库体系？</p>
+<p><strong>1、基准情形（Base Case），必须总要有某些基准的清醒，在这个情形中，不执行递归就能求解。</strong></p>
 
-<p>我们可以采用如上图所示的方案：</p>
+<p><strong>2、不断推进（Making Progress），对于需要递归求解的情形，递归调用必须总能够朝着一个基准情形推进。这样的话，不断推进到基准情形，到达基准情形的时候递归才会推出，得到返回值。</strong></p>
 
-<ul>
-  <li>
-    <p>使用 MySQL 数据库，考虑到Web应用的数据库读多写少的特点，我们主要对读数据库做了优化，提供专用的读数据库和写数据库，在应用程序中实现读操作和写操作分别访问不同的数据库。</p>
-  </li>
-  <li>
-    <p>使用 MySQL Replication 机制实现快速将主库（写库）的数据库复制到从库（读库）。一个主库对应多个从库，主库数据实时同步到从库。</p>
-  </li>
-  <li>
-    <p>写数据库有多台，每台都可以提供多个应用共同使用，这样可以解决写库的性能瓶颈问题和单点故障问题。</p>
-  </li>
-  <li>
-    <p>读数据库有多台，通过负载均衡设备实现负载均衡，从而达到读数据库的高性能、高可靠和高可扩展性。</p>
-  </li>
-  <li>
-    <p>数据库服务器和应用服务器分离。</p>
-  </li>
-  <li>
-    <p>从数据库使用BigIP做负载均衡。</p>
-  </li>
-</ul>
+<p><img src="http://source.francissoung.com//2016%2F03%2F30%2Fn%E9%98%B6%E7%9F%A9%E9%98%B5%E8%A1%8C%E5%88%97%E5%BC%8F%E6%B1%82%E8%A7%A31.jpg" alt="" /></p>
 
-<h2 id="section-2">缓存系统</h2>
+<h3 id="n">n阶矩阵行列式的求解</h3>
 
-<p>结构图：</p>
+<p>有了刚在知识的铺垫，现在我们可以动手写一个程序来用递归计算n阶矩阵的行列式了。</p>
 
-<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016%2F03%2F03%2Fd257ef6afdc2007bf729dca4a973068b.jpg" alt="" /></p>
+<p><strong>首先来看下二阶矩阵的求法</strong>：</p>
 
-<p>缓存分为文件缓存、内存缓存、数据库缓存。在大型Web应用中使用最多且效率最高的是内存缓存。最常用的内存缓存工具是Memcached。使用正确的缓存系统可以达到实现以下目标：</p>
+<p><img src="http://source.francissoung.com/2016%2F03%2F30%2Fn%E9%98%B6%E7%9F%A9%E9%98%B5%E8%A1%8C%E5%88%97%E5%BC%8F%E6%B1%82%E8%A7%A32.png" alt="" /></p>
 
-<ol>
-  <li>
-    <p>使用缓存系统可以提高访问效率，提高服务器吞吐能力，改善用户体验。</p>
-  </li>
-  <li>
-    <p>减轻对数据库及存储集服务器的访问压力。</p>
-  </li>
-  <li>
-    <p>Memcached服务器有多台，避免单点故障，提供高可靠性和可扩展性，提高性能。</p>
-  </li>
-</ol>
+<p>也就是说2×2矩阵的元素交叉相乘再想减即可求出行列式。</p>
 
-<h2 id="section-3">分布式存储系统</h2>
+<p><strong>接下来是3阶矩阵</strong>：</p>
 
-<p>结构图：</p>
+<p><img src="http://source.francissoung.com/2016%2F03%2F30%2Fn%E9%98%B6%E7%9F%A9%E9%98%B5%E8%A1%8C%E5%88%97%E5%BC%8F%E6%B1%82%E8%A7%A33.png" alt="" /></p>
 
-<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016%2F03%2F03%2Faf947278e3d6fd5fac17af2e689b4c5c.jpg" alt="" /></p>
+<p>3×3矩阵求解中，选择任意行或者列，在那一行/列中,移除那个元素所在的行和列比如选择a11，则移除第一行和第一列，这样矩阵就变成了2×2的，再按照刚才的方法求2×2矩阵的行列式即可。之后整个行或列的3个元素进行此类运算后相加就是3×3的行列式。</p>
 
-<p>Web系统平台中的存储需求有下面两个特点：</p>
+<p><strong>n x n矩阵</strong>：</p>
 
-<ol>
-  <li>
-    <p>存储量很大，经常会达到单台服务器无法提供的规模，比如相册、视频等应用。因此需要专业的大规模存储系统。</p>
-  </li>
-  <li>
-    <p>负载均衡cluster中的每个节点都有可能访问任何一个数据对象，每个节点对数据的处理也能被其他节点共享，因此这些节点要操作的数据从逻辑上看只能是一个整体，不是各自独立的数据资源。</p>
-  </li>
-</ol>
+<p>n阶矩阵就和3阶矩阵求解的方法一样了，使用3×3求解的方法，比如4阶矩阵，将4阶消除成3阶，然后再变成2阶来算。但是矩阵每上升一个维度，计算量就会扩大很多。</p>
 
-<p>因此<strong>高性能的分布式存储系统对于大型网站应用来说是非常重要的一环</strong>。（这个地方需要加入对某个分布式存储系统的简单介绍。）</p>
+<p><img src="http://source.francissoung.com/2016%2F03%2F30%2Fn%E9%98%B6%E7%9F%A9%E9%98%B5%E8%A1%8C%E5%88%97%E5%BC%8F%E6%B1%82%E8%A7%A34.gif" alt="" /></p>
 
-<h2 id="section-4">分布式服务器管理系统</h2>
+<p>知道了n阶矩阵行列式的计算思路后，就可以开始编写算法了。</p>
 
-<p>结构图：</p>
+<p><strong>首先是数据结构设计</strong>，我们需要设计一个矩阵类来提供便利，这个类有两个成员，一个二维数组，用来储存矩阵，一个整数，来储存矩阵的行数或列数（行列式必须是方矩阵才可以求解所以行列无所谓）。</p>
 
-<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016%2F03%2F03%2F1178fd6019a70d78c813bd0d66e6304a.jpg" alt="" /></p>
+<p>以下是整个Matrix类的设计：</p>
 
-<p>随着网站访问流量的不断增加，大多的网络服务都是以负载均衡集群的方式对外提供服务，随之集群规模的扩大，原来基于单机的服务器管理模式已经不能够满足我们的需求，新的需求必须能够集中式的、分组的、批量的、自动化的对服务器进行管理，能够批量化的执行计划任务。</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>static class Matrix{
 
-<p>在分布式服务器管理系统软件中有一些比较优秀的软件，其中比较理想的一个是Cfengine。它可以对服务器进行分组，不同的分组可以分别定制系统配置文件、计划任务等配置。它是基于C/S 结构的，所有的服务器配置和管理脚本程序都保存在Cfengine Server上，而被管理的服务器运行着 Cfengine Client 程序，Cfengine Client通过SSL加密的连接定期的向服务器端发送请求以获取最新的配置文件和管理命令、脚本程序、补丁安装等任务。</p>
+    private int rowNum=0;
 
-<p>有了Cfengine这种集中式的服务器管理工具，我们就可以高效的实现大规模的服务器集群管理，被管理服务器和 Cfengine Server 可以分布在任何位置，只要网络可以连通就能实现快速自动化的管理。</p>
+    private int[][] array;
 
-<h2 id="section-5">代码发布系统</h2>
+    //Constructor
+    public Matrix(int rowNum){
+        this.rowNum = rowNum;
+        array = new int[rowNum][rowNum];
+    }
 
-<p>结构图：</p>
+    public Matrix(int[][] array){
+        this.array = array;
+        this.rowNum = array.length;
+    }
 
-<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016%2F03%2F03%2Fd3459694dbf3e7bde14319457ea41178.jpg" alt="" /></p>
+    int counter = 0; //For add Element
 
-<p>随着网站访问流量的不断增加，大多的网络服务都是以负载均衡集群的方式对外提供服务，随之集群规模的扩大，为了满足集群环境下程序代码的批量分发和更新，我们还需要一个程序代码发布系统。</p>
+    public void addElement(int a){
+        array[(counter)/rowNum][counter%rowNum] = a;
+        counter++;
+    }
 
-<p>这个发布系统可以帮我们实现下面的目标：</p>
+    //Print the instance itself
+    public void printMat(){
+        for (int i=0;i &lt; rowNum ;i++){
+            for (int j=0;j &lt; rowNum ;j++){
+                 System.out.print(array[i][j]+\t;);
+            }
+            System.out.println();
+        }
+    }
 
-<ul>
-  <li>
-    <p>生产环境的服务器以虚拟主机方式提供服务，不需要开发人员介入维护和直接操作，提供发布系统可以实现不需要登陆服务器就能把程序分发到目标服务器。</p>
-  </li>
-  <li>
-    <p>我们要实现内部开发、内部测试、生产环境测试、生产环境发布的4个开发阶段的管理，发布系统可以介入各个阶段的代码发布。</p>
-  </li>
-  <li>
-    <p>我们需要实现源代码管理和版本控制，SVN可以实现该需求。</p>
-  </li>
-</ul>
+    //Setter and Getter
+    public int getRowNum() {
+        return rowNum;
+    }
 
-<p>这里面可以使用常用的工具Rsync，通过开发相应的脚本工具实现服务器集群间代码同步分发。</p>
+    public int[][] getArray() {
+        return array;
+    }
+
+    public void setArray(int[][] array) {
+        this.array = array;
+    }
+
+}
+</code></pre>
+</div>
+
+<p>Matrix类中有两个构造方法：传入整数a会初始化一个axa大小的空矩阵，传入一个二维数组的话即可根据二维初始化一个Matrix对象。</p>
+
+<p>Matrix类中有一个方法比较特殊：addElement方法，通过不断调用这个函数即可向一个Matrix实例进行有顺序的负值，第一次调用则会更改第第一行第一列位置上的值，第二次调用则会更改第一行第二列上的值，以此类推。</p>
+
+<p>接下来就是设计一个MatrixCalculator类的，这个类中的一个成员方法可以求出行列式，我命名他为getDet(); 在计算行列式的时候需要移除元素所在的行和列，生成一个减小了一个维度的矩阵，我们需要编写一个方法来完成这个操作，我命名他为removeRowAndCol()；还有一个方法，由于相加的时候会产生符号的改变，所以需要写一个方法来计算矩阵中一个元素的cofactor，命名为getCofactor。</p>
+
+<p>以下就是removeRowAndCol方法的代码：传入需要移除的行和列和一个Matrix对象，函数会返回消除了指定行和列的Matrix对象。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public static Matrix removeRowAndCol(int row,int col,Matrix mat){
+
+    int matRowNum = mat.getRowNum();
+    int[][] arr = mat.getArray();
+
+    Matrix matrix = new Matrix(matRowNum-1);
+
+    for (int i = 0;i &lt; matRowNum; i++){
+        for (int j = 0 &lt; matRowNum; j++){
+                if (i!=row &amp;&amp; j!=col) {
+                    matrix.addElement(arr[i][j]);
+                }
+        }
+    }
+
+    matrix.printMat();
+    return matrix;
+
+}
+</code></pre>
+</div>
+
+<p>以下是getCofactor方法：由于我的算法只会去遍历矩阵第一列来进行求解，所以得到Cofactor的代码就变得简单很多。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public static int getCofactor(int colNum){
+    if (colNum%2 == 0){
+        return 1;
+    }else {
+        return -1;
+    }
+}
+</code></pre>
+</div>
+
+<p>接下来就是核心的递归求解行列式的算法了，先理一下思路，<strong>递归算法的两个要素：基准情形，不断推进</strong>。</p>
+
+<p>对于n阶矩阵什么是基准情形呢？就是矩阵被降为2×2维度的时候，直接返回交叉相乘的差即可，不断推进，如果是一个4阶矩阵，算法会先把4将为3×3矩阵，然后3×3再拆成3个2×2矩阵来达到基准情形来算出答案，就和我们手算行列式时用到的方法一样，手算时候也遵循这一算法。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>public static int getDet(Matrix targetMatrix){
+    //Base (Finally reduced to 2 x 2 Matrix)
+    if (targetMatrix.rowNum == 2){
+        int[][] arr = targetMatrix.getArray();
+        // a*d - b*c
+        return arr[0][0]*arr[1][1] - arr[0][1]*arr[1][0];
+    }
+
+    //MARK- Recursion: to reduce dimension
+    int det = 0;
+    int colNum = targetMatrix.rowNum;
+    for (int i = 0; &lt; colNum;i++){
+        det+= (targetMatrix.getArray()[i][0])*getCofactor(i)*getDet(removeRowAndCol(i,0,targetMatrix));
+    }
+
+    return det;
+}
+</code></pre>
+</div>
+
+<p>只有不到20行代码，但是却可以解决nxn的矩阵，是不是很神奇，这就是递归的优势，把一个很庞大的问题转化为规模缩小了的同类问题的子问题来求解。n阶矩阵最后被降为若干个2×2矩阵。</p>
+
+<p>加上适当的输出语句，来求解一个3阶矩阵行列式试一下：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>2   1    2
+-1   5   21
+13 -1  -17
+
+Element: 2
+Cofactor: 1
+Removing Row 0 Col 0
+A 2 x 2 Matrix is initialized
+5 21
+-1 -17
+END State Reached
+Det: -64
+
+Element: -1
+Cofactor: -1
+Removing Row 1 Col 0
+A 2 x 2 Matrix is initialized
+1 2
+-1 -17
+END State Reached
+Det: -15
+
+Element: 13
+Cofactor: 1
+Removing Row 2 Col 0
+A 2 x 2 Matrix is initialized
+1 2
+5 21
+END State Reached
+Det: 11
+Result: 0
+</code></pre>
+</div>
+
+<p>但是有一个问题需要注意，就是这个算法的复杂度。</p>
+
+<h3 id="section-1">算法复杂度</h3>
+
+<p>这个算法的复杂度为O(n!), 这意味着他的运行速度很慢，随着问题规模的增长，时间会大幅度增长。在我的电脑上，计算3×3到7×7内规模的矩阵，电脑都可以秒算出来，但是如果是一个10×10的矩阵，电脑需要54秒钟，到了11×11时间将会变得更长，下图是这个算法随着问题规模增长对运行时产生影响的曲线。</p>
+
+<p>可以看出7×7矩阵需要递归517次，到了10×10需要大约260万次递归运算才能得到结果。可见问题规模增长后时间的开销是十分巨大的。</p>
+
+<p><img src="http://source.francissoung.com/2016%2F03%2F30%2Fn%E9%98%B6%E7%9F%A9%E9%98%B5%E8%A1%8C%E5%88%97%E5%BC%8F%E6%B1%82%E8%A7%A35.png" alt="" /></p>
+
+<p>原文：<a href="http://miketech.it/recursion_algorithm/">http://miketech.it/recursion_algorithm/</a></p>
 
 
                 <hr>
@@ -341,19 +443,12 @@
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2016/03/01/osx-xcode-c/" data-toggle="tooltip" data-placement="top" title="如何用 OS X 的 Xcode 写 C 语言程序">
+                        <a href="/2016/03/27/%E4%BC%BC%E6%B0%B4%E5%B9%B4%E5%8D%8E%E4%B9%8B%E5%9B%9E%E7%82%89%E5%86%8D%E9%80%A0/" data-toggle="tooltip" data-placement="top" title="似水年华之回炉再造">
                             Previous<br>
-                            <span>如何用 OS X 的 Xcode 写 C 语言程序</span>
+                            <span>似水年华之回炉再造</span>
                         </a>
                     </li>
                     
-                    
-                    <li class="next">
-                        <a href="/2016/03/04/%E5%A6%82%E4%BD%95%E5%86%99%E5%87%BA%E4%BC%98%E7%BE%8E%E7%9A%84-C-%E4%BB%A3%E7%A0%81/" data-toggle="tooltip" data-placement="top" title="如何写出优美的 C 代码">
-                            Next<br>
-                            <span>如何写出优美的 C 代码</span>
-                        </a>
-                    </li>
                     
                 </ul>
 
@@ -511,8 +606,8 @@
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = "francissoungblog";
-    var disqus_identifier = "/2016/03/03/浅谈大型网站动态应用系统架构";
-    var disqus_url = "http://www.francissoung.com/2016/03/03/%E6%B5%85%E8%B0%88%E5%A4%A7%E5%9E%8B%E7%BD%91%E7%AB%99%E5%8A%A8%E6%80%81%E5%BA%94%E7%94%A8%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/";
+    var disqus_identifier = "/2016/03/31/递归算法之n阶矩阵行列式求解";
+    var disqus_url = "http://www.francissoung.com/2016/03/31/%E9%80%92%E5%BD%92%E7%AE%97%E6%B3%95%E4%B9%8Bn%E9%98%B6%E7%9F%A9%E9%98%B5%E8%A1%8C%E5%88%97%E5%BC%8F%E6%B1%82%E8%A7%A3/";
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

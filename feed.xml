@@ -5,9 +5,299 @@
     <description>这是一个程序员的日记薄，记录工作与生活的点点滴滴。包括WEB程序开发、Linux服务器管理、LAMP/LNMP环境配置优化、PHP网络技术、MySQL优化等技术分享以及个人生活旅行中的所见所闻所解。</description>
     <link>http://www.francissoung.com/</link>
     <atom:link href="http://www.francissoung.com/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Thu, 24 Mar 2016 23:59:06 +0800</pubDate>
-    <lastBuildDate>Thu, 24 Mar 2016 23:59:06 +0800</lastBuildDate>
+    <pubDate>Thu, 31 Mar 2016 10:45:43 +0800</pubDate>
+    <lastBuildDate>Thu, 31 Mar 2016 10:45:43 +0800</lastBuildDate>
     <generator>Jekyll v3.1.2</generator>
+    
+      <item>
+        <title>递归算法之n阶矩阵行列式求解</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;设计算法时使用递归的思想是一个程序员的基本素质，递归可以把一个很庞大的问题转化为规模缩小了的同类问题的子问题，通过这一思想，我们编程时运用递归可以使用很少的代码来处理很大的问题。这篇文章将会讲到递归算法的运用。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;在数学中，很多数学函数都是由一个公式来表达的，比如 &lt;em&gt;f(x) = 100x&lt;/em&gt;; 这个公式可以让我们把长度米转换成长度厘米。 有了这个公式，在程序中敲出一行代码，写出一个函数（function）来计算实在是太简单方便了，就像这样。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;int convert(int m){
+    return 100*m;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;我们就写好了一个函数来进行米到厘米的单位换算。&lt;/p&gt;
+
+&lt;p&gt;但是有的时候，数学函数会以不太标准的形式来定义，比如这个函数，他满足 &lt;em&gt;f(0)=0&lt;/em&gt;而且 &lt;em&gt;f(x) = 2f(x-1)+x&lt;/em&gt;; 从这个函数定义我们可以得出 &lt;em&gt;f(1)=1&lt;/em&gt;;&lt;em&gt;f(2)=3&lt;/em&gt;;等等。当一个函数用他自己来定义时就称为这个函数是递归的。&lt;/p&gt;
+
+&lt;p&gt;通俗地讲，就是从前有个山，山里有个庙，庙里有个老和尚再给小和尚讲故事，讲的是：从前有个山，山里有个庙，庙里有个老和尚再给小和尚讲故事。。。。这就是递归。&lt;/p&gt;
+
+&lt;p&gt;好了说了这么多你们肯定还是一头雾水，现在来实践一下。&lt;/p&gt;
+
+&lt;h3 id=&quot;section&quot;&gt;递归求阶乘&lt;/h3&gt;
+
+&lt;p&gt;刚开始学编程的同学一定会写求阶乘的函数，使用for循环或者while循环都可以，但是递归却完全用不上这两个循环。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public static int factorial(int a){
+
+    if (a==0 || a==1){
+        return 1;
+    }
+
+    return a*factorial(a-1);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;上面的代码就是递归求阶乘的方法，a是需要传入的参数，比如我们要求5的阶乘就传入5这样factorial函数最终的返回值为120；&lt;/p&gt;
+
+&lt;p&gt;分析这段代码，他的第3行到第五行处理了 &lt;strong&gt;基准情况（Base Case）&lt;/strong&gt;，在这个情况下，函数的值可以直接算出而不用求出递归。就像上文提到的函数&lt;em&gt;f(x) = 2f(x-1)+x&lt;/em&gt;;如果没有f(0)=0这个事实在数学上没有意义一样。 再编程中，如果没有基准情况也是无意义的。第7行执行的是递归调用。&lt;/p&gt;
+
+&lt;p&gt;所以所，设计递归算法，需要包含以下两个基本法则：&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;1、基准情形（Base Case），必须总要有某些基准的清醒，在这个情形中，不执行递归就能求解。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;2、不断推进（Making Progress），对于需要递归求解的情形，递归调用必须总能够朝着一个基准情形推进。这样的话，不断推进到基准情形，到达基准情形的时候递归才会推出，得到返回值。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://source.francissoung.com//2016%2F03%2F30%2Fn%E9%98%B6%E7%9F%A9%E9%98%B5%E8%A1%8C%E5%88%97%E5%BC%8F%E6%B1%82%E8%A7%A31.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;n&quot;&gt;n阶矩阵行列式的求解&lt;/h3&gt;
+
+&lt;p&gt;有了刚在知识的铺垫，现在我们可以动手写一个程序来用递归计算n阶矩阵的行列式了。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;首先来看下二阶矩阵的求法&lt;/strong&gt;：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://source.francissoung.com/2016%2F03%2F30%2Fn%E9%98%B6%E7%9F%A9%E9%98%B5%E8%A1%8C%E5%88%97%E5%BC%8F%E6%B1%82%E8%A7%A32.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;也就是说2×2矩阵的元素交叉相乘再想减即可求出行列式。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;接下来是3阶矩阵&lt;/strong&gt;：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://source.francissoung.com/2016%2F03%2F30%2Fn%E9%98%B6%E7%9F%A9%E9%98%B5%E8%A1%8C%E5%88%97%E5%BC%8F%E6%B1%82%E8%A7%A33.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;3×3矩阵求解中，选择任意行或者列，在那一行/列中,移除那个元素所在的行和列比如选择a11，则移除第一行和第一列，这样矩阵就变成了2×2的，再按照刚才的方法求2×2矩阵的行列式即可。之后整个行或列的3个元素进行此类运算后相加就是3×3的行列式。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;n x n矩阵&lt;/strong&gt;：&lt;/p&gt;
+
+&lt;p&gt;n阶矩阵就和3阶矩阵求解的方法一样了，使用3×3求解的方法，比如4阶矩阵，将4阶消除成3阶，然后再变成2阶来算。但是矩阵每上升一个维度，计算量就会扩大很多。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://source.francissoung.com/2016%2F03%2F30%2Fn%E9%98%B6%E7%9F%A9%E9%98%B5%E8%A1%8C%E5%88%97%E5%BC%8F%E6%B1%82%E8%A7%A34.gif&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;知道了n阶矩阵行列式的计算思路后，就可以开始编写算法了。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;首先是数据结构设计&lt;/strong&gt;，我们需要设计一个矩阵类来提供便利，这个类有两个成员，一个二维数组，用来储存矩阵，一个整数，来储存矩阵的行数或列数（行列式必须是方矩阵才可以求解所以行列无所谓）。&lt;/p&gt;
+
+&lt;p&gt;以下是整个Matrix类的设计：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;static class Matrix{
+
+    private int rowNum=0;
+
+    private int[][] array;
+
+    //Constructor
+    public Matrix(int rowNum){
+        this.rowNum = rowNum;
+        array = new int[rowNum][rowNum];
+    }
+
+    public Matrix(int[][] array){
+        this.array = array;
+        this.rowNum = array.length;
+    }
+
+    int counter = 0; //For add Element
+
+    public void addElement(int a){
+        array[(counter)/rowNum][counter%rowNum] = a;
+        counter++;
+    }
+
+    //Print the instance itself
+    public void printMat(){
+        for (int i=0;i &amp;lt; rowNum ;i++){
+            for (int j=0;j &amp;lt; rowNum ;j++){
+                 System.out.print(array[i][j]+\t;);
+            }
+            System.out.println();
+        }
+    }
+
+    //Setter and Getter
+    public int getRowNum() {
+        return rowNum;
+    }
+
+    public int[][] getArray() {
+        return array;
+    }
+
+    public void setArray(int[][] array) {
+        this.array = array;
+    }
+
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Matrix类中有两个构造方法：传入整数a会初始化一个axa大小的空矩阵，传入一个二维数组的话即可根据二维初始化一个Matrix对象。&lt;/p&gt;
+
+&lt;p&gt;Matrix类中有一个方法比较特殊：addElement方法，通过不断调用这个函数即可向一个Matrix实例进行有顺序的负值，第一次调用则会更改第第一行第一列位置上的值，第二次调用则会更改第一行第二列上的值，以此类推。&lt;/p&gt;
+
+&lt;p&gt;接下来就是设计一个MatrixCalculator类的，这个类中的一个成员方法可以求出行列式，我命名他为getDet(); 在计算行列式的时候需要移除元素所在的行和列，生成一个减小了一个维度的矩阵，我们需要编写一个方法来完成这个操作，我命名他为removeRowAndCol()；还有一个方法，由于相加的时候会产生符号的改变，所以需要写一个方法来计算矩阵中一个元素的cofactor，命名为getCofactor。&lt;/p&gt;
+
+&lt;p&gt;以下就是removeRowAndCol方法的代码：传入需要移除的行和列和一个Matrix对象，函数会返回消除了指定行和列的Matrix对象。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public static Matrix removeRowAndCol(int row,int col,Matrix mat){
+
+    int matRowNum = mat.getRowNum();
+    int[][] arr = mat.getArray();
+
+    Matrix matrix = new Matrix(matRowNum-1);
+
+    for (int i = 0;i &amp;lt; matRowNum; i++){
+        for (int j = 0 &amp;lt; matRowNum; j++){
+                if (i!=row &amp;amp;&amp;amp; j!=col) {
+                    matrix.addElement(arr[i][j]);
+                }
+        }
+    }
+
+    matrix.printMat();
+    return matrix;
+
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;以下是getCofactor方法：由于我的算法只会去遍历矩阵第一列来进行求解，所以得到Cofactor的代码就变得简单很多。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public static int getCofactor(int colNum){
+    if (colNum%2 == 0){
+        return 1;
+    }else {
+        return -1;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;接下来就是核心的递归求解行列式的算法了，先理一下思路，&lt;strong&gt;递归算法的两个要素：基准情形，不断推进&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;p&gt;对于n阶矩阵什么是基准情形呢？就是矩阵被降为2×2维度的时候，直接返回交叉相乘的差即可，不断推进，如果是一个4阶矩阵，算法会先把4将为3×3矩阵，然后3×3再拆成3个2×2矩阵来达到基准情形来算出答案，就和我们手算行列式时用到的方法一样，手算时候也遵循这一算法。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public static int getDet(Matrix targetMatrix){
+    //Base (Finally reduced to 2 x 2 Matrix)
+    if (targetMatrix.rowNum == 2){
+        int[][] arr = targetMatrix.getArray();
+        // a*d - b*c
+        return arr[0][0]*arr[1][1] - arr[0][1]*arr[1][0];
+    }
+
+    //MARK- Recursion: to reduce dimension
+    int det = 0;
+    int colNum = targetMatrix.rowNum;
+    for (int i = 0; &amp;lt; colNum;i++){
+        det+= (targetMatrix.getArray()[i][0])*getCofactor(i)*getDet(removeRowAndCol(i,0,targetMatrix));
+    }
+
+    return det;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;只有不到20行代码，但是却可以解决nxn的矩阵，是不是很神奇，这就是递归的优势，把一个很庞大的问题转化为规模缩小了的同类问题的子问题来求解。n阶矩阵最后被降为若干个2×2矩阵。&lt;/p&gt;
+
+&lt;p&gt;加上适当的输出语句，来求解一个3阶矩阵行列式试一下：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;2   1    2
+-1   5   21
+13 -1  -17
+
+Element: 2
+Cofactor: 1
+Removing Row 0 Col 0
+A 2 x 2 Matrix is initialized
+5 21
+-1 -17
+END State Reached
+Det: -64
+
+Element: -1
+Cofactor: -1
+Removing Row 1 Col 0
+A 2 x 2 Matrix is initialized
+1 2
+-1 -17
+END State Reached
+Det: -15
+
+Element: 13
+Cofactor: 1
+Removing Row 2 Col 0
+A 2 x 2 Matrix is initialized
+1 2
+5 21
+END State Reached
+Det: 11
+Result: 0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;但是有一个问题需要注意，就是这个算法的复杂度。&lt;/p&gt;
+
+&lt;h3 id=&quot;section-1&quot;&gt;算法复杂度&lt;/h3&gt;
+
+&lt;p&gt;这个算法的复杂度为O(n!), 这意味着他的运行速度很慢，随着问题规模的增长，时间会大幅度增长。在我的电脑上，计算3×3到7×7内规模的矩阵，电脑都可以秒算出来，但是如果是一个10×10的矩阵，电脑需要54秒钟，到了11×11时间将会变得更长，下图是这个算法随着问题规模增长对运行时产生影响的曲线。&lt;/p&gt;
+
+&lt;p&gt;可以看出7×7矩阵需要递归517次，到了10×10需要大约260万次递归运算才能得到结果。可见问题规模增长后时间的开销是十分巨大的。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://source.francissoung.com/2016%2F03%2F30%2Fn%E9%98%B6%E7%9F%A9%E9%98%B5%E8%A1%8C%E5%88%97%E5%BC%8F%E6%B1%82%E8%A7%A35.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;原文：&lt;a href=&quot;http://miketech.it/recursion_algorithm/&quot;&gt;http://miketech.it/recursion_algorithm/&lt;/a&gt;&lt;/p&gt;
+</description>
+        <pubDate>Thu, 31 Mar 2016 00:00:00 +0800</pubDate>
+        <link>http://www.francissoung.com/2016/03/31/%E9%80%92%E5%BD%92%E7%AE%97%E6%B3%95%E4%B9%8Bn%E9%98%B6%E7%9F%A9%E9%98%B5%E8%A1%8C%E5%88%97%E5%BC%8F%E6%B1%82%E8%A7%A3/</link>
+        <guid isPermaLink="true">http://www.francissoung.com/2016/03/31/%E9%80%92%E5%BD%92%E7%AE%97%E6%B3%95%E4%B9%8Bn%E9%98%B6%E7%9F%A9%E9%98%B5%E8%A1%8C%E5%88%97%E5%BC%8F%E6%B1%82%E8%A7%A3/</guid>
+        
+        <category>Francis 简单生活</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>似水年华之回炉再造</title>
+        <description>&lt;p&gt;在犹豫了两年之后，报考了北大的成人教育。曾经的自己非常的迷茫，不知道自己想要什么，只是过着随遇而安的生活。在跌跌撞撞的北漂生活中对自己的未来有了新的认识，也许这种认识才使我重新定位自己。&lt;/p&gt;
+
+&lt;p&gt;经过全国统一考试之后，2016年伊始，开始了三年的北大学习之旅。&lt;/p&gt;
+
+&lt;p&gt;提到北大，大家第一印象便是中国最一流的高等学府。不知道为什么，我并为此而特别兴奋，也许只是为了学位？我相信很多人都会这样想。&lt;/p&gt;
+
+&lt;p&gt;当进入北大之后，没有那种大学自由自在的感觉，反而多了更大的压力，管理严格和要求高是一方面，更多的是经过几年的社会，自己曾经熟知的知识已经忘得差不多了。不过我相信这些都是可以改善的。&lt;/p&gt;
+
+&lt;p&gt;今天提前下课了，来到了大名鼎鼎的未名湖畔。很多游人游览，我想大家也是慕名而来，感受百年老校的文化和艺术气息。我对于北大不是很熟，虽现在是北大的一员，但总是有区别的。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://source.francissoung.com/2016%2F03%2F27%2F%E6%9C%AA%E5%90%8D%E6%B9%96%E7%95%94.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;坐在未名湖畔的休息椅上，呼吸到了春天的气息，看到湖对面的柳树想起了一首中学时期学过的诗–【碧玉妆成一树高 ，万条垂下绿丝绦。不知细叶谁裁出 ，二月春风似剪刀。】不过现在是三月，可依然有些凉（前几日的温度让本人去除了不少衣物）。&lt;/p&gt;
+
+&lt;p&gt;开始羡慕在北大读书的同学，能进入北大的同学多半都是全国的精英吧（较真的同学请掠过）。学术氛围和文化气息确实能影响一个人求知欲望。我只能奋起直追了。&lt;/p&gt;
+
+&lt;p&gt;也许每个人对我报考北大成人教育态度不一，我也不去在意他人的看法了，对我来说，学位固然重要，但更重要的是这段旅程。我相信不久的将来这趟文化之旅给我带来的不仅仅是那一张薄薄的证书。&lt;/p&gt;
+
+&lt;p&gt;因为住的远，每天5点就起床奔向北大，8点开始上课，今后的周末基本都在这里度过了。&lt;/p&gt;
+
+&lt;p&gt;周末对于程序员来说是难得的休息时间，牺牲了周末对本来就紧张的生活来说添了更多的劳累。我不再去追究它到底值不值得，过去的犹豫不决让自己失去了很多了，不能再犯如此错误了。&lt;/p&gt;
+
+&lt;p&gt;我相信自己的选择，如同这春意盎然的时节。&lt;/p&gt;
+
+&lt;p&gt;继续奋进，在这条路上！&lt;/p&gt;
+</description>
+        <pubDate>Sun, 27 Mar 2016 00:00:00 +0800</pubDate>
+        <link>http://www.francissoung.com/2016/03/27/%E4%BC%BC%E6%B0%B4%E5%B9%B4%E5%8D%8E%E4%B9%8B%E5%9B%9E%E7%82%89%E5%86%8D%E9%80%A0/</link>
+        <guid isPermaLink="true">http://www.francissoung.com/2016/03/27/%E4%BC%BC%E6%B0%B4%E5%B9%B4%E5%8D%8E%E4%B9%8B%E5%9B%9E%E7%82%89%E5%86%8D%E9%80%A0/</guid>
+        
+        <category>Francis 简单生活</category>
+        
+        
+      </item>
     
       <item>
         <title>App架构设计经验谈:接口的设计</title>
@@ -1640,678 +1930,6 @@ Your browser does not support the audio tag.
         <guid isPermaLink="true">http://www.francissoung.com/2016/03/14/%E5%B8%B8%E7%94%A8%E5%85%AC%E5%85%B1DNS%E6%9C%8D%E5%8A%A1%E5%99%A8/</guid>
         
         <category>Francis 杂谈</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>使用Jekyll+GitHub搭建自己的免费静态博客</title>
-        <description>&lt;p&gt;&lt;a href=&quot;https://github.com/&quot;&gt;GitHub&lt;/a&gt;是一个代码托管网站，现在很多开源项目都放在GitHub上。 利用GitHub，可以让全球各地的程序员们一起协作开发。GitHub 提供了一种功能，叫 &lt;a href=&quot;https://help.github.com/categories/20/articles&quot;&gt;GitHub Pages&lt;/a&gt;, 利用这个功能，我 们可以为项目建立网站，当然，这也意味着我们可以通过 GitHub Pages 建立自己的网站。&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;http://jekyllrb.com/&quot;&gt;Jekyll&lt;/a&gt;是一个简单的，针对博客设计的静态网站生成器。使用 GitHub 和 Jekyll，我们可以打造自己的独立博客，你可以自由地定制网站的风格，并且这 一切都是免费的。&lt;/p&gt;
-
-&lt;p&gt;我在GitHub上建立的&lt;a href=&quot;http://francissoung.github.io&quot; title=&quot;Francis Soung&quot;&gt;博客&lt;/a&gt;及&lt;a href=&quot;https://github.com/FrancisSoung/blog-jekyll-theme/&quot; title=&quot;Francis Soung&quot;&gt;源代码&lt;/a&gt;，可供大家fork.&lt;/p&gt;
-
-&lt;p&gt;感谢&lt;a href=&quot;http://huangxuan.me/&quot;&gt;Hux&lt;/a&gt;带来这么漂亮的模板.也向对此模板做出贡献的Developer表示感谢.&lt;/p&gt;
-
-&lt;p&gt;网站截图：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xl0td.com1.z0.glb.clouddn.com/2016%2F03%2F09%2Ffrancissounghomepage.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;section&quot;&gt;入门指引&lt;/h3&gt;
-
-&lt;p&gt;GitHub Pages 的 &lt;a href=&quot;http://pages.github.com/&quot;&gt;主页&lt;/a&gt; 提供了一个简单的入门指引，阅读并 操作一下，会有一个直观简单的认识。&lt;/p&gt;
-
-&lt;p&gt;阮一峰前辈的文章《&lt;a href=&quot;http://www.ruanyifeng.com/blog/2012/08/blogging_with_jekyll.html&quot;&gt;搭建一个免费的，无限流量的Blog—-github Pages和Jekyll入门&lt;/a&gt;》是使用 GitHub 和 Jekyll 搭建独立博客非常好的入门文章，强烈建议先阅读并操作一遍。&lt;/p&gt;
-
-&lt;h3 id=&quot;section-1&quot;&gt;建立自己的博客&lt;/h3&gt;
-
-&lt;p&gt;在学习完阮一峰前辈的文章后，你就已经有能力搭建自己的独立博客了，但是这个博客 只有最基本的功能，并且也不好看。这时候，你面临几个选择:&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;完全自己定制博客&lt;/li&gt;
-  &lt;li&gt;找一份框架，修改后使用&lt;/li&gt;
-  &lt;li&gt;从GitHub上fork别人的博客代码，在其中添加自己的文章&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;如果选择 2, 那么 &lt;a href=&quot;http://jekyllbootstrap.com/&quot;&gt;jekyll-bootstrap&lt;/a&gt;是一个选择。&lt;/p&gt;
-
-&lt;p&gt;如果选择 3, 那么自己Google一下 github.io 博客 能找到不少博客,去fork,然后修改一下就好。&lt;/p&gt;
-
-&lt;p&gt;如果选择 1, 那么可以好好看看后文的内容。&lt;/p&gt;
-
-&lt;h3 id=&quot;github--jekyll-&quot;&gt;GitHub + Jekyll 工作机制&lt;/h3&gt;
-
-&lt;h4 id=&quot;section-2&quot;&gt;机制一&lt;/h4&gt;
-
-&lt;p&gt;简单地说，你在 GitHub 上有一个账号，名为username(任意)， 有一个项目，名为 &lt;code class=&quot;highlighter-rouge&quot;&gt;username.github.io&lt;/code&gt;(固定格式，username与账号名一致)， 项目分支名为 &lt;code class=&quot;highlighter-rouge&quot;&gt;master&lt;/code&gt;(固定)，这个分支有着类似下面的 目录结构:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.
-├── index.html
-├── _config.yml
-├── assets
-│   ├── blog-images
-│   ├── css
-│   ├── fonts
-│   ├── images
-│   └── javascripts
-├── _includes
-├── _layouts
-├── _plugins
-├── _posts
-└── _site
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;这样，当你访问 &lt;code class=&quot;highlighter-rouge&quot;&gt;http://username.github.io/&lt;/code&gt;时，GitHub 会使用 Jekyll 解析 用户 username名下的username.github.io项目中，分支为master 的源代码，为你构建一个静态网站，并将生成的 index.html 展示给你。&lt;/p&gt;
-
-&lt;p&gt;关于这个目录更多的内容，我们还不需要关心，如果你好奇心比较重，可以先看后文源代码一节。&lt;/p&gt;
-
-&lt;p&gt;看完上面的解释，你可能会有一些疑问，因为按照上面的说法，一个用户只能有一个网站，那我有很多项目，每个项目都需要一个项目网站，该怎么办呢？另外，在阮一峰前辈的文章中，特别提到，分支名应该为 &lt;code class=&quot;highlighter-rouge&quot;&gt;gh-pages&lt;/code&gt;，这又是怎么回事呢？&lt;/p&gt;
-
-&lt;p&gt;原来，GitHub认为，一个GitHub账号对应一个用户或者一个组织，GitHub会 给这个用户分配一个域名：&lt;code class=&quot;highlighter-rouge&quot;&gt;username.github.io&lt;/code&gt;，当用户访问这个域名时， GitHub会去解析username用户下，&lt;code class=&quot;highlighter-rouge&quot;&gt;username.github.io&lt;/code&gt;项目的master分支， 这与我们之前的描述一致。&lt;/p&gt;
-
-&lt;p&gt;另外，GitHub还为每个项目提供了域名，例如，你有一个项目名为blog， GitHub为这个项目提供的域名为&lt;code class=&quot;highlighter-rouge&quot;&gt;username.github.io/blog&lt;/code&gt;， 当你访问这个域名时，GitHub会去解析username用户下，blog项目的gh-pages 分支。&lt;/p&gt;
-
-&lt;p&gt;所以，要搭建自己的博客，你可以选择建立名为 &lt;code class=&quot;highlighter-rouge&quot;&gt;username.github.io&lt;/code&gt;的项目， 在&lt;code class=&quot;highlighter-rouge&quot;&gt;master&lt;/code&gt;分支下存放网站源代码，也可以选择建立名为 &lt;code class=&quot;highlighter-rouge&quot;&gt;blog&lt;/code&gt; 的项目，在 &lt;code class=&quot;highlighter-rouge&quot;&gt;gh-pages&lt;/code&gt;分支下存放网站源代码。&lt;/p&gt;
-
-&lt;p&gt;GitHub 的 Help 文档中的 &lt;a href=&quot;https://help.github.com/articles/user-organization-and-project-pages&quot;&gt;User, Organization and Project Pages&lt;/a&gt;对此有 详细的描述。&lt;/p&gt;
-
-&lt;h4 id=&quot;section-3&quot;&gt;机制二&lt;/h4&gt;
-
-&lt;p&gt;Jekyll 提供了插件功能，在网站源代码目录下，有一个名为 _plugins的目录，你可以将一些插件放进去，这样，Jekyll在解析网站源代码时，就会运行你的插件，这样插件是 Ruby 写成的。可以为Jekyll添加功能，例如，Jekyll默认是不提供分类页面的，你可以写一个插件，根据文章内容生成分类页面。如果没有插件，你只能每次写文章添加分类时为每个分类手动写HTML页面。&lt;/p&gt;
-
-&lt;p&gt;在本地运行 Jekyll 时，这些插件会自动被调用，但是GitHub在解析网站源代码时，出于安全考虑，会开启安全模式，禁用这些插件。我们既想用这些插件，又想用 GitHub，怎么办呢怎么办呢？&lt;/p&gt;
-
-&lt;p&gt;GitHub还为我们提供了更一种解析网站的方式，那就是直接上传最终的静态网页，这样，我们可以在本地使用 Jeklly 把网站解析出来，然后再上传到 GitHub上， 这就使得我们既使用了插件，又使用了 GitHub。在上文的目录结构中，有一个 名为 _site 的目录，这个就是Jeklly在本地解析时最终生成的静态网站，我们把其中的内容上传到 GitHub 的项目中就可以了。&lt;/p&gt;
-
-&lt;h3 id=&quot;section-4&quot;&gt;工作流&lt;/h3&gt;
-
-&lt;p&gt;关于 git 和 jekyll 的安装与基本使用，这里就不多说了。&lt;/p&gt;
-
-&lt;h4 id=&quot;section-5&quot;&gt;工作流一&lt;/h4&gt;
-
-&lt;p&gt;如果你不使用插件，那么只需要维护一个分支就好:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- username/username.github.io 的 master 分支
-- username/blog 的 gh-pages 分支
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;其中 username 是你的 GitHub 帐号。&lt;/p&gt;
-
-&lt;p&gt;你需要在本地维护一份网站源代码，添加新文章后，使用 jekyll 在本地测试一下，没有问题后，commit 到 GitHub 上的相应分支中就可以了。&lt;/p&gt;
-
-&lt;h4 id=&quot;section-6&quot;&gt;工作流二&lt;/h4&gt;
-
-&lt;p&gt;如果你需要使用插件，那么需要维护两个分支，一个是网站的源代码分支，另一个 是 Jeklly 解析源代码后生成的静态网站。&lt;/p&gt;
-
-&lt;p&gt;例如，我的源代码分支名为 &lt;code class=&quot;highlighter-rouge&quot;&gt;master&lt;/code&gt;，静态网站分支名为 &lt;code class=&quot;highlighter-rouge&quot;&gt;gh-pages&lt;/code&gt;。平时写博客时， 首先在 &lt;code class=&quot;highlighter-rouge&quot;&gt;master&lt;/code&gt; 分支下，添加新文章，然后本地使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;jekyll build&lt;/code&gt; 将添加文章后的网站 解析一次，这时 &lt;code class=&quot;highlighter-rouge&quot;&gt;_site&lt;/code&gt; 目录下就有新网站的静态代码了。然后把这个目录下的所有内容 复制到 &lt;code class=&quot;highlighter-rouge&quot;&gt;gh-pages&lt;/code&gt; 分支下。这个过程，可以写一个 &lt;code class=&quot;highlighter-rouge&quot;&gt;Makefile&lt;/code&gt;，每次添加文章后 &lt;code class=&quot;highlighter-rouge&quot;&gt;make&lt;/code&gt; 一下， 就自动将文章发布到 GitHub 上。&lt;/p&gt;
-
-&lt;p&gt;Makefile 内容如下：&lt;/p&gt;
-
-&lt;p&gt;deploy:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;git checkout master
-git add -A
-git commit -m &quot;deploy blog&quot;
-cp -r _site/ /tmp/
-git checkout gh-pages
-rm -r ./*
-cp -r /tmp/_site/* ./
-git add -A
-git commit -m &quot;deploy blog&quot;
-git push origin gh-pages
-git checkout master
-echo &quot;deploy succeed&quot;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;下面的内容涉及源代码，如果需要进一步学习，或者有问题，可以在 &lt;a href=&quot;http://jekyllrb.com/&quot;&gt;Jeklly&lt;/a&gt; 官网上找到更详细的解释，或者在评论中留言。&lt;/p&gt;
-
-&lt;h3 id=&quot;section-7&quot;&gt;源代码&lt;/h3&gt;
-
-&lt;p&gt;再来看一下这个目录结构：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.
-├── _config.yml
-├── index.html
-├── assets
-│   ├── blog-images
-│   ├── css
-│   ├── fonts
-│   ├── images
-│   └── javascripts
-├── _includes
-├── _layouts
-├── _plugins
-├── _posts
-└── _site
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h4 id=&quot;configyml&quot;&gt;_config.yml&lt;/h4&gt;
-
-&lt;p&gt;这是针对 Jekyll 的&lt;a href=&quot;http://jekyllrb.com/docs/configuration/&quot;&gt;配置文件&lt;/a&gt;， 决定了 Jekyll 如何解析网站的源代码,下面是一个示例：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;baseurl: /StrayBirds
-markdown: redcarpet
-safe: false
-pygments: true
-excerpt_separator: &quot;\n\n\n&quot;
-paginate: 5
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;我的网站建立在 StrayBirds 项目中，所以 baseurl 设置成 StrayBirds， 我的文章采用 Markdown 格式写成，可以指定 Markdown 的解析器 redcarpet。 另外，安全模式需要关闭，以便 Jekyll 解析时会运行插件。 pygments 可以使得Jekyll解析文章中源代码时加入特殊标记，例如指定代码类型， 这可以被很多 javascript 代码高度库使用。 excerpt_separator 指定了一个摘要分割符号，这样 Jekyll 可以在解析文章时， 将文章的提要提取出来。 paginate 指定了一页有几篇文章，页数太多时，我们可以将文章列表分页，我们在 后文还会提到。&lt;/p&gt;
-
-&lt;h4 id=&quot;layouts&quot;&gt;_layouts&lt;/h4&gt;
-
-&lt;p&gt;这个目录存放着一些网页模板文件，为网站所有网页提供一个基本模板，这样 每个网页只需要关心自己的内容就好，其它的都由模板决定。例如，这个目录下的 default.html 文件：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;!DOCTYPE html&amp;gt;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;html&amp;gt;&lt;/span&gt;
-  &lt;span class=&quot;nt&quot;&gt;&amp;lt;head&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;meta&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;charset=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&#39;utf-8&#39;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;title&amp;gt;&lt;/span&gt;{{ page.title }}&lt;span class=&quot;nt&quot;&gt;&amp;lt;/title&amp;gt;&lt;/span&gt;
-  &lt;span class=&quot;nt&quot;&gt;&amp;lt;/head&amp;gt;&lt;/span&gt;
-  &lt;span class=&quot;nt&quot;&gt;&amp;lt;body&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;header&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;/header&amp;gt;&lt;/span&gt;
-
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;aside&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;/aside&amp;gt;&lt;/span&gt;
-
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;article&amp;gt;&lt;/span&gt;
-{{ content }}
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;/article&amp;gt;&lt;/span&gt;
-
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;footer&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;/footer&amp;gt;&lt;/span&gt;
-  &lt;span class=&quot;nt&quot;&gt;&amp;lt;/body&amp;gt;&amp;lt;/html&amp;gt;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;可以看出，这个文件就是所有页面共有的东西，每个页面的具体内容会被填充在&lt;code class=&quot;highlighter-rouge&quot;&gt;content&lt;/code&gt;中，注意这个&lt;code class=&quot;highlighter-rouge&quot;&gt;content&lt;/code&gt;两边的标记，这是一种叫&lt;code class=&quot;highlighter-rouge&quot;&gt;liquid&lt;/code&gt;的标记语言。 另外，还有那个&lt;code class=&quot;highlighter-rouge&quot;&gt;page.title&lt;/code&gt;，其中 page 表示引用 default.html的 那个页面，这个页面的 title 值会在 page 相应页面中被设置，例如 下面的 index.html 文件，开头部分就设置了 title值。&lt;/p&gt;
-
-&lt;h4 id=&quot;indexhtml&quot;&gt;index.html&lt;/h4&gt;
-
-&lt;p&gt;这是网站的首页，访问 &lt;code class=&quot;highlighter-rouge&quot;&gt;http://username.github.io&lt;/code&gt; 时，会指向 &lt;code class=&quot;highlighter-rouge&quot;&gt;http://username.github.io/index.html&lt;/code&gt;，我们看一下基本内容：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;---
-layout: default
-title: 首页
----
-
-
-&amp;lt;ul class=&quot;post-list&quot;&amp;gt;
-    {% for post in site.posts %}
-        &amp;lt;a href=&quot;{{site.baseurl}}{{post.url}}&quot;&amp;gt; {{ post.title }}  &amp;lt;/a&amp;gt; &amp;lt;br&amp;gt;
-        {{ post.date | date: &quot;%F&quot; }} &amp;lt;br&amp;gt;
-        {{ post.category }} &amp;lt;br&amp;gt;
-        {{ post.excerpt }} 
-    {% endfor %}
-
-&amp;lt;/ul&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;注意，文件开头的描述，我们称之为 &lt;a href=&quot;http://jekyllrb.com/docs/frontmatter/&quot;&gt;front-matter&lt;/a&gt;， 是对当前文件的一种描述，这里 设置的变量可以在解析时被引用，例如这里的 layout就会告诉 Jekyll, 生成 index.html 文件时，去 _layouts 目录下找 default.html 文件，然后把当前文件解析后，添加到 default.html 的 content 部分，组成最终的 index.html 文件。还有title 设置好的 值，会在 default.html 中通过 page.title 被引用。&lt;/p&gt;
-
-&lt;p&gt;文件的主体部分遍历了站点的所有文章，并将他们显示出来，这些语法都是 liquid 语法， 其中的变量，例如 site, 由 Jekyll 设置我们只需要引用就可以了。而 post 中的变量， 如 post.title, post.category 是由 post 文件中的 front-matter 决定，后面马上就会看到。&lt;/p&gt;
-
-&lt;h4 id=&quot;posts&quot;&gt;_posts&lt;/h4&gt;
-
-&lt;p&gt;这个目录存放我们的所有博客文章，他们的名字有统一的格式：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;YEAR-MONTH-DAY-title.markdown
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;例如，2014-02-15-github-jeklly.markdown，这个文件名会被解析，前面的 index.html 中， post.date 的值就由这里文件名中的日期而来。下面，我们看看一篇文章的内容示例：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;---
-layout: default
-title: 使用 Markdown
-category: 工具
-comments: true
----
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&lt;strong&gt;为什么使用 Markdown&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;看上去不错&lt;/li&gt;
-  &lt;li&gt;既然看上去不错，为什么不试试呢&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;strong&gt;如何使用 Markdown&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;可以看出，文章的 front-matter 部分设置了多项值，以后可以通过类似 &lt;code class=&quot;highlighter-rouge&quot;&gt;post.title, post.category&lt;/code&gt; 的方式引用这些些，另外，layout部分的值和之前解释的一样， 文件的内容会被填充到 &lt;code class=&quot;highlighter-rouge&quot;&gt;_layouts/default.html&lt;/code&gt; 文件的 &lt;code class=&quot;highlighter-rouge&quot;&gt;content&lt;/code&gt; 变量中。&lt;/p&gt;
-
-&lt;p&gt;另外，文章中 为什么不试试呢之后的有三个不可见的 \n，它决定了这三个 \n 之前的内容会被放在 post.excerpt 变量中，供其它文件使用。&lt;/p&gt;
-
-&lt;h4 id=&quot;includes&quot;&gt;_includes&lt;/h4&gt;
-
-&lt;p&gt;这个文件中，存放着一些模块文件，例如 categories.ext，其它文件可以通过&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;include&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;categories.ext&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;来引用这个文件的内容，方便代码模块化和重用。&lt;/p&gt;
-
-&lt;h4 id=&quot;plugins&quot;&gt;_plugins&lt;/h4&gt;
-
-&lt;p&gt;这个文件中存放一些Ruby插件, 例如 gen_categories.rb，这些文件会在 Jekyll 解析网站源代码时被执行。下一节讲述的就是插件。&lt;/p&gt;
-
-&lt;h4 id=&quot;site&quot;&gt;_site&lt;/h4&gt;
-
-&lt;p&gt;Jekyll 解析整个网站源代码后，会将最终的静态网站源代码放在这里。&lt;/p&gt;
-
-&lt;h3 id=&quot;section-8&quot;&gt;插件&lt;/h3&gt;
-
-&lt;p&gt;插件使用 Ruby 写成，放在 _plugins 目录下，有些 Jekyll 没有的功能，又不能 手动添加，因为页面的内容会随着文章日期类别的不同而不同，例如分类功能和归档功能， 这时，就需要使用插件自动生成一些页面和目录。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;分类&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;分类插件推荐使用 &lt;a href=&quot;https://github.com/shigeya/jekyll-category-archive-plugin/tree/master/_plugins&quot;&gt;jekyll-category-archive-plugin&lt;/a&gt;, 它会根据网站文章的分类信息，为每个类别生成一个页面。&lt;/p&gt;
-
-&lt;p&gt;使用方法是，把 &lt;code class=&quot;highlighter-rouge&quot;&gt;plugins/categoryarchive_plugin.rb&lt;/code&gt; 放在 &lt;code class=&quot;highlighter-rouge&quot;&gt;plugins&lt;/code&gt; 目录下， 把 &lt;code class=&quot;highlighter-rouge&quot;&gt;_layouts/categoryarchive.html&lt;/code&gt; 放在 &lt;code class=&quot;highlighter-rouge&quot;&gt;layouts&lt;/code&gt; 目录下， 这样，这个插件会在Jekyll解析网站时，生成相应categories目录，目录下是各个分类， 每个分类下都有一个 &lt;code class=&quot;highlighter-rouge&quot;&gt;index.html&lt;/code&gt; 文件，这个文件是根据模板文件 &lt;code class=&quot;highlighter-rouge&quot;&gt;categoryarchive.html&lt;/code&gt; 生成的，例如：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;_site/categories/
-├── 工具
-│   └── index.html
-├── 思想
-│   └── index.html
-├── 技术
-│   └── index.html
-└── 源代码阅读
-    └── index.html
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;然后，你就可以通过 &lt;code class=&quot;highlighter-rouge&quot;&gt;http://username.github.io/blog/categories/工具/&lt;/code&gt; 访问 工具类下的 &lt;code class=&quot;highlighter-rouge&quot;&gt;index.html&lt;/code&gt; 文件。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;归档&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;归档插件推荐使用 &lt;a href=&quot;https://github.com/shigeya/jekyll-monthly-archive-plugin&quot;&gt;jekyll-monthly-archive-plugin&lt;/a&gt;,它会根据网站 _posts目录下的文章日期，为每个月生成一个页面。&lt;/p&gt;
-
-&lt;p&gt;使用方法同上。注意，这个插件在 jekyll-1.4.2 中可能会出错，在 jekyll-1.2.0 中没有错误。&lt;/p&gt;
-
-&lt;h3 id=&quot;section-9&quot;&gt;组件&lt;/h3&gt;
-
-&lt;p&gt;&lt;strong&gt;分页&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;当文章很多时，就需要使用分页功能，在 Jekyll 官网上提供了一种 &lt;a href=&quot;http://jekyllrb.com/docs/pagination/&quot;&gt;实现&lt;/a&gt;，把相应代码放在 主页上，然后在 &lt;code class=&quot;highlighter-rouge&quot;&gt;_config.yml&lt;/code&gt; 中设置 &lt;code class=&quot;highlighter-rouge&quot;&gt;paginate&lt;/code&gt; 值就行了。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;评论&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;评论功能需要使用社会化评论系统，我使用的是 &lt;a href=&quot;http://disqus.com/&quot;&gt;DISQUS&lt;/a&gt;, 注册 之后，将评论区的一段代码放在你需要使用评论功能的页面上, 然后，通过在页面的 front-matter 部分使用&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;comments: true
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;启用评论。&lt;/p&gt;
-
-&lt;p&gt;评论区截图：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xl0td.com1.z0.glb.clouddn.com/2016%2F03%2F09%2Fdisqus.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;section-10&quot;&gt;自定义域名解析&lt;/h3&gt;
-
-&lt;p&gt;这里很简单了，在你的网站根目录中新建一个&lt;code class=&quot;highlighter-rouge&quot;&gt;CNAME&lt;/code&gt;的文件，&lt;strong&gt;注：一定要大写&lt;/strong&gt;。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xl0td.com1.z0.glb.clouddn.com/2016%2F03%2F09%2FCNAME.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;在CNAME文件中添加你要解析的域名。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xl0td.com1.z0.glb.clouddn.com/2016%2F03%2F09%2FCNAME1.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;获取GitHub Page的IP地址，最好的方法就是ping一下你的 &lt;code class=&quot;highlighter-rouge&quot;&gt;username.github.io&lt;/code&gt; 域名。&lt;/p&gt;
-
-&lt;p&gt;最后在你的域名提供商域名管理系统中添加对应的解析。我这里做了一个CNAME，可直接解析到A记录到IP即可。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xl0td.com1.z0.glb.clouddn.com/2016%2F03%2F09%2FCNAME3.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;基本的内容就介绍到这里，任何问题，欢迎留言。&lt;/p&gt;
-
-</description>
-        <pubDate>Wed, 09 Mar 2016 00:00:00 +0800</pubDate>
-        <link>http://www.francissoung.com/2016/03/09/%E4%BD%BF%E7%94%A8Jekyll+GitHub%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E5%85%8D%E8%B4%B9%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2/</link>
-        <guid isPermaLink="true">http://www.francissoung.com/2016/03/09/%E4%BD%BF%E7%94%A8Jekyll+GitHub%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E5%85%8D%E8%B4%B9%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2/</guid>
-        
-        <category>GitHub</category>
-        
-        <category>Francis 杂谈</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>nginx.conf配置文件详解</title>
-        <description>&lt;p&gt;Nginx配置文件主要分成四部分：main（全局设置）、server（主机设置）、upstream（上游服务器设置，主要为反向代理、负载均衡相关配置）和 location（URL匹配特定位置后的设置），每部分包含若干个指令。main部分设置的指令将影响其它所有部分的设置；server部分的指令主要用于指定虚拟主机域名、IP和端口；upstream的指令用于设置一系列的后端服务器，设置反向代理及后端服务器的负载均衡；location部分用于匹配网页位置（比如，根目录“/”,“/images”,等等）。他们之间的关系式：server继承main，location继承server；upstream既不会继承指令也不会被继承。它有自己的特殊指令，不需要在其他地方的应用。&lt;/p&gt;
-
-&lt;p&gt;当前nginx支持的几个指令上下文：&lt;/p&gt;
-
-&lt;h3 id=&quot;section&quot;&gt;通用&lt;/h3&gt;
-
-&lt;p&gt;下面的nginx.conf简单的实现nginx在前端做反向代理服务器的例子，处理js、png等静态文件，jsp等动态请求转发到其它服务器tomcat：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;user  www www;
-worker_processes  2;
-error_log  logs/error.log;
-#error_log  logs/error.log  notice;
-#error_log  logs/error.log  info;
-pid        logs/nginx.pid;
-events {
-    use epoll;
-    worker_connections  2048;
-}
-http {
-    include       mime.types;
-    default_type  application/octet-stream;
-    #log_format  main  &#39;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &#39;
-    #                  &#39;$status $body_bytes_sent &quot;$http_referer&quot; &#39;
-    #                  &#39;&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;&#39;;
-    #access_log  logs/access.log  main;
-    sendfile        on;
-    # tcp_nopush     on;
-    keepalive_timeout  65;
-  # gzip压缩功能设置
-    gzip on;
-    gzip_min_length 1k;
-    gzip_buffers    4 16k;
-    gzip_http_version 1.0;
-    gzip_comp_level 6;
-    gzip_types text/html text/plain text/css text/javascript application/json application/javascript application/x-javascript application/xml;
-    gzip_vary on;
-  
-  # http_proxy 设置
-    client_max_body_size   10m;
-    client_body_buffer_size   128k;
-    proxy_connect_timeout   75;
-    proxy_send_timeout   75;
-    proxy_read_timeout   75;
-    proxy_buffer_size   4k;
-    proxy_buffers   4 32k;
-    proxy_busy_buffers_size   64k;
-    proxy_temp_file_write_size  64k;
-    proxy_temp_path   /usr/local/nginx/proxy_temp 1 2;
-  # 设定负载均衡后台服务器列表 
-    upstream  backend  { 
-              #ip_hash; 
-              server   192.168.10.100:8080 max_fails=2 fail_timeout=30s ;  
-              server   192.168.10.101:8080 max_fails=2 fail_timeout=30s ;  
-    }
-  # 很重要的虚拟主机配置
-    server {
-        listen       80;
-        server_name  itoatest.example.com;
-        root   /apps/oaapp;
-        charset utf-8;
-        access_log  logs/host.access.log  main;
-        #对 / 所有做负载均衡+反向代理
-        location / {
-            root   /apps/oaapp;
-            index  index.jsp index.html index.htm;
-            proxy_pass        http://backend;  
-            proxy_redirect off;
-            # 后端的Web服务器可以通过X-Forwarded-For获取用户真实IP
-            proxy_set_header  Host  $host;
-            proxy_set_header  X-Real-IP  $remote_addr;  
-            proxy_set_header  X-Forwarded-For  $proxy_add_x_forwarded_for;
-            proxy_next_upstream error timeout invalid_header http_500 http_502 http_503 http_504;
-            
-        }
-        #静态文件，nginx自己处理，不去backend请求tomcat
-        location  ~* /download/ {  
-            root /apps/oa/fs;  
-            
-        }
-        location ~ .*\.(gif|jpg|jpeg|bmp|png|ico|txt|js|css)$   
-        {   
-            root /apps/oaapp;   
-            expires      7d; 
-        }
-       	location /nginx_status {
-            stub_status on;
-            access_log off;
-            allow 192.168.10.0/24;
-            deny all;
-        }
-        location ~ ^/(WEB-INF)/ {   
-            deny all;   
-        }
-        #error_page  404              /404.html;
-        # redirect server error pages to the static page /50x.html
-        #
-        error_page   500 502 503 504  /50x.html;
-        location = /50x.html {
-            root   html;
-        }
-    }
-  ## 其它虚拟主机，server 指令开始
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;### 常用指令说明&lt;/p&gt;
-
-&lt;h4 id=&quot;main&quot;&gt;main全局配置&lt;/h4&gt;
-
-&lt;p&gt;nginx在运行时与具体业务功能（比如http服务或者email服务代理）无关的一些参数，比如工作进程数，运行的身份等。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;woker_processes 2&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;在配置文件的顶级main部分，worker角色的工作进程的个数，master进程是接收并分配请求给worker处理。这个数值简单一点可以设置为cpu的核数&lt;code class=&quot;highlighter-rouge&quot;&gt;grep ^processor /proc/cpuinfo | wc -l&lt;/code&gt;，也是 auto 值，如果开启了ssl和gzip更应该设置成与逻辑CPU数量一样甚至为2倍，可以减少I/O操作。如果nginx服务器还有其它服务，可以考虑适当减少。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;worker_cpu_affinity&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;也是写在main部分。在高并发情况下，通过设置cpu粘性来降低由于多CPU核切换造成的寄存器等现场重建带来的性能损耗。如worker_cpu_affinity 0001 0010 0100 1000; （四核）。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;worker_connections 2048&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;写在events部分。每一个worker进程能并发处理（发起）的最大连接数（包含与客户端或后端被代理服务器间等所有连接数）。nginx作为反向代理服务器，计算公式 最大连接数 = worker_processes * worker_connections/4，所以这里客户端最大连接数是1024，这个可以增到到8192都没关系，看情况而定，但不能超过后面的worker_rlimit_nofile。当nginx作为http服务器时，计算公式里面是除以2。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;worker_rlimit_nofile 10240&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;写在main部分。默认是没有设置，可以限制为操作系统最大的限制65535。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;use epoll&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;写在events部分。在Linux操作系统下，nginx默认使用epoll事件模型，得益于此，nginx在Linux操作系统下效率相当高。同时Nginx在OpenBSD或FreeBSD操作系统上采用类似于epoll的高效事件模型kqueue。在操作系统不支持这些高效模型时才使用select。&lt;/p&gt;
-
-&lt;h4 id=&quot;http&quot;&gt;http服务器&lt;/h4&gt;
-
-&lt;p&gt;与提供http服务相关的一些配置参数。例如：是否使用keepalive啊，是否使用gzip进行压缩等。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;sendfile on&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;开启高效文件传输模式，sendfile指令指定nginx是否调用sendfile函数来输出文件，减少用户空间到内核空间的上下文切换。对于普通应用设为 on，如果用来进行下载等应用磁盘IO重负载应用，可设置为off，以平衡磁盘与网络I/O处理速度，降低系统的负载。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;keepalive_timeout 65&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;长连接超时时间，单位是秒，这个参数很敏感，涉及浏览器的种类、后端服务器的超时设置、操作系统的设置，可以另外起一片文章了。长连接请求大量小文件的时候，可以减少重建连接的开销，但假如有大文件上传，65s内没上传完成会导致失败。如果设置时间过长，用户又多，长时间保持连接会占用大量资源。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;send_timeout&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;用于指定响应客户端的超时时间。这个超时仅限于两个连接活动之间的时间，如果超过这个时间，客户端没有任何活动，Nginx将会关闭连接。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;client_max_body_size 10m&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;允许客户端请求的最大单文件字节数。如果有上传较大文件，请设置它的限制值&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;client_body_buffer_size 128k&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;缓冲区代理缓冲用户端请求的最大字节数&lt;/p&gt;
-
-&lt;h4 id=&quot;httpproxy&quot;&gt;模块http_proxy&lt;/h4&gt;
-
-&lt;p&gt;这个模块实现的是nginx作为反向代理服务器的功能，包括缓存功能。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;proxy_connect_timeout 60&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;nginx跟后端服务器连接超时时间(代理连接超时)&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;proxy_read_timeout 60&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;连接成功后，与后端服务器两个成功的响应操作之间超时时间(代理接收超时)&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;proxy_buffer_size 4k&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;设置代理服务器（nginx）从后端realserver读取并保存用户头信息的缓冲区大小，默认与proxy_buffers大小相同，其实可以将这个指令值设的小一点&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;proxy_buffers 4 32k&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;proxy_buffers缓冲区，nginx针对单个连接缓存来自后端realserver的响应，网页平均在32k以下的话，这样设置&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;proxy_busy_buffers_size 64k&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;高负荷下缓冲大小（proxy_buffers*2）&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;proxy_max_temp_file_size&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;当 proxy_buffers 放不下后端服务器的响应内容时，会将一部分保存到硬盘的临时文件中，这个值用来设置最大临时文件大小，默认1024M，它与 proxy_cache 没有关系。大于这个值，将从upstream服务器传回。设置为0禁用。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;proxy_temp_file_write_size 64k&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;当缓存被代理的服务器响应到临时文件时，这个选项限制每次写临时文件的大小。proxy_temp_path（可以在编译的时候）指定写到哪那个目录。&lt;/p&gt;
-
-&lt;p&gt;proxy_pass，proxy_redirect见 location 部分。&lt;/p&gt;
-
-&lt;h4 id=&quot;httpgzip&quot;&gt;模块http_gzip&lt;/h4&gt;
-
-&lt;p&gt;&lt;strong&gt;gzip on&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;开启gzip压缩输出，减少网络传输。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;gzip_min_length 1k&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;设置允许压缩的页面最小字节数，页面字节数从header头得content-length中进行获取。默认值是20。建议设置成大于1k的字节数，小于1k可能会越压越大。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;gzip_buffers 4 16k&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;设置系统获取几个单位的缓存用于存储gzip的压缩结果数据流。4 16k代表以16k为单位，安装原始数据大小以16k为单位的4倍申请内存。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;gzip_http_version 1.0&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;用于识别 http 协议的版本，早期的浏览器不支持 Gzip 压缩，用户就会看到乱码，所以为了支持前期版本加上了这个选项，如果你用了 Nginx 的反向代理并期望也启用 Gzip 压缩的话，由于末端通信是 http/1.0，故请设置为 1.0。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;gzip_comp_level 6&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;gzip压缩比，1压缩比最小处理速度最快，9压缩比最大但处理速度最慢(传输快但比较消耗cpu)&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;gzip_types&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;匹配mime类型进行压缩，无论是否指定,”text/html”类型总是会被压缩的。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;gzip_proxied any&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;Nginx作为反向代理的时候启用，决定开启或者关闭后端服务器返回的结果是否压缩，匹配的前提是后端服务器必须要返回包含”Via”的 header头。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;gzip_vary on&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;和http头有关系，会在响应头加个 Vary: Accept-Encoding ，可以让前端的缓存服务器缓存经过gzip压缩的页面，例如，用Squid缓存经过Nginx压缩的数据。。&lt;/p&gt;
-
-&lt;h3 id=&quot;server&quot;&gt;server虚拟主机&lt;/h3&gt;
-
-&lt;p&gt;http服务上支持若干虚拟主机。每个虚拟主机一个对应的server配置项，配置项里面包含该虚拟主机相关的配置。在提供mail服务的代理时，也可以建立若干server。每个server通过监听地址或端口来区分。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;listen&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;监听端口，默认80，小于1024的要以root启动。可以为&lt;code class=&quot;highlighter-rouge&quot;&gt;listen *:80&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;listen 127.0.0.1:80&lt;/code&gt;等形式。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;server_name&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;服务器名，如&lt;code class=&quot;highlighter-rouge&quot;&gt;localhost、www.example.com&lt;/code&gt;，可以通过正则匹配。&lt;/p&gt;
-
-&lt;h4 id=&quot;httpstream&quot;&gt;模块http_stream&lt;/h4&gt;
-
-&lt;p&gt;这个模块通过一个简单的调度算法来实现客户端IP到后端服务器的负载均衡，upstream后接负载均衡器的名字，后端realserver以&lt;code class=&quot;highlighter-rouge&quot;&gt;host:port options&lt;/code&gt;; 方式组织在 {} 中。如果后端被代理的只有一台，也可以直接写在 proxy_pass 。&lt;/p&gt;
-
-&lt;h3 id=&quot;location&quot;&gt;location&lt;/h3&gt;
-
-&lt;p&gt;http服务中，某些特定的URL对应的一系列配置项。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;root /var/www/html&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;定义服务器的默认网站根目录位置。如果locationURL匹配的是子目录或文件，root没什么作用，一般放在server指令里面或/下。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;index index.jsp index.html index.htm&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;定义路径下默认访问的文件名，一般跟着root放&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;proxy_pass http:/backend&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;请求转向backend定义的服务器列表，即反向代理，对应upstream负载均衡器。也可以&lt;code class=&quot;highlighter-rouge&quot;&gt;proxy_pass http://ip:port&lt;/code&gt;。&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;proxy_redirect off;
-proxy_set_header Host $host;
-proxy_set_header X-Real-IP $remote_addr;
-proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h3 id=&quot;section-1&quot;&gt;其它&lt;/h3&gt;
-
-&lt;h4 id=&quot;allowdeny&quot;&gt;访问控制 allow/deny&lt;/h4&gt;
-
-&lt;p&gt;Nginx 的访问控制模块默认就会安装，而且写法也非常简单，可以分别有多个allow,deny，允许或禁止某个ip或ip段访问，依次满足任何一个规则就停止往下匹配。如：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;location /nginx-status {
-  stub_status on;
-  access_log off;
-#  auth_basic   &quot;NginxStatus&quot;;
-#  auth_basic_user_file   /usr/local/nginx-1.6/htpasswd;
-  allow 192.168.10.100;
-  allow 172.29.73.0/24;
-  deny all;
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;我们也常用 httpd-devel 工具的 htpasswd 来为访问的路径设置登录密码：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# htpasswd -c htpasswd admin
-New passwd:
-Re-type new password:
-Adding password for user admin
-# htpasswd htpasswd admin    //修改admin密码
-# htpasswd htpasswd sean    //多添加一个认证用户
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;这样就生成了默认使用CRYPT加密的密码文件。打开上面nginx-status的两行注释，重启nginx生效。&lt;/p&gt;
-
-&lt;h4 id=&quot;autoindex&quot;&gt;列出目录 autoindex&lt;/h4&gt;
-
-&lt;p&gt;Nginx默认是不允许列出整个目录的。如需此功能，打开nginx.conf文件，在location，server 或 http段中加入&lt;code class=&quot;highlighter-rouge&quot;&gt;autoindex on&lt;/code&gt;;，另外两个参数最好也加上去:&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;autoindex_exact_size off&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;默认为on，显示出文件的确切大小，单位是bytes。改为off后，显示出文件的大概大小，单位是kB或者MB或者GB&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;autoindex_localtime on&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;默认为off，显示的文件时间为GMT时间。改为on后，显示的文件时间为文件的服务器时间&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;location /images {
-  root   /var/www/nginx-default/images;
-  autoindex on;
-  autoindex_exact_size off;
-  autoindex_localtime on;
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-</description>
-        <pubDate>Mon, 07 Mar 2016 00:00:00 +0800</pubDate>
-        <link>http://www.francissoung.com/2016/03/07/nginx.conf%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/</link>
-        <guid isPermaLink="true">http://www.francissoung.com/2016/03/07/nginx.conf%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/</guid>
-        
-        <category>Nginx</category>
-        
-        <category>Linux</category>
         
         
       </item>
