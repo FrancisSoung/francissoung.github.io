@@ -5,8 +5,8 @@
     <description>这是一个程序员的日记薄，记录工作与生活的点点滴滴。包括WEB程序开发、Linux服务器管理、LAMP/LNMP环境配置优化、PHP网络技术、MySQL优化等技术分享以及个人生活旅行中的所见所闻所解。</description>
     <link>http://www.francissoung.com/</link>
     <atom:link href="http://www.francissoung.com/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Tue, 12 Apr 2016 17:41:10 +0800</pubDate>
-    <lastBuildDate>Tue, 12 Apr 2016 17:41:10 +0800</lastBuildDate>
+    <pubDate>Tue, 12 Apr 2016 17:59:33 +0800</pubDate>
+    <lastBuildDate>Tue, 12 Apr 2016 17:59:33 +0800</lastBuildDate>
     <generator>Jekyll v3.1.2</generator>
     
       <item>
@@ -217,7 +217,7 @@
 
 &lt;p&gt;类似于SOAP的自有协议，消息体中包含了消息状态等附加信息。&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;总结&lt;/strong&gt;&lt;/p&gt;
+&lt;h3 id=&quot;section-7&quot;&gt;总结&lt;/h3&gt;
 
 &lt;p&gt;看了上面那么多网站的设计，总结一下主要有这么几种设计方式。&lt;/p&gt;
 
@@ -259,15 +259,15 @@
 
 &lt;p&gt;二．就是采用Restlet开源框架，将Restlet开源框架集成到ASF中，由于Restlet本身就是可内嵌的应用框架，因此集成不成问题，同时Restlet框架只是API结构框架，因此实现和定义完全分开，集成Restlet以后可以自己实现其中的解析引擎也可以采用默认提供的引擎，同时对于内嵌Jetty等多种开源项目的支持，将更多优势融入到了Rest中。看了一下国内也有很多朋友已经关注Restlet开源项目，看了它的架构设计，个人觉得还是比较灵活和紧凑的。&lt;/p&gt;
 
-&lt;h3 id=&quot;section-7&quot;&gt;题外话&lt;/h3&gt;
+&lt;h3 id=&quot;section-8&quot;&gt;题外话&lt;/h3&gt;
 
 &lt;p&gt;在写这篇文章以前写了一篇调研报告群发给各个架构师们参考，期待反馈。下午正好和我们的首席架构师聊了一会儿。其实我和他的感觉是一样的，REST是否真的在我们现有的服务框架中需要集成，理解了REST的思想再去看应用场景，那么可以发现如果要完全遵循REST的设计理念来设计接口的话，那么强要去改变现有已经存在的或者还未开发的接口就会落入为了技术而技术，为了潮流而跟风的近地。当然并不否认REST的好，其实我们兄弟公司的一些业务场景有部分的接口十分合适这类设计，面向资源，高效，简洁，易用都能够体现出它的价值。我们将会和我们的兄弟公司合作，也会参考他们的设计理念，在参考当前各个网站的实现情况下，部分的采用这类形式的发布，提供给第三方的ISV，无疑是我现在把REST融入到ASF中最好的理由。&lt;/p&gt;
 
 &lt;p&gt;有了需求去做才不会陷入为了技术而技术，毕竟技术是由商业价值驱动的，同样社会上充斥着各种技术的鼓吹，如果稍不留神就会陷入跟风的潮流中。&lt;/p&gt;
 </description>
         <pubDate>Tue, 12 Apr 2016 00:00:00 +0800</pubDate>
-        <link>http://www.francissoung.com/2016/04/12/aaa/</link>
-        <guid isPermaLink="true">http://www.francissoung.com/2016/04/12/aaa/</guid>
+        <link>http://www.francissoung.com/2016/04/12/WebService%E7%9A%84%E4%B8%A4%E7%A7%8D%E6%96%B9%E5%BC%8FSOAP%E5%92%8CREST%E6%AF%94%E8%BE%83/</link>
+        <guid isPermaLink="true">http://www.francissoung.com/2016/04/12/WebService%E7%9A%84%E4%B8%A4%E7%A7%8D%E6%96%B9%E5%BC%8FSOAP%E5%92%8CREST%E6%AF%94%E8%BE%83/</guid>
         
         <category>Francis 杂谈</category>
         
