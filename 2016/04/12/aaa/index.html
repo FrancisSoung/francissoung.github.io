@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="这是一个程序员的日记薄，记录工作与生活的点点滴滴。包括WEB程序开发、Linux服务器管理、LAMP/LNMP环境配置优化、PHP网络技术、MySQL优化等技术分享以及个人生活旅行中的所见所闻所解。">
+    <meta name="keywords"  content="WEB程序开发,Linux服务器管理,LAMP/LNMP环境配置优化,网络架构,MySQL优化,生活旅行,Francis,francissoung,php程序猿的笔记,程序员的日记薄">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>WebService的两种方式SOAP和REST比较 - Francis Soung</title>
+
+    <link rel="canonical" href="http://www.francissoung.com/2016/04/12/aaa/">
+
+    
+    <!-- css CDN to qiniu -->
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Fbootstrap.min.css">
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Ffrancis-blog.min.css">
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Fsyntax.css">
+    <link rel="stylesheet" href="http://7xl0td.com1.z0.glb.clouddn.com/css%2Freturntop.css">
+    
+
+    <link href="http://cdn.staticfile.org/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Francis Soung</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/about/">About</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/archives/">Archives</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/portfolio/">Portfolio</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/tags/">Tags</a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    var __HuxNav__ = {
+        close: function(){
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        },
+        open: function(){
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+
+    // Bind Event
+    $toggle.addEventListener('click', function(e){
+        if ($navbar.className.indexOf('in') > 0) {
+            __HuxNav__.close()
+        }else{
+            __HuxNav__.open()
+        }
+    })
+
+    /**
+     * Since Fastclick is used to delegate 'touchstart' globally
+     * to hack 300ms delay in iOS by performing a fake 'click',
+     * Using 'e.stopPropagation' to stop 'touchstart' event from 
+     * $toggle/$collapse will break global delegation.
+     * 
+     * Instead, we use a 'e.target' filter to prevent handler
+     * added to document close HuxNav.  
+     *
+     * Also, we use 'click' instead of 'touchstart' as compromise
+     */
+    document.addEventListener('click', function(e){
+        if(e.target == $toggle) return;
+        if(e.target.className == 'icon-bar') return;
+        __HuxNav__.close();
+    })
+</script>
+
+
+    <!-- Image to hack wechat -->
+<!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="/img/post-bg-android.jpg" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        position: relative;
+        background-image: url('/img/post-bg-android.jpg')
+    }
+
+    
+</style>
+<header class="intro-header" >
+    <div class="header-mask"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#Francis 杂谈" title="Francis 杂谈">Francis 杂谈</a>
+                        
+                        <a class="tag" href="/tags/#接口开发" title="接口开发">接口开发</a>
+                        
+                    </div>
+                    <h1>WebService的两种方式SOAP和REST比较</h1>
+                    
+                    
+                    <h2 class="subheading">WebService相对做接口开发的同学们再熟悉不过了,包括SOAP协议以及REST,本文就对以上两种方式做一个总结和他们优劣势的阐述.</h2>
+                    
+                    <span class="meta">Posted by Francis Soung on April 12, 2016</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <blockquote>
+  <p>由于第一次接触WebService，对于很多概念不太理解，尤其是看到各个OpenAPI的不同提供方式时，更加疑惑。如google map api采用了AJAX方式，通过javascript提供API,而淘宝TOP则采用直接的HTTP+XML请求方式，最令我疑惑的是教材上讲的WSDL，UDDI从没有在这些API中出现过。现在知道了WebService原来有两种方式，一是SOAP协议方式，在这种方式下需要WSDL,UDDI等，二是REST方式，这种方式根本不需要WSDL,UDDI等。而且REST方式现在看来是更加流行，更有前途的方式。</p>
+</blockquote>
+
+<p>在SOA的基础技术实现方式中WebService占据了很重要的地位，通常我们提到WebService第一想法就是SOAP消息在各种传输协议上交互。近几年REST的思想伴随着SOA逐渐被大家接受，同时各大网站不断开放API提供给开发者，也激起了REST风格WebService的热潮。</p>
+
+<p>在收到新需求Email之前，我对REST的理解仅仅是通过半懂不懂的看了Fielding的REST博士论文，说实话当时也就是希望了解这么一个新概念，对于其内部的思想只是很肤浅的了解了一下。</p>
+
+<p>ASF的最新需求就是可能需要实现REST风格的WebService集成，因此不得不好好的去看看REST的真正思想含义以及当前各大网站的设计方式。后面所要表述的也是我这个初学者的一些看法和观点，抛砖引玉，希望在我将REST融入到ASF之前能够获得更多的反馈和意见。</p>
+
+<h3 id="soap">SOAP</h3>
+
+<p>什么是SOAP，我想不用多说，google一把满眼都是。其实SOAP最早是针对RPC的一种解决方案，简单对象访问协议，很轻量，同时作为应用协议可以基于多种传输协议来传递消息（Http,SMTP等）。但是随着SOAP作为WebService的广泛应用，不断地增加附加的内容，使得现在开发人员觉得SOAP很重，使用门槛很高。在SOAP后续的发展过程中，WS-*一系列协议的制定，增加了SOAP的成熟度，也给SOAP增加了负担。</p>
+
+<h3 id="rest">REST</h3>
+
+<p>REST其实并不是什么协议也不是什么标准，而是将Http协议的设计初衷作了诠释，在Http协议被广泛利用的今天，越来越多的是将其作为传输协议，而非原先设计者所考虑的应用协议。SOAP类型的WebService就是最好的例子，SOAP消息完全就是将Http协议作为消息承载，以至于对于Http协议中的各种参数（例如编码，错误码等）都置之不顾。其实，最轻量级的应用协议就是Http协议。Http协议所抽象的get,post,put,delete就好比数据库中最基本的增删改查，而互联网上的各种资源就好比数据库中的记录（可能这么比喻不是很好），对于各种资源的操作最后总是能抽象成为这四种基本操作，在定义了定位资源的规则以后，对于资源的操作通过标准的Http协议就可以实现，开发者也会受益于这种轻量级的协议。</p>
+
+<p>自己理解的将REST的思想归结以下有如下几个关键点：</p>
+
+<h4 id="section">面向资源的接口设计</h4>
+<p>所有的接口设计都是针对资源来设计的，也就很类似于我们的面向对象和面向过程的设计区别，只不过现在将网络上的操作实体都作为资源来看待，同时URI的设计也是体现了对于资源的定位设计。后面会提到有一些网站的API设计说是REST设计，其实是RPC-REST的混合体，并非是REST的思想。</p>
+
+<h4 id="crud">抽象操作为基础的CRUD</h4>
+
+<p>这点很简单，Http中的get,put,post,delete分别对应了read,update,create,delete四种操作，如果仅仅是作为对于资源的操作，抽象成为这四种已经足够了，但是对于现在的一些复杂的业务服务接口设计，可能这样的抽象未必能够满足。其实这也在后面的几个网站的API设计中暴露了这样的问题，如果要完全按照REST的思想来设计，那么适用的环境将会有限制，而非放之四海皆准的。</p>
+
+<h4 id="http">Http是应用协议而非传输协议</h4>
+
+<p>这点在后面各大网站的API分析中有很明显的体现，其实有些网站已经走到了SOAP的老路上，说是REST的理念设计，其实是作了一套私有的SOAP协议，因此称之为REST风格的自定义SOAP协议。</p>
+
+<h4 id="section-1">无状态，自包含</h4>
+
+<p>这点其实不仅仅是对于REST来说的，作为接口设计都需要能够做到这点，也是作为可扩展和高效性的最基本的保证，就算是使用SOAP的WebService也是一样。</p>
+
+<h3 id="rest-vs-soap">REST vs SOAP</h3>
+
+<h4 id="section-2">成熟度</h4>
+
+<p>SOAP虽然发展到现在已经脱离了初衷，但是对于异构环境服务发布和调用，以及厂商的支持都已经达到了较为成熟的情况。不同平台，开发语言之间通过SOAP来交互的web service都能够较好的互通（在部分复杂和特殊的参数和返回对象解析上，协议没有作很细致的规定，导致还是需要作部分修正）</p>
+
+<p>REST国外很多大网站都发布了自己的开发API，很多都提供了SOAP和REST两种Web Service，根据调查部分网站的REST风格的使用情况要高于SOAP。但是由于REST只是一种基于Http协议实现资源操作的思想，因此各个网站的REST实现都自有一套，在后面会讲诉各个大网站的REST API的风格。也正是因为这种各自实现的情况，在性能和可用性上会大大高于SOAP发布的web service，但统一通用方面远远不及SOAP。由于这些大网站的SP往往专注于此网站的API开发，因此通用性要求不高。</p>
+
+<p>ASF上考虑发布REST风格的Web Service，可以参考几大网站的设计（兄弟公司的方案就是参考了类似于flickr的设计模式），但是由于没有类似于SOAP的权威性协议作为规范，REST实现的各种协议仅仅只能算是私有协议，当然需要遵循REST的思想，但是这样细节方面有太多没有约束的地方。REST日后的发展所走向规范也会直接影响到这部分的设计是否能够有很好的生命力。</p>
+
+<p>总的来说SOAP在成熟度上优于REST。</p>
+
+<h4 id="section-3">效率和易用性</h4>
+
+<p>SOAP协议对于消息体和消息头都有定义，同时消息头的可扩展性为各种互联网的标准提供了扩展的基础，WS-*系列就是较为成功的规范。但是也由于SOAP由于各种需求不断扩充其本身协议的内容，导致在SOAP处理方面的性能有所下降。同时在易用性方面以及学习成本上也有所增加。</p>
+
+<p>REST被人们的重视，其实很大一方面也是因为其高效以及简洁易用的特性。这种高效一方面源于其面向资源接口设计以及操作抽象简化了开发者的不良设计，同时也最大限度的利用了Http最初的应用协议设计理念。同时，在我看来REST还有一个很吸引开发者的就是能够很好的融合当前Web2.0的很多前端技术来提高开发效率。例如很多大型网站开放的REST风格的API都会有多种返回形式，除了传统的xml作为数据承载，还有（JSON,RSS,ATOM）等形式，这对很多网站前端开发人员来说就能够很好的mashup各种资源信息。</p>
+
+<p>因此在效率和易用性上来说，REST更胜一筹。</p>
+
+<h4 id="section-4">安全性</h4>
+
+<p>这点其实可以放入到成熟度中，不过在当前的互联网应用和平台开发设计过程中，安全已经被提到了很高的高度，特别是作为外部接口给第三方调用，安全性可能会高过业务逻辑本身。</p>
+
+<p>SOAP在安全方面是通过使用XML-Security和XML-Signature两个规范组成了WS-Security来实现安全控制的，当前已经得到了各个厂商的支持，.net ，php ，java 都已经对其有了很好的支持（虽然在一些细节上还是有不兼容的问题，但是互通基本上是可以的）。</p>
+
+<p>REST没有任何规范对于安全方面作说明，同时现在开放REST风格API的网站主要分成两种，一种是自定义了安全信息封装在消息中（其实这和SOAP没有什么区别），另外一种就是靠硬件SSL来保障,但是这只能够保证点到点的安全，如果是需要多点传输的话SSL就无能为力了。安全这块其实也是一个很大的问题，今年在BEA峰会上看到有演示采用SAML2实现的网站间SSO，其实是直接采用了XML-Security和XML-Signature，效率看起来也不是很高。未来REST规范化和通用化过程中的安全是否也会采用这两种规范，是未知的，但是加入的越多，REST失去它高效性的优势越多。</p>
+
+<h4 id="section-5">应用设计与改造</h4>
+
+<p>我们的系统要么就是已经有了那些需要被发布出去的服务，要么就是刚刚设计好的服务，但是开发人员的传统设计思想让REST的形式被接受还需要一点时间。同时在资源型数据服务接口设计上来说按照REST的思想来设计相对来说要容易一些，而对于一些复杂的服务接口来说，可能强要去按照REST的风格来设计会有些牵强。这一点其实可以看看各大网站的接口就可以知道，很多网站还要传入function的名称作为参数，这就明显已经违背了REST本身的设计思路。</p>
+
+<p>而SOAP本身就是面向RPC来设计的，开发人员十分容易接受，所以不存在什么适应的过程。</p>
+
+<h4 id="section-6">总的来说，其实还是一个老观念，适合的才是最好的</h4>
+
+<p>技术没有好坏，只有是不是合适，一种好的技术和思想被误用了，那么就会得到反效果。REST和SOAP各自都有自己的优点，同时如果在一些场景下如果去改造REST，其实就会走向SOAP（例如安全）。</p>
+
+<p>REST对于资源型服务接口来说很合适，同时特别适合对于效率要求很高，但是对于安全要求不高的场景。而SOAP的成熟性可以给需要提供给多开发语言的，对于安全性要求较高的接口设计带来便利。所以我觉得纯粹说什么设计模式将会占据主导地位没有什么意义，关键还是看应用场景。</p>
+
+<p>同时很重要一点就是不要扭曲了REST现在很多网站都跟风去开发REST风格的接口，其实都是在学其形，不知其心，最后弄得不伦不类，性能上不去，安全又保证不了，徒有一个看似象摸象样的皮囊。</p>
+
+<h3 id="rest-1">REST设计的几种形式</h3>
+
+<p>参看了几个大型网站的REST风格的API设计，这里做一下大致的说明：</p>
+
+<h4 id="facebook">FaceBook</h4>
+
+<p><strong>请求消息</strong></p>
+
+<p>在URI设计上采取了类似于REST的风格。例如对于friends的获取，就定义为friends.get，前面部分作为资源定义，后面是具体的操作，其他的API也是类似，资源+操作，因此就算使用http的get方法都可能作了update的操作，其实已经违背了REST的思想，但是说到，其实那么复杂的业务接口设计下，要通过RUCD来抽象所有的接口基本是不实际的。在URI定义好以后，还有详细的参数定义，包括类型以及是否必选。</p>
+
+<p><strong>响应消息</strong></p>
+
+<p>有多种方式，XML,JSON。XML有XSD作为参考。有点类似于没有Head的SOAP，只不过这里将原来可以定义在WSDL中的XSD抽取出来了。</p>
+
+<h4 id="flickr">Flickr</h4>
+
+<p><strong>请求消息</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>http://api.flickr.com/services/rest/？method=flickr.test.echo&amp;name=value 这里就可以很明显看出它所定制的REST请求其实和RPC没有什么太大的区别。
+</code></pre>
+</div>
+
+<p><strong>消息返回</strong></p>
+
+<p>正确处理返回</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="utf-8" ?&gt;</span>
+<span class="nt">&lt;rsp</span> <span class="na">stat=</span><span class="s">"ok"</span><span class="nt">&gt;</span>
+         [xml-payload-here]
+<span class="nt">&lt;/rsp&gt;</span>
+</code></pre>
+</div>
+
+<p>错误处理返回</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="utf-8" ?&gt;</span>
+<span class="nt">&lt;rsp</span> <span class="na">stat=</span><span class="s">"fail"</span><span class="nt">&gt;</span>
+         <span class="nt">&lt;err</span> <span class="na">code=</span><span class="s">"[error-code]"</span> <span class="na">msg=</span><span class="s">"[error-message]"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/rsp&gt;</span>
+</code></pre>
+</div>
+
+<p>根据返回可以看出已经违背了REST的思想，还是把Http协议作为传输承载协议，并没有真正意义上使用Http协议作为资源访问和操作协议。</p>
+
+<p>总的来说，只是形式上去模仿REST，自己搞了一套私有协议。</p>
+
+<h4 id="ebay">Ebay</h4>
+
+<p><strong>请求消息</strong></p>
+
+<p>采用xml作为承载，类似于SOAP，不过去除SOAP消息的封装和包头，同时在请求中附加了认证和警告级别等附加信息。</p>
+
+<p><strong>消息返回</strong></p>
+
+<p>类似于SOAP消息，不过删除了SOAP的封装和包头，同时在返回结构中增加了消息处理结果以及版本等附加信息。</p>
+
+<p>这个很类似于当前Axis2框架的做法，将SOAP精简，同时根据自身需求丰富了安全，事务等协议内容。</p>
+
+<h4 id="yahoo-maps">Yahoo Maps</h4>
+
+<p><strong>请求消息</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>http://local.yahooapis.com/MapsService/V1/geocode?appid=YahooDemo&amp;street=701+First+Ave&amp;city=Sunnyvale&amp;state=CA 采用REST推荐的方式，URI+Parameters。
+</code></pre>
+</div>
+
+<p><strong>返回消息</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="nt">&lt;ResultSet</span> <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
+<span class="na">xmlns=</span><span class="s">"urn:yahoo:maps"</span>
+<span class="na">xsi:schemaLocation=</span><span class="s">"urn:yahoo:maps http://local.yahooapis.com/MapsService/V1/GeocodeResponse.xsd"</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;Result</span> <span class="na">precision=</span><span class="s">"address"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;Latitude&gt;</span>37.416384<span class="nt">&lt;/Latitude&gt;</span>
+    <span class="nt">&lt;Longitude&gt;</span>-122.024853<span class="nt">&lt;/Longitude&gt;</span>
+    <span class="nt">&lt;Address&gt;</span>701 FIRST AVE<span class="nt">&lt;/Address&gt;</span>
+    <span class="nt">&lt;City&gt;</span>SUNNYVALE<span class="nt">&lt;/City&gt;</span>
+    <span class="nt">&lt;State&gt;</span>CA<span class="nt">&lt;/State&gt;</span>
+    <span class="nt">&lt;Zip&gt;</span>94089-1019<span class="nt">&lt;/Zip&gt;</span>
+    <span class="nt">&lt;Country&gt;</span>US<span class="nt">&lt;/Country&gt;</span>
+ <span class="nt">&lt;/Result&gt;</span>
+<span class="nt">&lt;/ResultSet&gt;</span>
+</code></pre>
+</div>
+
+<p>SOAP的精简xml返回，其他信息，例如出错码等信息由Http协议头来承载。</p>
+
+<h4 id="youtube">YouTube</h4>
+
+<p><strong>请求消息</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>http://www.youtube.com/api2_rest?method=youtube.users.get_profile&amp;dev_id=YOUR_DEV_ID&amp;user=YOUTUBE_USER_NAME 可以看到对于资源操作的URI定义也是参数的一部分。
+</code></pre>
+</div>
+
+<p><strong>返回消息</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>
+<span class="nt">&lt;ut_response</span> <span class="na">status=</span><span class="s">"ok"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;user_profile&gt;</span>
+        <span class="nt">&lt;first_name&gt;</span>YouTube<span class="nt">&lt;/first_name&gt;</span>
+        <span class="nt">&lt;last_name&gt;</span>User<span class="nt">&lt;/last_name&gt;</span>
+        <span class="nt">&lt;about_me&gt;</span>YouTube rocks!!<span class="nt">&lt;/about_me&gt;</span>
+        <span class="nt">&lt;age&gt;</span>30<span class="nt">&lt;/age&gt;</span>
+        <span class="nt">&lt;video_upload_count&gt;</span>7<span class="nt">&lt;/video_upload_count&gt;</span>
+    <span class="nt">&lt;/user_profile&gt;</span>
+<span class="nt">&lt;/ut_response&gt;</span>
+</code></pre>
+</div>
+
+<p>自定义的类SOAP消息。</p>
+
+<h4 id="amazon">Amazon</h4>
+
+<p><strong>请求消息</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>https://Amazon FPS web service end point/?AWSAccessKeyId=Your AWSAccessKeyId
+&amp;Timestamp=[Current timestamp]
+&amp;Signature=[Signature calculated from hash of Action and Timestamp]
+&amp;SignatureVersion=[Signature calculated from hash of Action and Timestamp]
+&amp;Version=[Version of the WSDL specified in YYYY-MM-DD format] &amp;Action=[Name of the API]&amp;parameter1=[Value of the API parameter1] &amp;parameter2=[Value of the API parameter2]
+&amp;...[API parameters and their values]
+</code></pre>
+</div>
+
+<p><strong>返回消息</strong></p>
+
+<p>类似于SOAP的自有协议，消息体中包含了消息状态等附加信息。</p>
+
+<p><strong>总结</strong></p>
+
+<p>看了上面那么多网站的设计，总结一下主要有这么几种设计方式。</p>
+
+<p><strong>请求消息设计</strong></p>
+
+<ul>
+  <li>
+    <p>基本符合REST标准方式：资源URI定义（资源．操作）+参数。这类设计如果滥用get去处理其他类型的操作，那么和2无异。</p>
+  </li>
+  <li>
+    <p>REST风格非REST思想：资源URI定义+参数（包含操作方法名）。其实就是RPC的REST跟风。</p>
+  </li>
+  <li>
+    <p>类似于SOAP消息，自定义协议，以xml作为承载。（可扩展，例如鉴权，访问控制等），不过那就好比自己定义了一套SOAP和SOAP extends。大型的有实力的网站有的采取此种做法。</p>
+  </li>
+</ul>
+
+<p><strong>响应消息设计</strong></p>
+
+<ul>
+  <li>
+    <p>REST标准方式，将Resource State传输返回给客户端，Http消息作为应用协议而非传输协议</p>
+  </li>
+  <li>
+    <p>以XML作为消息承载体，Http作为消息传输协议，处理状态自包含。</p>
+  </li>
+  <li>
+    <p>自定义消息格式，类似于SOAP，提供可扩展部分。</p>
+  </li>
+</ul>
+
+<p>作为遵循REST的理念来看我的选择是响应1和请求1的设计。</p>
+
+<h3 id="restasf">REST和ASF的集成</h3>
+
+<p>ASF要集成REST就现在来看有两种比较合适的方法。</p>
+
+<p>一．就是采用Axis2的REST实现，这种方式的好处就是开发周期短，容易集成，但是请求和响应的格式无法改变，资源URI设计受限，Axis2的REST其实就是将SOAP消息精简，请求的时候删除了SOAP的头，响应的时候仅仅返回资源信息，如果提供xsd就可以被各种客户端所解析。并非真正的REST。</p>
+
+<p>二．就是采用Restlet开源框架，将Restlet开源框架集成到ASF中，由于Restlet本身就是可内嵌的应用框架，因此集成不成问题，同时Restlet框架只是API结构框架，因此实现和定义完全分开，集成Restlet以后可以自己实现其中的解析引擎也可以采用默认提供的引擎，同时对于内嵌Jetty等多种开源项目的支持，将更多优势融入到了Rest中。看了一下国内也有很多朋友已经关注Restlet开源项目，看了它的架构设计，个人觉得还是比较灵活和紧凑的。</p>
+
+<h3 id="section-7">题外话</h3>
+
+<p>在写这篇文章以前写了一篇调研报告群发给各个架构师们参考，期待反馈。下午正好和我们的首席架构师聊了一会儿。其实我和他的感觉是一样的，REST是否真的在我们现有的服务框架中需要集成，理解了REST的思想再去看应用场景，那么可以发现如果要完全遵循REST的设计理念来设计接口的话，那么强要去改变现有已经存在的或者还未开发的接口就会落入为了技术而技术，为了潮流而跟风的近地。当然并不否认REST的好，其实我们兄弟公司的一些业务场景有部分的接口十分合适这类设计，面向资源，高效，简洁，易用都能够体现出它的价值。我们将会和我们的兄弟公司合作，也会参考他们的设计理念，在参考当前各个网站的实现情况下，部分的采用这类形式的发布，提供给第三方的ISV，无疑是我现在把REST融入到ASF中最好的理由。</p>
+
+<p>有了需求去做才不会陷入为了技术而技术，毕竟技术是由商业价值驱动的，同样社会上充斥着各种技术的鼓吹，如果稍不留神就会陷入跟风的潮流中。</p>
+
+
+                <hr>
+
+                
+
+                <!-- Baidu Share start-->
+                <div class="bdsharebuttonbox">
+                    <a href="#" class="bds_more" data-cmd="more"></a>
+                    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+                    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+                    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+                    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+                </div>
+                <!-- Baidu Share end -->
+
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2016/03/31/%E9%80%92%E5%BD%92%E7%AE%97%E6%B3%95%E4%B9%8Bn%E9%98%B6%E7%9F%A9%E9%98%B5%E8%A1%8C%E5%88%97%E5%BC%8F%E6%B1%82%E8%A7%A3/" data-toggle="tooltip" data-placement="top" title="递归算法之n阶矩阵行列式求解">
+                            Previous<br>
+                            <span>递归算法之n阶矩阵行列式求解</span>
+                        </a>
+                    </li>
+                    
+                    
+                </ul>
+
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        <a href="/tags/#Linux" title="Linux" rel="10">
+                            Linux
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#Francis 旅行录" title="Francis 旅行录" rel="6">
+                            Francis 旅行录
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#Francis 简单生活" title="Francis 简单生活" rel="6">
+                            Francis 简单生活
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/#PHP" title="PHP" rel="6">
+                            PHP
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#MySQL" title="MySQL" rel="2">
+                            MySQL
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#Apache" title="Apache" rel="2">
+                            Apache
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#Francis 杂谈" title="Francis 杂谈" rel="13">
+                            Francis 杂谈
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#OS X" title="OS X" rel="2">
+                            OS X
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/#Nginx" title="Nginx" rel="2">
+                            Nginx
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/#编程" title="编程" rel="4">
+                            编程
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/#C语言" title="C语言" rel="2">
+                            C语言
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#架构" title="架构" rel="2">
+                            架构
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+                    
+                    <li><a href="http://blog.maryopen.com/">马力全开</a></li>
+                    
+                    <li><a href="http://lfyqzhang.com/">宇过天勤</a></li>
+                    
+                    <li><a href="http://www.april2nd.me/">航哥</a></li>
+                    
+                    <li><a href="http://blog.ichuck.net/">鹏哥</a></li>
+                    
+                    <li><a href="http://www.shmilyx.net/">望望</a></li>
+                    
+                    <li><a href="http://www.51hsw.com/">好一网</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!--百度分享公共JS代码 start-->
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"1","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+<!--百度分享公共JS代码 end-->
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "francissoungblog";
+    var disqus_identifier = "/2016/04/12/aaa";
+    var disqus_url = "http://www.francissoung.com/2016/04/12/aaa/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+        var d = document, t = 'script',
+                o = d.createElement(t),
+                s = d.getElementsByTagName(t)[0];
+        o.src = u;
+        if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+        s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("http://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+            visible: 'always',
+            placement: 'right',
+            icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="http://weibo.com/523072343">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/Franciskeke">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://segmentfault.com/u/francissoung">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa  fa-stack-1x fa-inverse">sf</i>
+                                    </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/FrancisSoung">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/francis.soung">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a href="https://twitter.com/Francis_Soung">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Francis Soung 2016
+                    <br>
+                    Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> and <a href="http://www.bootcss.com/">Bootstrap</a> | 京ICP备15036690号-1
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+<p id="back-to-top"><a href="#top"><span></span></a></p>
+
+
+<script src="http://7xl0td.com1.z0.glb.clouddn.com/js%2Fjquery.min.js"></script>
+<script src="http://7xl0td.com1.z0.glb.clouddn.com/js%2Fbootstrap.min.js"></script>
+<script src="http://7xl0td.com1.z0.glb.clouddn.com/js%2Ffrancis-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- Highlight.js -->
+<script>
+    async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+        hljs.initHighlightingOnLoad();
+    })
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+<link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+
+<!--fastClick.js -->
+<script>
+    async("http://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        // var $nav = document.querySelector("nav");
+        // if($nav) FastClick.attach($nav);
+
+        // global FastClick!!
+        FastClick.attach(document.body);    
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Francis Soung
+    var _baId = '551c451674b914ab3e454205afd429a8';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- Baidu zhanzhang -->
+<script>
+    (function(){
+        var bp = document.createElement('script');
+        bp.src = '//push.zhanzhang.baidu.com/push.js';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+<!--返回顶部-->
+<script>
+    $(function(){
+        //当滚动条的位置处于距顶部100像素以下时，跳转链接出现，否则消失
+        $(function () {
+            $(window).scroll(function(){
+                if ($(window).scrollTop()>100){
+                    $("#back-to-top").fadeIn(1500);
+                }
+                else
+                {
+                    $("#back-to-top").fadeOut(1500);
+                }
+            });
+
+            //当点击跳转链接后，回到页面顶部位置
+
+            $("#back-to-top").click(function(){
+                $('body,html').animate({scrollTop:0},1000);
+                return false;
+            });
+        });
+    });
+</script>
+
+
+
+<!-- Image to hack wechat -->
+<img src="/img/icon_wechat.png" alt="Francis Soung" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

@@ -5,9 +5,276 @@
     <description>这是一个程序员的日记薄，记录工作与生活的点点滴滴。包括WEB程序开发、Linux服务器管理、LAMP/LNMP环境配置优化、PHP网络技术、MySQL优化等技术分享以及个人生活旅行中的所见所闻所解。</description>
     <link>http://www.francissoung.com/</link>
     <atom:link href="http://www.francissoung.com/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Fri, 08 Apr 2016 21:26:11 +0800</pubDate>
-    <lastBuildDate>Fri, 08 Apr 2016 21:26:11 +0800</lastBuildDate>
+    <pubDate>Tue, 12 Apr 2016 17:41:10 +0800</pubDate>
+    <lastBuildDate>Tue, 12 Apr 2016 17:41:10 +0800</lastBuildDate>
     <generator>Jekyll v3.1.2</generator>
+    
+      <item>
+        <title>WebService的两种方式SOAP和REST比较</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;由于第一次接触WebService，对于很多概念不太理解，尤其是看到各个OpenAPI的不同提供方式时，更加疑惑。如google map api采用了AJAX方式，通过javascript提供API,而淘宝TOP则采用直接的HTTP+XML请求方式，最令我疑惑的是教材上讲的WSDL，UDDI从没有在这些API中出现过。现在知道了WebService原来有两种方式，一是SOAP协议方式，在这种方式下需要WSDL,UDDI等，二是REST方式，这种方式根本不需要WSDL,UDDI等。而且REST方式现在看来是更加流行，更有前途的方式。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;在SOA的基础技术实现方式中WebService占据了很重要的地位，通常我们提到WebService第一想法就是SOAP消息在各种传输协议上交互。近几年REST的思想伴随着SOA逐渐被大家接受，同时各大网站不断开放API提供给开发者，也激起了REST风格WebService的热潮。&lt;/p&gt;
+
+&lt;p&gt;在收到新需求Email之前，我对REST的理解仅仅是通过半懂不懂的看了Fielding的REST博士论文，说实话当时也就是希望了解这么一个新概念，对于其内部的思想只是很肤浅的了解了一下。&lt;/p&gt;
+
+&lt;p&gt;ASF的最新需求就是可能需要实现REST风格的WebService集成，因此不得不好好的去看看REST的真正思想含义以及当前各大网站的设计方式。后面所要表述的也是我这个初学者的一些看法和观点，抛砖引玉，希望在我将REST融入到ASF之前能够获得更多的反馈和意见。&lt;/p&gt;
+
+&lt;h3 id=&quot;soap&quot;&gt;SOAP&lt;/h3&gt;
+
+&lt;p&gt;什么是SOAP，我想不用多说，google一把满眼都是。其实SOAP最早是针对RPC的一种解决方案，简单对象访问协议，很轻量，同时作为应用协议可以基于多种传输协议来传递消息（Http,SMTP等）。但是随着SOAP作为WebService的广泛应用，不断地增加附加的内容，使得现在开发人员觉得SOAP很重，使用门槛很高。在SOAP后续的发展过程中，WS-*一系列协议的制定，增加了SOAP的成熟度，也给SOAP增加了负担。&lt;/p&gt;
+
+&lt;h3 id=&quot;rest&quot;&gt;REST&lt;/h3&gt;
+
+&lt;p&gt;REST其实并不是什么协议也不是什么标准，而是将Http协议的设计初衷作了诠释，在Http协议被广泛利用的今天，越来越多的是将其作为传输协议，而非原先设计者所考虑的应用协议。SOAP类型的WebService就是最好的例子，SOAP消息完全就是将Http协议作为消息承载，以至于对于Http协议中的各种参数（例如编码，错误码等）都置之不顾。其实，最轻量级的应用协议就是Http协议。Http协议所抽象的get,post,put,delete就好比数据库中最基本的增删改查，而互联网上的各种资源就好比数据库中的记录（可能这么比喻不是很好），对于各种资源的操作最后总是能抽象成为这四种基本操作，在定义了定位资源的规则以后，对于资源的操作通过标准的Http协议就可以实现，开发者也会受益于这种轻量级的协议。&lt;/p&gt;
+
+&lt;p&gt;自己理解的将REST的思想归结以下有如下几个关键点：&lt;/p&gt;
+
+&lt;h4 id=&quot;section&quot;&gt;面向资源的接口设计&lt;/h4&gt;
+&lt;p&gt;所有的接口设计都是针对资源来设计的，也就很类似于我们的面向对象和面向过程的设计区别，只不过现在将网络上的操作实体都作为资源来看待，同时URI的设计也是体现了对于资源的定位设计。后面会提到有一些网站的API设计说是REST设计，其实是RPC-REST的混合体，并非是REST的思想。&lt;/p&gt;
+
+&lt;h4 id=&quot;crud&quot;&gt;抽象操作为基础的CRUD&lt;/h4&gt;
+
+&lt;p&gt;这点很简单，Http中的get,put,post,delete分别对应了read,update,create,delete四种操作，如果仅仅是作为对于资源的操作，抽象成为这四种已经足够了，但是对于现在的一些复杂的业务服务接口设计，可能这样的抽象未必能够满足。其实这也在后面的几个网站的API设计中暴露了这样的问题，如果要完全按照REST的思想来设计，那么适用的环境将会有限制，而非放之四海皆准的。&lt;/p&gt;
+
+&lt;h4 id=&quot;http&quot;&gt;Http是应用协议而非传输协议&lt;/h4&gt;
+
+&lt;p&gt;这点在后面各大网站的API分析中有很明显的体现，其实有些网站已经走到了SOAP的老路上，说是REST的理念设计，其实是作了一套私有的SOAP协议，因此称之为REST风格的自定义SOAP协议。&lt;/p&gt;
+
+&lt;h4 id=&quot;section-1&quot;&gt;无状态，自包含&lt;/h4&gt;
+
+&lt;p&gt;这点其实不仅仅是对于REST来说的，作为接口设计都需要能够做到这点，也是作为可扩展和高效性的最基本的保证，就算是使用SOAP的WebService也是一样。&lt;/p&gt;
+
+&lt;h3 id=&quot;rest-vs-soap&quot;&gt;REST vs SOAP&lt;/h3&gt;
+
+&lt;h4 id=&quot;section-2&quot;&gt;成熟度&lt;/h4&gt;
+
+&lt;p&gt;SOAP虽然发展到现在已经脱离了初衷，但是对于异构环境服务发布和调用，以及厂商的支持都已经达到了较为成熟的情况。不同平台，开发语言之间通过SOAP来交互的web service都能够较好的互通（在部分复杂和特殊的参数和返回对象解析上，协议没有作很细致的规定，导致还是需要作部分修正）&lt;/p&gt;
+
+&lt;p&gt;REST国外很多大网站都发布了自己的开发API，很多都提供了SOAP和REST两种Web Service，根据调查部分网站的REST风格的使用情况要高于SOAP。但是由于REST只是一种基于Http协议实现资源操作的思想，因此各个网站的REST实现都自有一套，在后面会讲诉各个大网站的REST API的风格。也正是因为这种各自实现的情况，在性能和可用性上会大大高于SOAP发布的web service，但统一通用方面远远不及SOAP。由于这些大网站的SP往往专注于此网站的API开发，因此通用性要求不高。&lt;/p&gt;
+
+&lt;p&gt;ASF上考虑发布REST风格的Web Service，可以参考几大网站的设计（兄弟公司的方案就是参考了类似于flickr的设计模式），但是由于没有类似于SOAP的权威性协议作为规范，REST实现的各种协议仅仅只能算是私有协议，当然需要遵循REST的思想，但是这样细节方面有太多没有约束的地方。REST日后的发展所走向规范也会直接影响到这部分的设计是否能够有很好的生命力。&lt;/p&gt;
+
+&lt;p&gt;总的来说SOAP在成熟度上优于REST。&lt;/p&gt;
+
+&lt;h4 id=&quot;section-3&quot;&gt;效率和易用性&lt;/h4&gt;
+
+&lt;p&gt;SOAP协议对于消息体和消息头都有定义，同时消息头的可扩展性为各种互联网的标准提供了扩展的基础，WS-*系列就是较为成功的规范。但是也由于SOAP由于各种需求不断扩充其本身协议的内容，导致在SOAP处理方面的性能有所下降。同时在易用性方面以及学习成本上也有所增加。&lt;/p&gt;
+
+&lt;p&gt;REST被人们的重视，其实很大一方面也是因为其高效以及简洁易用的特性。这种高效一方面源于其面向资源接口设计以及操作抽象简化了开发者的不良设计，同时也最大限度的利用了Http最初的应用协议设计理念。同时，在我看来REST还有一个很吸引开发者的就是能够很好的融合当前Web2.0的很多前端技术来提高开发效率。例如很多大型网站开放的REST风格的API都会有多种返回形式，除了传统的xml作为数据承载，还有（JSON,RSS,ATOM）等形式，这对很多网站前端开发人员来说就能够很好的mashup各种资源信息。&lt;/p&gt;
+
+&lt;p&gt;因此在效率和易用性上来说，REST更胜一筹。&lt;/p&gt;
+
+&lt;h4 id=&quot;section-4&quot;&gt;安全性&lt;/h4&gt;
+
+&lt;p&gt;这点其实可以放入到成熟度中，不过在当前的互联网应用和平台开发设计过程中，安全已经被提到了很高的高度，特别是作为外部接口给第三方调用，安全性可能会高过业务逻辑本身。&lt;/p&gt;
+
+&lt;p&gt;SOAP在安全方面是通过使用XML-Security和XML-Signature两个规范组成了WS-Security来实现安全控制的，当前已经得到了各个厂商的支持，.net ，php ，java 都已经对其有了很好的支持（虽然在一些细节上还是有不兼容的问题，但是互通基本上是可以的）。&lt;/p&gt;
+
+&lt;p&gt;REST没有任何规范对于安全方面作说明，同时现在开放REST风格API的网站主要分成两种，一种是自定义了安全信息封装在消息中（其实这和SOAP没有什么区别），另外一种就是靠硬件SSL来保障,但是这只能够保证点到点的安全，如果是需要多点传输的话SSL就无能为力了。安全这块其实也是一个很大的问题，今年在BEA峰会上看到有演示采用SAML2实现的网站间SSO，其实是直接采用了XML-Security和XML-Signature，效率看起来也不是很高。未来REST规范化和通用化过程中的安全是否也会采用这两种规范，是未知的，但是加入的越多，REST失去它高效性的优势越多。&lt;/p&gt;
+
+&lt;h4 id=&quot;section-5&quot;&gt;应用设计与改造&lt;/h4&gt;
+
+&lt;p&gt;我们的系统要么就是已经有了那些需要被发布出去的服务，要么就是刚刚设计好的服务，但是开发人员的传统设计思想让REST的形式被接受还需要一点时间。同时在资源型数据服务接口设计上来说按照REST的思想来设计相对来说要容易一些，而对于一些复杂的服务接口来说，可能强要去按照REST的风格来设计会有些牵强。这一点其实可以看看各大网站的接口就可以知道，很多网站还要传入function的名称作为参数，这就明显已经违背了REST本身的设计思路。&lt;/p&gt;
+
+&lt;p&gt;而SOAP本身就是面向RPC来设计的，开发人员十分容易接受，所以不存在什么适应的过程。&lt;/p&gt;
+
+&lt;h4 id=&quot;section-6&quot;&gt;总的来说，其实还是一个老观念，适合的才是最好的&lt;/h4&gt;
+
+&lt;p&gt;技术没有好坏，只有是不是合适，一种好的技术和思想被误用了，那么就会得到反效果。REST和SOAP各自都有自己的优点，同时如果在一些场景下如果去改造REST，其实就会走向SOAP（例如安全）。&lt;/p&gt;
+
+&lt;p&gt;REST对于资源型服务接口来说很合适，同时特别适合对于效率要求很高，但是对于安全要求不高的场景。而SOAP的成熟性可以给需要提供给多开发语言的，对于安全性要求较高的接口设计带来便利。所以我觉得纯粹说什么设计模式将会占据主导地位没有什么意义，关键还是看应用场景。&lt;/p&gt;
+
+&lt;p&gt;同时很重要一点就是不要扭曲了REST现在很多网站都跟风去开发REST风格的接口，其实都是在学其形，不知其心，最后弄得不伦不类，性能上不去，安全又保证不了，徒有一个看似象摸象样的皮囊。&lt;/p&gt;
+
+&lt;h3 id=&quot;rest-1&quot;&gt;REST设计的几种形式&lt;/h3&gt;
+
+&lt;p&gt;参看了几个大型网站的REST风格的API设计，这里做一下大致的说明：&lt;/p&gt;
+
+&lt;h4 id=&quot;facebook&quot;&gt;FaceBook&lt;/h4&gt;
+
+&lt;p&gt;&lt;strong&gt;请求消息&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;在URI设计上采取了类似于REST的风格。例如对于friends的获取，就定义为friends.get，前面部分作为资源定义，后面是具体的操作，其他的API也是类似，资源+操作，因此就算使用http的get方法都可能作了update的操作，其实已经违背了REST的思想，但是说到，其实那么复杂的业务接口设计下，要通过RUCD来抽象所有的接口基本是不实际的。在URI定义好以后，还有详细的参数定义，包括类型以及是否必选。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;响应消息&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;有多种方式，XML,JSON。XML有XSD作为参考。有点类似于没有Head的SOAP，只不过这里将原来可以定义在WSDL中的XSD抽取出来了。&lt;/p&gt;
+
+&lt;h4 id=&quot;flickr&quot;&gt;Flickr&lt;/h4&gt;
+
+&lt;p&gt;&lt;strong&gt;请求消息&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;http://api.flickr.com/services/rest/？method=flickr.test.echo&amp;amp;name=value 这里就可以很明显看出它所定制的REST请求其实和RPC没有什么太大的区别。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;消息返回&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;正确处理返回&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;rsp&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;stat=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;ok&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+         [xml-payload-here]
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/rsp&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;错误处理返回&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;rsp&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;stat=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;fail&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+         &lt;span class=&quot;nt&quot;&gt;&amp;lt;err&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;code=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;[error-code]&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;msg=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;[error-message]&quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/rsp&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;根据返回可以看出已经违背了REST的思想，还是把Http协议作为传输承载协议，并没有真正意义上使用Http协议作为资源访问和操作协议。&lt;/p&gt;
+
+&lt;p&gt;总的来说，只是形式上去模仿REST，自己搞了一套私有协议。&lt;/p&gt;
+
+&lt;h4 id=&quot;ebay&quot;&gt;Ebay&lt;/h4&gt;
+
+&lt;p&gt;&lt;strong&gt;请求消息&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;采用xml作为承载，类似于SOAP，不过去除SOAP消息的封装和包头，同时在请求中附加了认证和警告级别等附加信息。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;消息返回&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;类似于SOAP消息，不过删除了SOAP的封装和包头，同时在返回结构中增加了消息处理结果以及版本等附加信息。&lt;/p&gt;
+
+&lt;p&gt;这个很类似于当前Axis2框架的做法，将SOAP精简，同时根据自身需求丰富了安全，事务等协议内容。&lt;/p&gt;
+
+&lt;h4 id=&quot;yahoo-maps&quot;&gt;Yahoo Maps&lt;/h4&gt;
+
+&lt;p&gt;&lt;strong&gt;请求消息&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;http://local.yahooapis.com/MapsService/V1/geocode?appid=YahooDemo&amp;amp;street=701+First+Ave&amp;amp;city=Sunnyvale&amp;amp;state=CA 采用REST推荐的方式，URI+Parameters。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;返回消息&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;ResultSet&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;xmlns:xsi=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;http://www.w3.org/2001/XMLSchema-instance&quot;&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;xmlns=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;urn:yahoo:maps&quot;&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;xsi:schemaLocation=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;urn:yahoo:maps http://local.yahooapis.com/MapsService/V1/GeocodeResponse.xsd&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+ &lt;span class=&quot;nt&quot;&gt;&amp;lt;Result&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;precision=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;address&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;Latitude&amp;gt;&lt;/span&gt;37.416384&lt;span class=&quot;nt&quot;&gt;&amp;lt;/Latitude&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;Longitude&amp;gt;&lt;/span&gt;-122.024853&lt;span class=&quot;nt&quot;&gt;&amp;lt;/Longitude&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;Address&amp;gt;&lt;/span&gt;701 FIRST AVE&lt;span class=&quot;nt&quot;&gt;&amp;lt;/Address&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;City&amp;gt;&lt;/span&gt;SUNNYVALE&lt;span class=&quot;nt&quot;&gt;&amp;lt;/City&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;State&amp;gt;&lt;/span&gt;CA&lt;span class=&quot;nt&quot;&gt;&amp;lt;/State&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;Zip&amp;gt;&lt;/span&gt;94089-1019&lt;span class=&quot;nt&quot;&gt;&amp;lt;/Zip&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;Country&amp;gt;&lt;/span&gt;US&lt;span class=&quot;nt&quot;&gt;&amp;lt;/Country&amp;gt;&lt;/span&gt;
+ &lt;span class=&quot;nt&quot;&gt;&amp;lt;/Result&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/ResultSet&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;SOAP的精简xml返回，其他信息，例如出错码等信息由Http协议头来承载。&lt;/p&gt;
+
+&lt;h4 id=&quot;youtube&quot;&gt;YouTube&lt;/h4&gt;
+
+&lt;p&gt;&lt;strong&gt;请求消息&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;http://www.youtube.com/api2_rest?method=youtube.users.get_profile&amp;amp;dev_id=YOUR_DEV_ID&amp;amp;user=YOUTUBE_USER_NAME 可以看到对于资源操作的URI定义也是参数的一部分。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;返回消息&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;ut_response&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;status=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;ok&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;user_profile&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;first_name&amp;gt;&lt;/span&gt;YouTube&lt;span class=&quot;nt&quot;&gt;&amp;lt;/first_name&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;last_name&amp;gt;&lt;/span&gt;User&lt;span class=&quot;nt&quot;&gt;&amp;lt;/last_name&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;about_me&amp;gt;&lt;/span&gt;YouTube rocks!!&lt;span class=&quot;nt&quot;&gt;&amp;lt;/about_me&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;age&amp;gt;&lt;/span&gt;30&lt;span class=&quot;nt&quot;&gt;&amp;lt;/age&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;video_upload_count&amp;gt;&lt;/span&gt;7&lt;span class=&quot;nt&quot;&gt;&amp;lt;/video_upload_count&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;/user_profile&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/ut_response&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;自定义的类SOAP消息。&lt;/p&gt;
+
+&lt;h4 id=&quot;amazon&quot;&gt;Amazon&lt;/h4&gt;
+
+&lt;p&gt;&lt;strong&gt;请求消息&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;https://Amazon FPS web service end point/?AWSAccessKeyId=Your AWSAccessKeyId
+&amp;amp;Timestamp=[Current timestamp]
+&amp;amp;Signature=[Signature calculated from hash of Action and Timestamp]
+&amp;amp;SignatureVersion=[Signature calculated from hash of Action and Timestamp]
+&amp;amp;Version=[Version of the WSDL specified in YYYY-MM-DD format] &amp;amp;Action=[Name of the API]&amp;amp;parameter1=[Value of the API parameter1] &amp;amp;parameter2=[Value of the API parameter2]
+&amp;amp;...[API parameters and their values]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;返回消息&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;类似于SOAP的自有协议，消息体中包含了消息状态等附加信息。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;总结&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;看了上面那么多网站的设计，总结一下主要有这么几种设计方式。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;请求消息设计&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;基本符合REST标准方式：资源URI定义（资源．操作）+参数。这类设计如果滥用get去处理其他类型的操作，那么和2无异。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;REST风格非REST思想：资源URI定义+参数（包含操作方法名）。其实就是RPC的REST跟风。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;类似于SOAP消息，自定义协议，以xml作为承载。（可扩展，例如鉴权，访问控制等），不过那就好比自己定义了一套SOAP和SOAP extends。大型的有实力的网站有的采取此种做法。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;响应消息设计&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;REST标准方式，将Resource State传输返回给客户端，Http消息作为应用协议而非传输协议&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;以XML作为消息承载体，Http作为消息传输协议，处理状态自包含。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;自定义消息格式，类似于SOAP，提供可扩展部分。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;作为遵循REST的理念来看我的选择是响应1和请求1的设计。&lt;/p&gt;
+
+&lt;h3 id=&quot;restasf&quot;&gt;REST和ASF的集成&lt;/h3&gt;
+
+&lt;p&gt;ASF要集成REST就现在来看有两种比较合适的方法。&lt;/p&gt;
+
+&lt;p&gt;一．就是采用Axis2的REST实现，这种方式的好处就是开发周期短，容易集成，但是请求和响应的格式无法改变，资源URI设计受限，Axis2的REST其实就是将SOAP消息精简，请求的时候删除了SOAP的头，响应的时候仅仅返回资源信息，如果提供xsd就可以被各种客户端所解析。并非真正的REST。&lt;/p&gt;
+
+&lt;p&gt;二．就是采用Restlet开源框架，将Restlet开源框架集成到ASF中，由于Restlet本身就是可内嵌的应用框架，因此集成不成问题，同时Restlet框架只是API结构框架，因此实现和定义完全分开，集成Restlet以后可以自己实现其中的解析引擎也可以采用默认提供的引擎，同时对于内嵌Jetty等多种开源项目的支持，将更多优势融入到了Rest中。看了一下国内也有很多朋友已经关注Restlet开源项目，看了它的架构设计，个人觉得还是比较灵活和紧凑的。&lt;/p&gt;
+
+&lt;h3 id=&quot;section-7&quot;&gt;题外话&lt;/h3&gt;
+
+&lt;p&gt;在写这篇文章以前写了一篇调研报告群发给各个架构师们参考，期待反馈。下午正好和我们的首席架构师聊了一会儿。其实我和他的感觉是一样的，REST是否真的在我们现有的服务框架中需要集成，理解了REST的思想再去看应用场景，那么可以发现如果要完全遵循REST的设计理念来设计接口的话，那么强要去改变现有已经存在的或者还未开发的接口就会落入为了技术而技术，为了潮流而跟风的近地。当然并不否认REST的好，其实我们兄弟公司的一些业务场景有部分的接口十分合适这类设计，面向资源，高效，简洁，易用都能够体现出它的价值。我们将会和我们的兄弟公司合作，也会参考他们的设计理念，在参考当前各个网站的实现情况下，部分的采用这类形式的发布，提供给第三方的ISV，无疑是我现在把REST融入到ASF中最好的理由。&lt;/p&gt;
+
+&lt;p&gt;有了需求去做才不会陷入为了技术而技术，毕竟技术是由商业价值驱动的，同样社会上充斥着各种技术的鼓吹，如果稍不留神就会陷入跟风的潮流中。&lt;/p&gt;
+</description>
+        <pubDate>Tue, 12 Apr 2016 00:00:00 +0800</pubDate>
+        <link>http://www.francissoung.com/2016/04/12/aaa/</link>
+        <guid isPermaLink="true">http://www.francissoung.com/2016/04/12/aaa/</guid>
+        
+        <category>Francis 杂谈</category>
+        
+        <category>接口开发</category>
+        
+        
+      </item>
     
       <item>
         <title>递归算法之n阶矩阵行列式求解</title>
@@ -1645,293 +1912,6 @@ Your browser does not support the audio tag.
         <guid isPermaLink="true">http://www.francissoung.com/2016/03/14/%E4%B8%8D%E8%A6%81%E4%B8%BA%E8%87%AA%E5%B7%B1%E9%80%89%E6%8B%A9%E7%9A%84%E9%81%93%E8%B7%AF%E8%80%8C%E5%90%8E%E6%82%94/</guid>
         
         <category>Francis 简单生活</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>国内常用公共DNS服务器、各省运营商DNS服务器汇总</title>
-        <description>&lt;p&gt;不知道大家有没有过网络是正常的，QQ可以正常登录、游戏也可以正常玩，但是网页无论如何都打不开。这就是电脑网络设置的DNS服务器有问题，不是其故障就是不工作了。&lt;/p&gt;
-
-&lt;p&gt;换了DNS服务器成功解决问题。下边给大家分享一下国内比较大型大众常用的公共DNS服务器。&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;公共DNS服务器，即系统默认的DNS解析服务器。DNS全称Domain Name System，即域名解析系统。DNS帮助用户在互联网上寻找路径。在互联网上的每一个计算机都拥有一个唯一的地址，称作“IP地址”（即互联网协议地址）。
-由于IP地址（为一串数字）不方便记忆，DNS允许用户使用一串常见的字母（即“域名”）取代。
-公共DNS服务器，具有无广告、可以在一定程度上防止DNS劫持、不需因上网环境的改变而改变等优势，但是，使用公共DNS也可能存在系统响应慢、被劫持、隐私问题等风险。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://source.francissoung.com/2016%2F03%2F14%2F%E5%9B%BD%E5%86%85%E5%B8%B8%E7%94%A8%E5%85%AC%E5%85%B1DNS%E6%9C%8D%E5%8A%A1%E5%99%A8%E3%80%81%E5%90%84%E7%9C%81%E8%BF%90%E8%90%A5%E5%95%86DNS%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%B1%87%E6%80%BB1.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;这里要说一下，更换或者使用DNS服务器只能做到可以打开浏览网页，不能扶墙，博主居然还看到有极少数提供商号称支持番羽土番。&lt;/p&gt;
-
-&lt;p&gt;虽然公共DNS有一定防DNS劫持作用，但是随着“墙”的升级，这种作用已经很微弱了——无论你是使用ISP的默认DNS，还是使用国外的公共DNS服务器，解析诸如twitter.com之类的域名所得到的结果均会受到DNS污染。&lt;/p&gt;
-
-&lt;p&gt;114 DNS（http://www.114dns.com/），这应该是用户数量数一数二的公共DNS了，档主自己也在使用，推荐。&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;114.114.114.114&lt;/p&gt;
-
-  &lt;p&gt;114.114.115.115&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;阿里 AliDNS（http://www.alidns.com/），来自阿里巴巴和马云旗下的公共DNS，还没有体验过，有兴趣可以试试。&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;223.5.5.5&lt;/p&gt;
-
-  &lt;p&gt;223.6.6.6&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;CNNIC SDNS（http://www.sdns.cn/），来自天朝官方CNNIC的公共DNS，没使用过也没敢用……&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;1.2.4.8&lt;/p&gt;
-
-  &lt;p&gt;210.2.4.8&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;oneDNS（http://www.onedns.net/），2013年才新推出的一个公共DNS服务器，官网介绍由恶意网站实验室创立，没用过。&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;112.124.47.27&lt;/p&gt;
-
-  &lt;p&gt;114.215.126.16&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;Google DNS（https://developers.google.com/speed/public-dns/），曾经最火最热的一款公共DNS服务器，但是随着Google在中国的没落和国内官方的限制，已经不是太好用了。&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;8.8.8.8&lt;/p&gt;
-
-  &lt;p&gt;8.8.4.4&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;OpenDNS（https://www.opendns.com/），和Google DNS 一样，来自于国外服务商提供的公共DNS，据说同样在国内水土不服。&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;208.67.222.222&lt;/p&gt;
-
-  &lt;p&gt;208.67.220.220&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;&lt;strong&gt;以下是全国各地电信 DNS 服务器 IP 地址&lt;/strong&gt;&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;安徽电信 DNS
-
-61.132.163.68
-202.102.213.68
-
-北京电信 DNS
-
-219.141.136.10
-219.141.140.10
-
-重庆电信 DNS
-
-61.128.192.68
-61.128.128.68
-
-福建电信 DNS
-
-218.85.152.99
-218.85.157.99
-
-甘肃电信 DNS
-
-202.100.64.68
-61.178.0.93
-
-广东电信 DNS
-
-202.96.128.86
-202.96.128.166
-202.96.134.33
-202.96.128.68
-
-广西电信 DNS
-
-202.103.225.68
-202.103.224.68
-
-贵州电信 DNS
-
-202.98.192.67
-202.98.198.167
-
-河南电信 DNS
-
-222.88.88.88
-222.85.85.85
-
-黑龙江电信 DNS
-
-219.147.198.230
-219.147.198.242
-
-湖北电信 DNS
-
-202.103.24.68
-202.103.0.68
-
-湖南电信 DNS
-
-222.246.129.80
-59.51.78.211
-
-江苏电信 DNS
-
-218.2.2.2
-218.4.4.4
-61.147.37.1
-218.2.135.1
-
-江西电信 DNS
-
-202.101.224.69
-202.101.226.68
-
-内蒙古电信
-
-219.148.162.31
-222.74.39.50
-
-山东电信 DNS
-
-219.146.0.130
-219.150.32.132
-
-陕西电信 DNS
-
-218.30.19.40
-61.134.1.4
-
-上海电信 DNS
-
-202.96.209.133
-116.228.111.118
-202.96.209.5
-108.168.255.118
-
-四川电信 DNS
-
-61.139.2.69
-218.6.200.139
-
-天津电信 DNS
-
-219.150.32.132
-219.146.0.132
-
-云南电信 DNS
-
-222.172.200.68
-61.166.150.123
-
-浙江电信 DNS
-
-202.101.172.35
-61.153.177.196
-61.153.81.75
-60.191.244.5
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&lt;strong&gt;以下为全国各地联通 DNS 服务器 IP 地址&lt;/strong&gt;&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;北京联通 DNS
-
-202.106.196.115
-202.106.46.151
-202.106.0.20
-202.106.195.68
-
-重庆联通 DNS
-
-221.5.203.98
-221.7.92.98
-
-广东联通 DNS
-
-210.21.196.6
-221.5.88.88
-
-河北联通 DNS
-
-202.99.160.68
-202.99.166.4
-
-河南联通 DNS
-
-202.102.224.68
-202.102.227.68
-
-黑龙江联通
-
-202.97.224.69
-202.97.224.68
-
-吉林联通 DNS
-
-202.98.0.68
-202.98.5.68
-
-江苏联通 DNS
-
-221.6.4.66
-221.6.4.67
-
-内蒙古联通
-
-202.99.224.68
-202.99.224.8
-
-山东联通 DNS
-
-202.102.128.68
-202.102.152.3
-202.102.134.68
-202.102.154.3
-
-山西联通 DNS
-
-202.99.192.66
-202.99.192.68
-
-陕西联通 DNS
-
-221.11.1.67
-221.11.1.68
-
-上海联通 DNS
-
-210.22.70.3
-210.22.84.3
-
-四川联通 DNS
-
-119.6.6.6
-124.161.87.155
-
-天津联通 DNS
-
-202.99.104.68
-202.99.96.68
-
-浙江联通 DNS
-
-221.12.1.227
-221.12.33.227
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;原文链接：&lt;a href=&quot;http://www.fulidang.com/3036.html&quot;&gt;【技术控】国内常用公共DNS服务器、各省运营商DNS服务器&lt;/a&gt;&lt;/p&gt;
-</description>
-        <pubDate>Mon, 14 Mar 2016 00:00:00 +0800</pubDate>
-        <link>http://www.francissoung.com/2016/03/14/%E5%B8%B8%E7%94%A8%E5%85%AC%E5%85%B1DNS%E6%9C%8D%E5%8A%A1%E5%99%A8/</link>
-        <guid isPermaLink="true">http://www.francissoung.com/2016/03/14/%E5%B8%B8%E7%94%A8%E5%85%AC%E5%85%B1DNS%E6%9C%8D%E5%8A%A1%E5%99%A8/</guid>
-        
-        <category>Francis 杂谈</category>
         
         
       </item>
