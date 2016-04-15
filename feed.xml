@@ -5,8 +5,8 @@
     <description>这是一个程序员的日记薄，记录工作与生活的点点滴滴。包括WEB程序开发、Linux服务器管理、LAMP/LNMP环境配置优化、PHP网络技术、MySQL优化等技术分享以及个人生活旅行中的所见所闻所解。</description>
     <link>http://www.francissoung.com/</link>
     <atom:link href="http://www.francissoung.com/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Fri, 15 Apr 2016 15:28:01 +0800</pubDate>
-    <lastBuildDate>Fri, 15 Apr 2016 15:28:01 +0800</lastBuildDate>
+    <pubDate>Fri, 15 Apr 2016 15:31:45 +0800</pubDate>
+    <lastBuildDate>Fri, 15 Apr 2016 15:31:45 +0800</lastBuildDate>
     <generator>Jekyll v3.1.2</generator>
     
       <item>
@@ -620,9 +620,9 @@ MySQL&amp;gt;SELECT id, gift_code FROM pool_gift WHEREdeal_id = 640 AND remark=�
 
 &lt;p&gt;物理备份采用xtrabackup热备方案比较好。逻辑备份一般用在单表恢复效果会非常好。比如你删了一个2G表，但你总数据量2T，用物理备份就会要慢了，逻辑备份就非常有用了。&lt;/p&gt;
 </description>
-        <pubDate>Tue, 12 Apr 2016 00:00:00 +0800</pubDate>
-        <link>http://www.francissoung.com/2016/04/12/%E5%8D%95%E8%A1%A860%E4%BA%BF%E8%AE%B0%E5%BD%95%E7%AD%89%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%9C%BA%E6%99%AF%E7%9A%84MySQL%E4%BC%98%E5%8C%96%E5%92%8C%E8%BF%90%E7%BB%B4%E4%B9%8B%E9%81%93/</link>
-        <guid isPermaLink="true">http://www.francissoung.com/2016/04/12/%E5%8D%95%E8%A1%A860%E4%BA%BF%E8%AE%B0%E5%BD%95%E7%AD%89%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%9C%BA%E6%99%AF%E7%9A%84MySQL%E4%BC%98%E5%8C%96%E5%92%8C%E8%BF%90%E7%BB%B4%E4%B9%8B%E9%81%93/</guid>
+        <pubDate>Fri, 15 Apr 2016 00:00:00 +0800</pubDate>
+        <link>http://www.francissoung.com/2016/04/15/%E5%8D%95%E8%A1%A860%E4%BA%BF%E8%AE%B0%E5%BD%95%E7%AD%89%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%9C%BA%E6%99%AF%E7%9A%84MySQL%E4%BC%98%E5%8C%96%E5%92%8C%E8%BF%90%E7%BB%B4%E4%B9%8B%E9%81%93/</link>
+        <guid isPermaLink="true">http://www.francissoung.com/2016/04/15/%E5%8D%95%E8%A1%A860%E4%BA%BF%E8%AE%B0%E5%BD%95%E7%AD%89%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%9C%BA%E6%99%AF%E7%9A%84MySQL%E4%BC%98%E5%8C%96%E5%92%8C%E8%BF%90%E7%BB%B4%E4%B9%8B%E9%81%93/</guid>
         
         <category>Francis 杂谈</category>
         
