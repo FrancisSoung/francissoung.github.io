@@ -166,6 +166,34 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2016/03/15/PHP%E8%B6%85%E6%97%B6%E5%A4%84%E7%90%86%E5%85%A8%E9%9D%A2%E6%80%BB%E7%BB%93/">
+        <h2 class="post-title">
+            PHP超时处理全面总结
+        </h2>
+        
+        <h3 class="post-subtitle">
+            对于经常碰到的超时问题进行总结，列出Web服务器、PHP本身、后端&接口访问超时、Memcached、MySQL以及C/C++等对超时的处理以及解决方案。
+        </h3>
+        
+        <div class="post-content-preview">
+            概述
+
+在PHP开发中工作里非常多使用到超时处理到超时的场合，我说几个场景：
+
+
+  异步获取数据如果某个后端数据源获取不成功则跳过，不影响整个页面展现
+  为了保证Web服务器不会因为当个页面处理性能差而导致无法访问其他页面，则会对某些页面操作设置
+  对于某些上传或者不确定处理时间的场合，则需要对整个流程中所有超时设置为无限，否则任何一个环节设置不当，都会导致莫名执行中断
+  多个后端模...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Francis Soung on March 15, 2016
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2016/03/14/%E5%BF%99%E5%BF%99%E7%A2%8C%E7%A2%8C-%E8%99%9A%E8%99%9A%E5%AE%9E%E5%AE%9E%E7%9A%84%E7%94%9F%E6%B4%BB/">
         <h2 class="post-title">
             忙忙碌碌，虚虚实实的生活
@@ -392,31 +420,6 @@ DEFAULT SORT：...
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/2016/01/19/%E4%BD%BF%E7%94%A8-Nginx-%E6%8F%90%E5%8D%87%E7%BD%91%E7%AB%99%E8%AE%BF%E9%97%AE%E9%80%9F%E5%BA%A6/">
-        <h2 class="post-title">
-            使用 Nginx 提升网站访问速度
-        </h2>
-        
-        <h3 class="post-subtitle">
-            
-        </h3>
-        
-        <div class="post-content-preview">
-            本文主要介绍如何在 Linux 系统上安装高性能的 HTTP 服务器 —— Nginx、并在不改变原有网站结构的条件下用 Nginx 来提升网站的访问速度。
-
-导语
-
-
-  Nginx (“engine x”) 是一个高性能的 HTTP 和 反向代理 服务器，也是一个 IMAP/POP3/SMTP 代理服务器。 Nginx 是由 Igor Sysoev 为俄罗斯访问量第二的 Rambler....
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Francis Soung on January 19, 2016
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
 
@@ -463,7 +466,7 @@ DEFAULT SORT：...
                             
                         
                             
-                                <a href="/tags/#Francis 简单生活" title="Francis 简单生活" rel="6">
+                                <a href="/tags/#Francis 简单生活" title="Francis 简单生活" rel="7">
                                     Francis 简单生活
                                 </a>
                             
@@ -489,7 +492,7 @@ DEFAULT SORT：...
                             
                         
                             
-                                <a href="/tags/#Francis 杂谈" title="Francis 杂谈" rel="14">
+                                <a href="/tags/#Francis 杂谈" title="Francis 杂谈" rel="15">
                                     Francis 杂谈
                                 </a>
                             
