@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="这是一个程序员的日记薄，记录工作与生活的点点滴滴。包括WEB程序开发、Linux服务器管理、LAMP/LNMP环境配置优化、PHP网络技术、MySQL优化等技术分享以及个人生活旅行中的所见所闻所解。">
+    <meta name="keywords"  content="WEB程序开发,Linux服务器管理,LAMP/LNMP环境配置优化,网络架构,MySQL优化,生活旅行,Francis,francissoung,php程序猿的笔记,程序员的日记薄">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>使用D3.js实现数据可视化-PolarClockII - Francis Soung</title>
+
+    <link rel="canonical" href="http://www.francissoung.com/2016/08/08/%E4%BD%BF%E7%94%A8D3.js%E5%AE%9E%E7%8E%B0%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96-PolarClockII/">
+
+    
+    <!-- css CDN to qiniu -->
+    <link rel="stylesheet" href="http://source.francissoung.com/css%2Fbootstrap.min.css">
+    <link rel="stylesheet" href="http://source.francissoung.com/css%2Ffrancis-blog.min.css">
+    <link rel="stylesheet" href="http://source.francissoung.com/css%2Fsyntax.css">
+    <link rel="stylesheet" href="http://source.francissoung.com/css%2Freturntop.css">
+    
+
+    <link href="http://cdn.staticfile.org/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Francis Soung</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/about/">About</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/archives/">Archives</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/portfolio/">Portfolio</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/resources/">Resources</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/tags/">Tags</a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    var __HuxNav__ = {
+        close: function(){
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        },
+        open: function(){
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+
+    // Bind Event
+    $toggle.addEventListener('click', function(e){
+        if ($navbar.className.indexOf('in') > 0) {
+            __HuxNav__.close()
+        }else{
+            __HuxNav__.open()
+        }
+    })
+
+    /**
+     * Since Fastclick is used to delegate 'touchstart' globally
+     * to hack 300ms delay in iOS by performing a fake 'click',
+     * Using 'e.stopPropagation' to stop 'touchstart' event from 
+     * $toggle/$collapse will break global delegation.
+     * 
+     * Instead, we use a 'e.target' filter to prevent handler
+     * added to document close HuxNav.  
+     *
+     * Also, we use 'click' instead of 'touchstart' as compromise
+     */
+    document.addEventListener('click', function(e){
+        if(e.target == $toggle) return;
+        if(e.target.className == 'icon-bar') return;
+        __HuxNav__.close();
+    })
+</script>
+
+
+    <!-- Image to hack wechat -->
+<!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="/img/post-bg-unix-linux.jpg" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        position: relative;
+        background-image: url('/img/post-bg-unix-linux.jpg')
+    }
+
+    
+</style>
+<header class="intro-header" >
+    <div class="header-mask"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#SVG" title="SVG">SVG</a>
+                        
+                    </div>
+                    <h1>使用D3.js实现数据可视化-PolarClockII</h1>
+                    
+                    
+                    <h2 class="subheading"></h2>
+                    
+                    <span class="meta">Posted by Francis Soung on August 8, 2016</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="section">效果</h2>
+
+<iframe src="/resource/PolarClock/clock2.html" marginwidth="0" marginheight="0" style="width:100%;height: 800px;" scrolling="no"></iframe>
+
+<h2 id="section-1">源码</h2>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">"utf-8"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;style&gt;</span>
+
+<span class="nt">body</span> <span class="p">{</span>
+  <span class="nl">background</span><span class="p">:</span> <span class="m">#222</span><span class="p">;</span>
+  <span class="nl">margin</span><span class="p">:</span> <span class="nb">auto</span><span class="p">;</span>
+  <span class="nl">width</span><span class="p">:</span> <span class="m">960px</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nc">.tracks</span> <span class="p">{</span>
+  <span class="py">fill</span><span class="p">:</span> <span class="nb">none</span><span class="p">;</span>
+  <span class="py">stroke</span><span class="p">:</span> <span class="m">#000</span><span class="p">;</span>
+  <span class="py">stroke-width</span><span class="p">:</span> <span class="m">1.5px</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nc">.bodies</span> <span class="nt">path</span> <span class="p">{</span>
+  <span class="py">stroke</span><span class="p">:</span> <span class="m">#000</span><span class="p">;</span>
+  <span class="py">stroke-width</span><span class="p">:</span> <span class="m">1.5px</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nc">.bodies</span> <span class="nc">.text-path</span> <span class="p">{</span>
+  <span class="py">stroke</span><span class="p">:</span> <span class="nb">none</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nc">.bodies</span> <span class="nt">text</span> <span class="p">{</span>
+  <span class="py">fill</span><span class="p">:</span> <span class="m">#000</span><span class="p">;</span>
+  <span class="nl">font</span><span class="p">:</span> <span class="m">500</span> <span class="m">16px</span> <span class="s1">"Helvetica Neue"</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nt">&lt;/style&gt;</span>
+<span class="nt">&lt;svg</span> <span class="na">width=</span><span class="s">"960"</span> <span class="na">height=</span><span class="s">"960"</span><span class="nt">&gt;&lt;/svg&gt;</span>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"//d3js.org/d3.v4.0.0-alpha.21.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script&gt;</span>
+
+<span class="kd">var</span> <span class="nx">svg</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">"svg"</span><span class="p">),</span>
+    <span class="nx">width</span> <span class="o">=</span> <span class="o">+</span><span class="nx">svg</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"width"</span><span class="p">),</span>
+    <span class="nx">height</span> <span class="o">=</span> <span class="o">+</span><span class="nx">svg</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"height"</span><span class="p">),</span>
+    <span class="nx">radius</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">min</span><span class="p">(</span><span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1.9</span><span class="p">,</span>
+    <span class="nx">bodyRadius</span> <span class="o">=</span> <span class="nx">radius</span> <span class="o">/</span> <span class="mi">23</span><span class="p">,</span>
+    <span class="nx">dotRadius</span> <span class="o">=</span> <span class="nx">bodyRadius</span> <span class="o">-</span> <span class="mi">8</span><span class="p">;</span>
+
+<span class="kd">var</span> <span class="nx">pi</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">PI</span><span class="p">;</span>
+
+<span class="kd">var</span> <span class="nx">fields</span> <span class="o">=</span> <span class="p">[</span>
+  <span class="p">{</span><span class="na">radius</span><span class="p">:</span> <span class="mf">0.2</span> <span class="o">*</span> <span class="nx">radius</span><span class="p">,</span> <span class="na">format</span><span class="p">:</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">timeFormat</span><span class="p">(</span><span class="s2">"%B"</span><span class="p">),</span>          <span class="na">interval</span><span class="p">:</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">timeYear</span><span class="p">},</span>
+  <span class="p">{</span><span class="na">radius</span><span class="p">:</span> <span class="mf">0.3</span> <span class="o">*</span> <span class="nx">radius</span><span class="p">,</span> <span class="na">format</span><span class="p">:</span> <span class="nx">formatDate</span><span class="p">,</span>                   <span class="na">interval</span><span class="p">:</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">timeMonth</span><span class="p">},</span>
+  <span class="p">{</span><span class="na">radius</span><span class="p">:</span> <span class="mf">0.4</span> <span class="o">*</span> <span class="nx">radius</span><span class="p">,</span> <span class="na">format</span><span class="p">:</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">timeFormat</span><span class="p">(</span><span class="s2">"%A"</span><span class="p">),</span>          <span class="na">interval</span><span class="p">:</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">timeWeek</span><span class="p">},</span>
+  <span class="p">{</span><span class="na">radius</span><span class="p">:</span> <span class="mf">0.6</span> <span class="o">*</span> <span class="nx">radius</span><span class="p">,</span> <span class="na">format</span><span class="p">:</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">timeFormat</span><span class="p">(</span><span class="s2">"%-H hours"</span><span class="p">),</span>   <span class="na">interval</span><span class="p">:</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">timeDay</span><span class="p">},</span>
+  <span class="p">{</span><span class="na">radius</span><span class="p">:</span> <span class="mf">0.7</span> <span class="o">*</span> <span class="nx">radius</span><span class="p">,</span> <span class="na">format</span><span class="p">:</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">timeFormat</span><span class="p">(</span><span class="s2">"%-M minutes"</span><span class="p">),</span> <span class="na">interval</span><span class="p">:</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">timeHour</span><span class="p">},</span>
+  <span class="p">{</span><span class="na">radius</span><span class="p">:</span> <span class="mf">0.8</span> <span class="o">*</span> <span class="nx">radius</span><span class="p">,</span> <span class="na">format</span><span class="p">:</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">timeFormat</span><span class="p">(</span><span class="s2">"%-S seconds"</span><span class="p">),</span> <span class="na">interval</span><span class="p">:</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">timeMinute</span><span class="p">}</span>
+<span class="p">];</span>
+
+<span class="kd">var</span> <span class="nx">color</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">scaleRainbow</span><span class="p">()</span>
+    <span class="p">.</span><span class="nx">domain</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">]);</span>
+
+<span class="kd">var</span> <span class="nx">arcBody</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">arc</span><span class="p">()</span>
+    <span class="p">.</span><span class="nx">startAngle</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">bodyRadius</span> <span class="o">/</span> <span class="nx">d</span><span class="p">.</span><span class="nx">radius</span><span class="p">;</span> <span class="p">})</span>
+    <span class="p">.</span><span class="nx">endAngle</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="o">-</span><span class="nx">pi</span> <span class="o">-</span> <span class="nx">bodyRadius</span> <span class="o">/</span> <span class="nx">d</span><span class="p">.</span><span class="nx">radius</span><span class="p">;</span> <span class="p">})</span>
+    <span class="p">.</span><span class="nx">innerRadius</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">d</span><span class="p">.</span><span class="nx">radius</span> <span class="o">-</span> <span class="nx">bodyRadius</span><span class="p">;</span> <span class="p">})</span>
+    <span class="p">.</span><span class="nx">outerRadius</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">d</span><span class="p">.</span><span class="nx">radius</span> <span class="o">+</span> <span class="nx">bodyRadius</span><span class="p">;</span> <span class="p">})</span>
+    <span class="p">.</span><span class="nx">cornerRadius</span><span class="p">(</span><span class="nx">bodyRadius</span><span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">arcTextPath</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">arc</span><span class="p">()</span>
+    <span class="p">.</span><span class="nx">startAngle</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="o">-</span><span class="nx">bodyRadius</span> <span class="o">/</span> <span class="nx">d</span><span class="p">.</span><span class="nx">radius</span><span class="p">;</span> <span class="p">})</span>
+    <span class="p">.</span><span class="nx">endAngle</span><span class="p">(</span><span class="o">-</span><span class="nx">pi</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">innerRadius</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">d</span><span class="p">.</span><span class="nx">radius</span><span class="p">;</span> <span class="p">})</span>
+    <span class="p">.</span><span class="nx">outerRadius</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">d</span><span class="p">.</span><span class="nx">radius</span><span class="p">;</span> <span class="p">});</span>
+
+<span class="kd">var</span> <span class="nx">g</span> <span class="o">=</span> <span class="nx">svg</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">"g"</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"transform"</span><span class="p">,</span> <span class="s2">"translate("</span> <span class="o">+</span> <span class="nx">width</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="s2">","</span> <span class="o">+</span> <span class="nx">height</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="s2">")"</span><span class="p">);</span>
+
+<span class="nx">g</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">"g"</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"class"</span><span class="p">,</span> <span class="s2">"tracks"</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">selectAll</span><span class="p">(</span><span class="s2">"circle"</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">fields</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">enter</span><span class="p">().</span><span class="nx">append</span><span class="p">(</span><span class="s2">"circle"</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"r"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">d</span><span class="p">.</span><span class="nx">radius</span><span class="p">;</span> <span class="p">});</span>
+
+<span class="kd">var</span> <span class="nx">body</span> <span class="o">=</span> <span class="nx">g</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">"g"</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"class"</span><span class="p">,</span> <span class="s2">"bodies"</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">selectAll</span><span class="p">(</span><span class="s2">"g"</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">fields</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">enter</span><span class="p">().</span><span class="nx">append</span><span class="p">(</span><span class="s2">"g"</span><span class="p">);</span>
+
+<span class="nx">body</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">"path"</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"d"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">arcBody</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span>
+          <span class="o">+</span> <span class="s2">"M0,"</span> <span class="o">+</span> <span class="p">(</span><span class="nx">dotRadius</span> <span class="o">-</span> <span class="nx">d</span><span class="p">.</span><span class="nx">radius</span><span class="p">)</span>
+          <span class="o">+</span> <span class="s2">"a"</span> <span class="o">+</span> <span class="nx">dotRadius</span> <span class="o">+</span> <span class="s2">","</span> <span class="o">+</span> <span class="nx">dotRadius</span> <span class="o">+</span> <span class="s2">" 0 0,1 0,"</span> <span class="o">+</span> <span class="o">-</span><span class="nx">dotRadius</span> <span class="o">*</span> <span class="mi">2</span>
+          <span class="o">+</span> <span class="s2">"a"</span> <span class="o">+</span> <span class="nx">dotRadius</span> <span class="o">+</span> <span class="s2">","</span> <span class="o">+</span> <span class="nx">dotRadius</span> <span class="o">+</span> <span class="s2">" 0 0,1 0,"</span> <span class="o">+</span> <span class="nx">dotRadius</span> <span class="o">*</span> <span class="mi">2</span><span class="p">;</span>
+    <span class="p">});</span>
+
+<span class="nx">body</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">"path"</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"class"</span><span class="p">,</span> <span class="s2">"text-path"</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"id"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">d</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="s2">"body-text-path-"</span> <span class="o">+</span> <span class="nx">i</span><span class="p">;</span> <span class="p">})</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"d"</span><span class="p">,</span> <span class="nx">arcTextPath</span><span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">bodyText</span> <span class="o">=</span> <span class="nx">body</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">"text"</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"dy"</span><span class="p">,</span> <span class="s2">".35em"</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">"textPath"</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"xlink:href"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">d</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="s2">"#body-text-path-"</span> <span class="o">+</span> <span class="nx">i</span><span class="p">;</span> <span class="p">});</span>
+
+<span class="nx">tick</span><span class="p">();</span>
+
+<span class="nx">d3</span><span class="p">.</span><span class="nx">timer</span><span class="p">(</span><span class="nx">tick</span><span class="p">);</span>
+
+<span class="kd">function</span> <span class="nx">tick</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">now</span> <span class="o">=</span> <span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">();</span>
+
+  <span class="nx">fields</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">start</span> <span class="o">=</span> <span class="nx">d</span><span class="p">.</span><span class="nx">interval</span><span class="p">(</span><span class="nx">now</span><span class="p">),</span>
+        <span class="nx">end</span> <span class="o">=</span> <span class="nx">d</span><span class="p">.</span><span class="nx">interval</span><span class="p">.</span><span class="nx">offset</span><span class="p">(</span><span class="nx">start</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="nx">d</span><span class="p">.</span><span class="nx">angle</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">((</span><span class="nx">now</span> <span class="o">-</span> <span class="nx">start</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="nx">end</span> <span class="o">-</span> <span class="nx">start</span><span class="p">)</span> <span class="o">*</span> <span class="mi">360</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span> <span class="o">/</span> <span class="mi">100</span><span class="p">;</span>
+  <span class="p">});</span>
+
+  <span class="nx">body</span>
+      <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">"fill"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">color</span><span class="p">(</span><span class="nx">d</span><span class="p">.</span><span class="nx">angle</span><span class="p">);</span> <span class="p">})</span>
+      <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"transform"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="s2">"rotate("</span> <span class="o">+</span> <span class="nx">d</span><span class="p">.</span><span class="nx">angle</span> <span class="o">+</span> <span class="s2">")"</span><span class="p">;</span> <span class="p">});</span>
+
+  <span class="nx">bodyText</span>
+      <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"startOffset"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">d</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">d</span><span class="p">.</span><span class="nx">angle</span> <span class="o">&lt;=</span> <span class="mi">90</span> <span class="o">||</span> <span class="nx">d</span><span class="p">.</span><span class="nx">angle</span> <span class="o">&gt;</span> <span class="mi">270</span> <span class="p">?</span> <span class="s2">"100%"</span> <span class="p">:</span> <span class="s2">"0%"</span><span class="p">;</span> <span class="p">})</span>
+      <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">"text-anchor"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">d</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">d</span><span class="p">.</span><span class="nx">angle</span> <span class="o">&lt;=</span> <span class="mi">90</span> <span class="o">||</span> <span class="nx">d</span><span class="p">.</span><span class="nx">angle</span> <span class="o">&gt;</span> <span class="mi">270</span> <span class="p">?</span> <span class="s2">"end"</span> <span class="p">:</span> <span class="s2">"start"</span><span class="p">;</span> <span class="p">})</span>
+      <span class="p">.</span><span class="nx">text</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">d</span><span class="p">.</span><span class="nx">format</span><span class="p">(</span><span class="nx">now</span><span class="p">);</span> <span class="p">});</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">formatDate</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">d</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="nx">d</span><span class="p">).</span><span class="nx">getDate</span><span class="p">();</span>
+  <span class="k">switch</span> <span class="p">(</span><span class="mi">10</span> <span class="o">&lt;=</span> <span class="nx">d</span> <span class="o">&amp;&amp;</span> <span class="nx">d</span> <span class="o">&lt;=</span> <span class="mi">19</span> <span class="p">?</span> <span class="mi">10</span> <span class="p">:</span> <span class="nx">d</span> <span class="o">%</span> <span class="mi">10</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="mi">1</span><span class="err">:</span> <span class="nx">d</span> <span class="o">+=</span> <span class="s2">"st"</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>
+    <span class="k">case</span> <span class="mi">2</span><span class="err">:</span> <span class="nx">d</span> <span class="o">+=</span> <span class="s2">"nd"</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>
+    <span class="k">case</span> <span class="mi">3</span><span class="err">:</span> <span class="nx">d</span> <span class="o">+=</span> <span class="s2">"rd"</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>
+    <span class="nl">default</span><span class="p">:</span> <span class="nx">d</span> <span class="o">+=</span> <span class="s2">"th"</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="nx">d</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nt">&lt;/script&gt;</span>
+</code></pre>
+</div>
+
+
+                <hr>
+
+                
+
+                <!-- Baidu Share start-->
+                <div class="bdsharebuttonbox">
+                    <a href="#" class="bds_more" data-cmd="more"></a>
+                    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+                    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+                    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+                    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+                </div>
+                <!-- Baidu Share end -->
+
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2016/08/08/%E4%BD%BF%E7%94%A8D3.js%E5%AE%9E%E7%8E%B0%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96-PolarClock/" data-toggle="tooltip" data-placement="top" title="使用D3.js实现数据可视化-PolarClock">
+                            Previous<br>
+                            <span>使用D3.js实现数据可视化-PolarClock</span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2016/08/08/%E4%BD%BF%E7%94%A8D3.js%E5%AE%9E%E7%8E%B0%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96-PolarClockIII/" data-toggle="tooltip" data-placement="top" title="使用D3.js实现数据可视化-PolarClockIII">
+                            Next<br>
+                            <span>使用D3.js实现数据可视化-PolarClockIII</span>
+                        </a>
+                    </li>
+                    
+                </ul>
+
+
+                
+                <!-- 多说评论框 start -->
+                <div class="comment">
+                    <div class="ds-thread"
+                         data-thread-key="/2016/08/08/使用D3.js实现数据可视化-PolarClockII"
+                         data-title="使用D3.js实现数据可视化-PolarClockII"
+                         data-url="http://www.francissoung.com/2016/08/08/%E4%BD%BF%E7%94%A8D3.js%E5%AE%9E%E7%8E%B0%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96-PolarClockII/" >
+                    </div>
+                </div>
+                <!-- 多说评论框 end -->
+                
+
+                
+
+            </div>
+
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        <a href="/tags/#Linux" title="Linux" rel="10">
+                            Linux
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#Francis 旅行录" title="Francis 旅行录" rel="6">
+                            Francis 旅行录
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#Francis 简单生活" title="Francis 简单生活" rel="7">
+                            Francis 简单生活
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/#PHP" title="PHP" rel="6">
+                            PHP
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#MySQL" title="MySQL" rel="3">
+                            MySQL
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#Apache" title="Apache" rel="2">
+                            Apache
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#Francis 杂谈" title="Francis 杂谈" rel="15">
+                            Francis 杂谈
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#OS X" title="OS X" rel="2">
+                            OS X
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/#Nginx" title="Nginx" rel="2">
+                            Nginx
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/#编程" title="编程" rel="4">
+                            编程
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/#C语言" title="C语言" rel="2">
+                            C语言
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/#架构" title="架构" rel="3">
+                            架构
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/#SVG" title="SVG" rel="3">
+                            SVG
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+                    
+                    <li><a href="http://blog.maryopen.com/">马力全开</a></li>
+                    
+                    <li><a href="http://lfyqzhang.com/">宇过天勤</a></li>
+                    
+                    <li><a href="http://www.april2nd.me/">航哥</a></li>
+                    
+                    <li><a href="http://blog.ichuck.net/">鹏哥</a></li>
+                    
+                    <li><a href="http://www.shmilyx.net/">望望</a></li>
+                    
+                    <li><a href="http://www.51hsw.com/">好一网</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    // dynamic User by Hux
+    var _user = 'www-francissoung';
+
+    // duoshuo comment query.
+    var duoshuoQuery = {short_name: _user };
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+        || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+</script>
+<!-- 多说公共JS代码 end -->
+
+
+
+<!--百度分享公共JS代码 start-->
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"1","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+<!--百度分享公共JS代码 end-->
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+        var d = document, t = 'script',
+                o = d.createElement(t),
+                s = d.getElementsByTagName(t)[0];
+        o.src = u;
+        if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+        s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("http://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+            visible: 'always',
+            placement: 'right',
+            icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="http://weibo.com/523072343">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/Franciskeke">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://segmentfault.com/u/francissoung">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa  fa-stack-1x fa-inverse">sf</i>
+                                    </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/FrancisSoung">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/francis.soung">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li>
+                        <a href="https://twitter.com/Francis_Soung">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Francis Soung 2016
+                    <br>
+                    Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> and <a href="http://www.bootcss.com/">Bootstrap</a> | 京ICP备15036690号-1
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+<p id="back-to-top"><a href="#top"><span></span></a></p>
+
+
+<script src="http://source.francissoung.com/js%2Fjquery.min.js"></script>
+<script src="http://source.francissoung.com/js%2Fbootstrap.min.js"></script>
+<script src="http://source.francissoung.com/js%2Ffrancis-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- Highlight.js -->
+<script>
+    async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+        hljs.initHighlightingOnLoad();
+    })
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+<link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+
+<!--fastClick.js -->
+<script>
+    async("http://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        // var $nav = document.querySelector("nav");
+        // if($nav) FastClick.attach($nav);
+
+        // global FastClick!!
+        FastClick.attach(document.body);    
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Francis Soung
+    var _baId = '551c451674b914ab3e454205afd429a8';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- Baidu zhanzhang -->
+<script>
+    (function(){
+        var bp = document.createElement('script');
+        bp.src = '//push.zhanzhang.baidu.com/push.js';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+<!--返回顶部-->
+<script>
+    $(function(){
+        //当滚动条的位置处于距顶部100像素以下时，跳转链接出现，否则消失
+        $(function () {
+            $(window).scroll(function(){
+                if ($(window).scrollTop()>100){
+                    $("#back-to-top").fadeIn(1500);
+                }
+                else
+                {
+                    $("#back-to-top").fadeOut(1500);
+                }
+            });
+
+            //当点击跳转链接后，回到页面顶部位置
+
+            $("#back-to-top").click(function(){
+                $('body,html').animate({scrollTop:0},1000);
+                return false;
+            });
+        });
+    });
+</script>
+
+
+
+<!-- Image to hack wechat -->
+<img src="/img/icon_wechat.png" alt="Francis Soung" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
