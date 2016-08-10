@@ -5,15 +5,242 @@
     <description>这是一个程序员的日记薄，记录工作与生活的点点滴滴。包括WEB程序开发、Linux服务器管理、LAMP/LNMP环境配置优化、PHP网络技术、MySQL优化等技术分享以及个人生活旅行中的所见所闻所解。</description>
     <link>http://www.francissoung.com/</link>
     <atom:link href="http://www.francissoung.com/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Mon, 08 Aug 2016 14:50:17 +0800</pubDate>
-    <lastBuildDate>Mon, 08 Aug 2016 14:50:17 +0800</lastBuildDate>
+    <pubDate>Wed, 10 Aug 2016 11:49:07 +0800</pubDate>
+    <lastBuildDate>Wed, 10 Aug 2016 11:49:07 +0800</lastBuildDate>
     <generator>Jekyll v3.2.0.pre.beta1</generator>
+    
+      <item>
+        <title>一言不合就学习：PHP优秀学习文章资料汇总整理</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;发现一个不错的网站，&lt;a href=&quot;http://www.devstore.cn&quot;&gt;DevStore&lt;/a&gt;，移动互联网企业运营解决方案整合平台，产品前期-设计阶段-开发测试-推广阶段-运维运营，各个阶段都有涉及。&lt;/p&gt;
+
+  &lt;p&gt;下面整理一些针对包括程序员、运营、设计师等在内的系统学习资料，希望给初学者一些参考，也给已经入门的人一些进阶建议，让知识体系更加系统化。当然，这个工作不可能一蹴而就，也相当不能完善，每天都有新技能、新技术产生，并发生变化，但也希望能对大家有些微帮助。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;作为一门吸收了C语言、Java和Perl特点的开源脚本语言，PHP受到了众多Web开发者的喜爱，在&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/6981.html&quot;&gt;TIOBE 2016年7月编程语言排行榜&lt;/a&gt;中，PHP位列第七名。&lt;/p&gt;
+
+&lt;p&gt;这里，小编整理了PHP相关的优秀文章资料资源，为广大PHP开发者提供学习参考，初学者也可以借鉴。内容虽然已经不少，但难以涉及方方面面，后续会持续补充，也欢迎大家提供建议，指正不足。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;开始前，先理一理知识体系，学习路线、知识架构。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/new/newInfo/4192.html&quot;&gt;PHP程序员学习路线&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/6794.html&quot;&gt;PHP 资源大全中文版&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/6520.html&quot;&gt;PHP 程序员的技术成长规划&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/5020.html&quot;&gt;PHP的学习规划建议&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/2802.html&quot;&gt;50个PHP开发框架、工具推荐&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;PHP基础&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/3934.html&quot;&gt;PHP安装部署(基于linux和windows平台)&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/1634.html&quot;&gt;PHP入门：常量基本规则&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/1635.html&quot;&gt;PHP入门：书写语法以及基本规范&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/3574.html&quot;&gt;PHP基础之表达式&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/3592.html&quot;&gt;PHP数组操作详解&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/1655.html&quot;&gt;PHP中判断变量为空的五种方法&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/4295.html&quot;&gt;PHP多种序列化与反序列化的方法&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/4497.html&quot;&gt;PHP防止用户重复提交表单&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/3531.html&quot;&gt;PHP exec system passthru系统函数&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/4448.html&quot;&gt;PHP转义Json里的特殊字符的函数&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/5443.html&quot;&gt;PHP执行linux命令的6个函数&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/3655.html&quot;&gt;PHP的压缩函数实现：gzencode、gzdeflate和gzcompress&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/4542.html&quot;&gt;PHP 超级全局变量&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/3632.html&quot;&gt;10个实用的PHP正则表达式&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/4137.html&quot;&gt;15个实用的PHP正则表达式&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/3527.html&quot;&gt;几种php 删除数组元素方法&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/4601.html&quot;&gt;PHP echo/print&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/5325.html&quot;&gt;PHP 语言需要避免的 10 大误区&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/4952.html&quot;&gt;PHP7错误处理机制修改&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/4220.html&quot;&gt;理解PHP 中的 Streams&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/3933.html&quot;&gt;彻底理解PHP的SESSION机制&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/5063.html&quot;&gt;【经验分享】PHP开发中的中文编码问题&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/4526.html&quot;&gt;10个必须掌握的PHP关联数组使用技巧&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/3506.html&quot;&gt;9个必须时刻警惕的PHP命令&amp;amp;代码&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/4806.html&quot;&gt;如何编写一个独立的PHP 扩展&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/4677.html&quot;&gt;10个你或许不了解但实用的PHP函数&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/3706.html&quot;&gt;【教程 】XML数据解析——PHP相关&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;进阶（包括框架、类库、设计模式、图像处理、优秀代码片段等等）&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/5665.html&quot;&gt;浅解用PHP实现MVC&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/4746.html&quot;&gt;为什么你应该使用一个PHP框架&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/3708.html&quot;&gt;为什么Laravel会成为最成功的PHP框架?&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/3710.html&quot;&gt;如何挑选PHP框架?&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/3476.html&quot;&gt;10款最佳PHP自动化测试框架&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/4678.html&quot;&gt;你不可不知道的20个优秀PHP框架&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/5159.html&quot;&gt;【技术攻略】php设计模式(一)：简介及创建型模式&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/5180.html&quot;&gt;【编程课堂】php设计模式(二)：结构型模式(续)&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/5181.html&quot;&gt;【编程课堂】Php设计模式(三)：行为型模式&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/2176.html&quot;&gt;PHP配合apc实现上传进度条&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/4805.html&quot;&gt;PHP 实现微信网页授权开发教程&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/2839.html&quot;&gt;PHP处理Excel插件PHPExcel常用方法详解&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/3752.html&quot;&gt;PHP底层的运行机制与原理&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/4240.html&quot;&gt;PHP 上传图片并压缩方法&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/3607.html&quot;&gt;PHP 7 vs HHVM 比较&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/2829.html&quot;&gt;干货：PHP图像处理方法整理（一）&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/2830.html&quot;&gt;干货：PHP图像处理方法整理（二）&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/4340.html&quot;&gt;让你的PHP7更快之Hugepage&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/3547.html&quot;&gt;PHP实现四种基本排序算法&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/6071.html&quot;&gt;9个超级有用的PHP代码片段&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/2835.html&quot;&gt;33个非常使用的PHP代码样例&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/3907.html&quot;&gt;超级干货：24个有用的PHP类库&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/3308.html&quot;&gt;超实用 九大节省时间的PHP代码片段&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/5173.html&quot;&gt;10个你应该学习使用的PHP特性&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/3307.html&quot;&gt;【实用小工具】10款最具人气的PHP开源工具&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/5348.html&quot;&gt;【技术分享】PHP 死锁问题分析&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/4162.html&quot;&gt;PHP系统设计与云架构&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/2685.html&quot;&gt;PHP 中的缓存技术总结&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/4217.html&quot;&gt;PHP中该怎样防止SQL注入?&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/1638.html&quot;&gt;PHP程序员最常犯的11个MySQL错误&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/5040.html&quot;&gt;PHP OCR实战：用Tesseract从图像中读取文字&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;安全问题&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/3963.html&quot;&gt;PHP八大安全函数解析&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/3505.html&quot;&gt;PHP：8个与安全相关的函数&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/1282.html&quot;&gt;PHP开发安全问题总结&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/1300.html&quot;&gt;PHP网站常见一些安全漏洞及防御方法&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/5295.html&quot;&gt;PHP网站常见安全漏洞，及相应防范措施总结&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;面试&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/2875.html&quot;&gt;PHP中级程序员常见面试题（有参考答案）&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/6391.html&quot;&gt;10个值得深思的PHP 面试问题&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/5269.html&quot;&gt;【面试攻略】12个提问频率最高的PHP面试题&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;经验技巧&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/6133.html&quot;&gt;40+个对初学者非常有用的PHP技巧(一)&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/6134.html&quot;&gt;40+个对初学者非常有用的PHP技巧(二)&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/3529.html&quot;&gt;PHP：20个点有助于提高编程效率&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/4239.html&quot;&gt;PHP代码规范的10个好习惯&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/6671.html&quot;&gt;高级PHP工程师应该具备的一些技能&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/3815.html&quot;&gt;提高PHP代码质量的36个技巧&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/5124.html&quot;&gt;中高级PHP开发者应该掌握哪些技术&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/5298.html&quot;&gt;10 位顶级PHP 大师的开发原则&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;书籍资料：&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/resource/resourceInfo/1321.html&quot;&gt;PHP快速入门与商用项目培训&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/resource/resourceInfo/408.html&quot;&gt;PHP项目实践热门资源汇总&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/resource/resourceInfo/454.html&quot;&gt;PHP从入门到精通&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/resource/resourceInfo/543.html&quot;&gt;PHP编程&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/resource/resourceInfo/676.html&quot;&gt;PHP网络编程技术与实例 &lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/resource/resourceInfo/1171.html&quot;&gt;经典php教程&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/resource/resourceInfo/1005.html&quot;&gt;android 和 php开发最佳实践 &lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;其他：&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/5380.html&quot;&gt;PHP过往及现在及变革&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/3324.html&quot;&gt;PHP之父：PHP7性能翻倍关键大揭秘&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/3863.html&quot;&gt;PHP对战Node.js：一场关于开发者喜好的史诗级战役&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/3453.html&quot;&gt;PHP程序猿必备的七种武器&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/3891.html&quot;&gt;揭秘PHP深受Web开发者喜爱的原因&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.devstore.cn/essay/essayInfo/3545.html&quot;&gt;30条爆笑的程序员梗PHP是最好的语言&lt;/a&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;原文：http://www.devstore.cn/essay/essayInfo/6990.html&lt;/p&gt;
+&lt;/blockquote&gt;
+</description>
+        <pubDate>Wed, 10 Aug 2016 00:00:00 +0800</pubDate>
+        <link>http://www.francissoung.com/2016/08/10/%E4%B8%80%E8%A8%80%E4%B8%8D%E5%90%88%E5%B0%B1%E5%AD%A6%E4%B9%A0-PHP%E4%BC%98%E7%A7%80%E5%AD%A6%E4%B9%A0%E6%96%87%E7%AB%A0%E8%B5%84%E6%96%99%E6%B1%87%E6%80%BB%E6%95%B4%E7%90%86/</link>
+        <guid isPermaLink="true">http://www.francissoung.com/2016/08/10/%E4%B8%80%E8%A8%80%E4%B8%8D%E5%90%88%E5%B0%B1%E5%AD%A6%E4%B9%A0-PHP%E4%BC%98%E7%A7%80%E5%AD%A6%E4%B9%A0%E6%96%87%E7%AB%A0%E8%B5%84%E6%96%99%E6%B1%87%E6%80%BB%E6%95%B4%E7%90%86/</guid>
+        
+        <category>资源分享</category>
+        
+        <category>PHP</category>
+        
+        
+      </item>
     
       <item>
         <title>使用D3.js实现数据可视化-PolarClockIII</title>
         <description>&lt;h2 id=&quot;section&quot;&gt;效果&lt;/h2&gt;
 
-&lt;iframe src=&quot;/resource/PolarClock/clock3.html&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; style=&quot;width:960px;height: 960px;&quot; scrolling=&quot;no&quot;&gt;&lt;/iframe&gt;
+&lt;iframe src=&quot;/resource/SVG/PolarClock/clock3.html&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; style=&quot;width:960px;height: 960px;&quot; scrolling=&quot;no&quot;&gt;&lt;/iframe&gt;
 
 &lt;h2 id=&quot;section-1&quot;&gt;源码&lt;/h2&gt;
 
@@ -185,7 +412,7 @@
         <title>使用D3.js实现数据可视化-PolarClockII</title>
         <description>&lt;h2 id=&quot;section&quot;&gt;效果&lt;/h2&gt;
 
-&lt;iframe src=&quot;/resource/PolarClock/clock2.html&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; style=&quot;width:100%;height: 800px;&quot; scrolling=&quot;no&quot;&gt;&lt;/iframe&gt;
+&lt;iframe src=&quot;/resource/SVG/PolarClock/clock2.html&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; style=&quot;width:100%;height: 800px;&quot; scrolling=&quot;no&quot;&gt;&lt;/iframe&gt;
 
 &lt;h2 id=&quot;section-1&quot;&gt;源码&lt;/h2&gt;
 
@@ -343,7 +570,7 @@
         <title>使用D3.js实现数据可视化-PolarClock</title>
         <description>&lt;h2 id=&quot;section&quot;&gt;效果&lt;/h2&gt;
 
-&lt;iframe src=&quot;/resource/PolarClock/clock.html&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; style=&quot;width:100%;height: 800px;&quot; scrolling=&quot;no&quot;&gt;&lt;/iframe&gt;
+&lt;iframe src=&quot;/resource/SVG/PolarClock/clock.html&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; style=&quot;width:100%;height: 800px;&quot; scrolling=&quot;no&quot;&gt;&lt;/iframe&gt;
 
 &lt;h2 id=&quot;section-1&quot;&gt;源码&lt;/h2&gt;
 
@@ -1796,170 +2023,6 @@ Result: 0
         <guid isPermaLink="true">http://www.francissoung.com/2016/03/27/%E4%BC%BC%E6%B0%B4%E5%B9%B4%E5%8D%8E%E4%B9%8B%E5%9B%9E%E7%82%89%E5%86%8D%E9%80%A0/</guid>
         
         <category>Francis 简单生活</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>App架构设计经验谈:接口的设计</title>
-        <description>&lt;h3 id=&quot;section&quot;&gt;安全机制的设计&lt;/h3&gt;
-
-&lt;p&gt;现在，大部分App的接口都&lt;strong&gt;采用RESTful架构&lt;/strong&gt;，RESTFul最重要的一个设计原则就是，&lt;strong&gt;客户端与服务器的交互在请求之间是无状态的&lt;/strong&gt;，也就是说，当涉及到用户状态时，每次请求都要带上身份验证信息。实现上，大部分都&lt;strong&gt;采用token的认证方式&lt;/strong&gt;，一般流程是：&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;用户用密码登录成功后，服务器返回token给客户端；&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;客户端将token保存在本地，发起后续的相关请求时，将token发回给服务器；&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;服务器检查token的有效性，有效则返回数据，若无效，分两种情况：&lt;/p&gt;
-    &lt;ul&gt;
-      &lt;li&gt;
-        &lt;p&gt;token错误，这时需要用户重新登录，获取正确的token&lt;/p&gt;
-      &lt;/li&gt;
-      &lt;li&gt;
-        &lt;p&gt;token过期，这时客户端需要再发起一次认证请求，获取新的token&lt;/p&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;然而，此种验证方式存在一个安全性问题：当登录接口被劫持时，黑客就获取到了用户密码和token，后续则可以对该用户做任何事情了。用户只有修改密码才能夺回控制权。&lt;/p&gt;
-
-&lt;p&gt;如何优化呢？&lt;strong&gt;第一种解决方案是采用HTTPS&lt;/strong&gt;。HTTPS在HTTP的基础上添加了SSL安全协议，自动对数据进行了压缩加密，在一定程序可以防止监听、防止劫持、防止重发，安全性可以提高很多。不过，SSL也不是绝对安全的，也存在被劫持的可能。另外，服务器对HTTPS的配置相对有点复杂，还需要到CA申请证书，而且一般还是收费的。而且，HTTPS效率也比较低。一般，只有安全要求比较高的系统才会采用HTTPS，比如银行。而大部分对安全要求没那么高的App还是采用HTTP的方式。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;我们目前的做法是给每个接口都添加签名&lt;/strong&gt;。给客户端分配一个密钥，每次请求接口时，将密钥和所有参数组合成源串，根据签名算法生成签名值，发送请求时将签名一起发送给服务器验证。类似的实现可参考OAuth1.0的签名算法。这样，黑客不知道密钥，不知道签名算法，就算拦截到登录接口，后续请求也无法成功操作。不过，因为签名算法比较麻烦，而且容易出错，只适合对内的接口。如果你们的接口属于开放的API，则不太适合这种签名认证的方式了，建议还是使用OAuth2.0的认证机制。&lt;/p&gt;
-
-&lt;p&gt;我们也给每个端分配一个appKey，比如Android、iOS、微信三端，每个端分别分配一个appKey和一个密钥。没有传appKey的请求将报错，传错了appKey的请求也将报错。这样，安全性方面又加多了一层防御，同时也方便对不同端做一些不同的处理策略。&lt;/p&gt;
-
-&lt;p&gt;另外，现在越来越多App取消了密码登录，而采用手机号+短信验证码的登录方式，我在当前的项目中也采用了这种登录方式。这种登录方式有几种好处：&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;不需要注册，不需要修改密码，也不需要因为忘记密码而重置密码的操作了；&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;用户不再需要记住密码了，也不怕密码泄露的问题了；&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;相对于密码登录其安全性明显提高了。&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-1&quot;&gt;接口数据的设计&lt;/h4&gt;
-
-&lt;p&gt;接口的数据一般都采用JSON格式进行传输，不过，需要注意的是，JSON的值只有六种数据类型：&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;Number：整数或浮点数&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;String：字符串&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Boolean：true 或 false&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Array：数组包含在方括号[]中&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Object：对象包含在大括号{}中&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Null：空类型&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;所以，传输的数据类型不能超过这六种数据类型。以前，我们曾经试过传输Date类型，它会转为类似于”2016年1月7日 09时17分42秒 GMT+08:00”这样的字符串，这在转换时会产生问题，不同的解析库解析方式可能不同，有的可能会转乱，有的可能直接异常了。要避免出错，必须做特殊处理，自己手动去做解析。为了根除这种问题，最好的解决方案是用毫秒数表示日期。&lt;/p&gt;
-
-&lt;p&gt;另外，以前的项目中还出现过字符串的”true”和”false”，或者字符串的数字，甚至还出现过字符串的”null”，导致解析错误，尤其是”null”，导致App奔溃，后来查了好久才查出来是该问题导致的。这都是因为服务端对数据没处理好，导致有些数据转为了字符串。所以，在客户端，也不能完全信任服务端传回的数据都是对的，需要对所有异常情况都做相应处理。&lt;/p&gt;
-
-&lt;p&gt;服务器返回的数据结构，一般为：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-    &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;code：0&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-    &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;message:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;success&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-    &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;key1:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;value1,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;key2:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;value2,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&lt;strong&gt;code: 状态码，0表示成功，非0表示各种不同的错误&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;message: 描述信息，成功时为”success”，错误时则是错误信息&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;data: 成功时返回的数据，类型为对象或数组&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;不同错误需要定义不同的状态码，属于客户端的错误和服务端的错误也要区分，比如1XX表示客户端的错误，2XX表示服务端的错误。这里举几个例子：&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;0：成功&lt;/li&gt;
-  &lt;li&gt;100：请求错误&lt;/li&gt;
-  &lt;li&gt;101：缺少appKey&lt;/li&gt;
-  &lt;li&gt;102：缺少签名&lt;/li&gt;
-  &lt;li&gt;103：缺少参数&lt;/li&gt;
-  &lt;li&gt;200：服务器出错&lt;/li&gt;
-  &lt;li&gt;201：服务不可用&lt;/li&gt;
-  &lt;li&gt;202：服务器正在重启&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;错误信息一般有两种用途：一是客户端开发人员调试时看具体是什么错误；二是作为App错误提示直接展示给用户看。主要还是作为App错误提示，直接展示给用户看的。所以，大部分都是简短的提示信息。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;data字段只在请求成功时才会有数据返回的&lt;/strong&gt;。数据类型限定为对象或数组，当请求需要的数据为单个对象时则传回对象，当请求需要的数据是列表时，则为某个对象的数组。这里需要注意的就是，不要将data传入字符串或数字，即使请求需要的数据只有一个，比如token，那返回的data应该为：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 正确
-data: { token: 123456 }
-
-// 错误
-data: 123456
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h3 id=&quot;section-2&quot;&gt;接口版本的设计&lt;/h3&gt;
-
-&lt;p&gt;接口不可能一成不变，在不停迭代中，总会发生变化。接口的变化一般会有几种：&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;数据的变化，比如增加了旧版本不支持的数据类型&lt;/li&gt;
-  &lt;li&gt;参数的变化，比如新增了参数&lt;/li&gt;
-  &lt;li&gt;接口的废弃，不再使用该接口了&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;为了适应这些变化，必须得做接口版本的设计。实现上，一般有两种做法：&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;每个接口有各自的版本，一般为接口添加个version的参数。&lt;/li&gt;
-  &lt;li&gt;整个接口系统有统一的版本，一般在URL中添加版本号，比如http://api.domain.com/v2。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;大部分情况下会采用第一种方式，当某一个接口有变动时，在这个接口上叠加版本号，并兼容旧版本。App的新版本开发传参时则将传入新版本的version。&lt;/p&gt;
-
-&lt;p&gt;如果整个接口系统的根基都发生变动的话，比如微博API，从OAuth1.0升级到OAuth2.0，整个API都进行了升级。&lt;/p&gt;
-
-&lt;p&gt;有时候，一个接口的变动还会影响到其他接口，但做的时候不一定能发现。因此，最好还要有一套完善的测试机制保证每次接口变更都能测试到所有相关层面。&lt;/p&gt;
-
-&lt;h3 id=&quot;section-3&quot;&gt;写在最后&lt;/h3&gt;
-
-&lt;p&gt;关于接口设计，暂时想到的就这么多了。各位看官看完觉得有遗漏或有哪些需要优化的欢迎提出一起讨论。&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;博主对本文写的观点深表赞同，并且目前的项目也在用同样的接口设计，本文总结的很好，遂转于本博予以收藏，如有侵犯版权问题，请与本博主联系。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;&lt;em&gt;转载自Keegan小钢&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;em&gt;原文链接：http://keeganlee.me/post/architecture/20160107&lt;/em&gt;&lt;/p&gt;
-</description>
-        <pubDate>Thu, 24 Mar 2016 00:00:00 +0800</pubDate>
-        <link>http://www.francissoung.com/2016/03/24/App%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E7%BB%8F%E9%AA%8C%E8%B0%88-%E6%8E%A5%E5%8F%A3%E7%9A%84%E8%AE%BE%E8%AE%A1/</link>
-        <guid isPermaLink="true">http://www.francissoung.com/2016/03/24/App%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E7%BB%8F%E9%AA%8C%E8%B0%88-%E6%8E%A5%E5%8F%A3%E7%9A%84%E8%AE%BE%E8%AE%A1/</guid>
-        
-        <category>Francis 杂谈</category>
-        
-        <category>架构</category>
         
         
       </item>

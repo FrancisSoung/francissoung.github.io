@@ -9,9 +9,9 @@
     <meta name="keywords"  content="WEB程序开发,Linux服务器管理,LAMP/LNMP环境配置优化,网络架构,MySQL优化,生活旅行,Francis,francissoung,php程序猿的笔记,程序员的日记薄">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>RESTful API版本控制策略 - Francis Soung</title>
+    <title>一言不合就学习：PHP优秀学习文章资料汇总整理 - Francis Soung</title>
 
-    <link rel="canonical" href="http://www.francissoung.com/2016/07/25/RESTful-API%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6%E7%AD%96%E7%95%A5/">
+    <link rel="canonical" href="http://www.francissoung.com/2016/08/10/%E4%B8%80%E8%A8%80%E4%B8%8D%E5%90%88%E5%B0%B1%E5%AD%A6%E4%B9%A0-PHP%E4%BC%98%E7%A7%80%E5%AD%A6%E4%B9%A0%E6%96%87%E7%AB%A0%E8%B5%84%E6%96%99%E6%B1%87%E6%80%BB%E6%95%B4%E7%90%86/">
 
     
     <!-- css CDN to qiniu -->
@@ -141,13 +141,13 @@
 
     <!-- Image to hack wechat -->
 <!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
-<!-- <img src="/img/post-bg-RESTful-API-design.jpg" width="0" height="0"> -->
+<!-- <img src="/img/post-bg-php.jpg" width="0" height="0"> -->
 
 <!-- Post Header -->
 <style type="text/css">
     header.intro-header{
         position: relative;
-        background-image: url('/img/post-bg-RESTful-API-design.jpg')
+        background-image: url('/img/post-bg-php.jpg')
     }
 
     
@@ -160,17 +160,17 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#RESTful" title="RESTful">RESTful</a>
+                        <a class="tag" href="/tags/#资源分享" title="资源分享">资源分享</a>
                         
-                        <a class="tag" href="/tags/#API" title="API">API</a>
+                        <a class="tag" href="/tags/#PHP" title="PHP">PHP</a>
                         
                     </div>
-                    <h1>RESTful API版本控制策略</h1>
+                    <h1>一言不合就学习：PHP优秀学习文章资料汇总整理</h1>
                     
                     
                     <h2 class="subheading"></h2>
                     
-                    <span class="meta">Posted by Francis Soung on July 25, 2016</span>
+                    <span class="meta">Posted by Francis Soung on August 10, 2016</span>
                 </div>
             </div>
         </div>
@@ -188,86 +188,219 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <p>做RESTful开放平台，一方面其API变动越少，对API调用者越有利；另一方面，没有人可以预测未来，系统在发展的过程中，不可避免的需要添加新的资源，或者修改现有资源。</p>
+                <blockquote>
+  <p>发现一个不错的网站，<a href="http://www.devstore.cn">DevStore</a>，移动互联网企业运营解决方案整合平台，产品前期-设计阶段-开发测试-推广阶段-运维运营，各个阶段都有涉及。</p>
 
-<p>因此，改动升级必不可少，但是，作为平台开发者，你必须有觉悟：一旦你的API开放出去，有人开始用了，你就不能只管自己Happy了，你对平台的任何改动都需要考虑对当前用户的影响。</p>
+  <p>下面整理一些针对包括程序员、运营、设计师等在内的系统学习资料，希望给初学者一些参考，也给已经入门的人一些进阶建议，让知识体系更加系统化。当然，这个工作不可能一蹴而就，也相当不能完善，每天都有新技能、新技术产生，并发生变化，但也希望能对大家有些微帮助。</p>
+</blockquote>
 
-<p>因此，做开放平台，你从第一个API的设计就需要开始API的版本控制策略问题，API的版本控制策略就像是开放平台和平台用户之间的长期协议，其设计的好坏将直接决定用户是否使用该平台，或者说用户在使用之后是否会因为某次版本升级直接弃用该平台。</p>
+<p>作为一门吸收了C语言、Java和Perl特点的开源脚本语言，PHP受到了众多Web开发者的喜爱，在<a href="http://www.devstore.cn/essay/essayInfo/6981.html">TIOBE 2016年7月编程语言排行榜</a>中，PHP位列第七名。</p>
 
-<p>API的版本控制策略通常有3种模式：</p>
+<p>这里，小编整理了PHP相关的优秀文章资料资源，为广大PHP开发者提供学习参考，初学者也可以借鉴。内容虽然已经不少，但难以涉及方方面面，后续会持续补充，也欢迎大家提供建议，指正不足。</p>
 
-<p><strong>第一种</strong>：The Knot：无版本，即平台的API永远只有一个版本，所有的用户都必须使用最新的API，任何API的修改都会影响到平台所有的用户。甚至平台的整个生态系统。</p>
+<p><strong>开始前，先理一理知识体系，学习路线、知识架构。</strong></p>
 
-<p><img src="http://source.francissoung.com/2016/07/25/RESTful API版本控制策略-1.png" alt="RESTful API版本控制策略-1" /></p>
+<p><a href="http://www.devstore.cn/new/newInfo/4192.html">PHP程序员学习路线</a></p>
 
-<p><strong>第二种</strong>：Point-to-Point：点对点，即平台的API版本自带版本号，用户根据自己的需求选择使用对应的API，需要使用新的API特性，用户必须自己升级。</p>
+<p><a href="http://www.devstore.cn/essay/essayInfo/6794.html">PHP 资源大全中文版</a></p>
 
-<p><img src="http://source.francissoung.com/2016/07/25/RESTful API版本控制策略-2.png" alt="RESTful API版本控制策略-2" /></p>
+<p><a href="http://www.devstore.cn/essay/essayInfo/6520.html">PHP 程序员的技术成长规划</a></p>
 
-<p><strong>第三种</strong>：Compatible Versioning：兼容性版本控制，和The Knot一样，平台只有一个版本，但是最新版本需要兼容以前版本的API行为。</p>
+<p><a href="http://www.devstore.cn/essay/essayInfo/5020.html">PHP的学习规划建议</a></p>
 
-<p><img src="http://source.francissoung.com/2016/07/25/RESTful API版本控制策略-3.png" alt="RESTful API版本控制策略-3" /></p>
+<p><a href="http://www.devstore.cn/essay/essayInfo/2802.html">50个PHP开发框架、工具推荐</a></p>
 
-<p>三种策略对整个平台在升级API的开销对比如下：</p>
+<p><strong>PHP基础</strong></p>
 
-<p><img src="http://source.francissoung.com/2016/07/25/RESTful API版本控制策略-4.png" alt="RESTful API版本控制策略-4" /></p>
+<p><a href="http://www.devstore.cn/essay/essayInfo/3934.html">PHP安装部署(基于linux和windows平台)</a></p>
 
-<p>以上信息来源于这篇文章： http://www.ebpml.org/blog2/index.php/2013/11/25/understanding-the-costs-of-versioning
-作者以数学的方式详细的论述了这三种模式下，整个平台在升级API上的开销对比。</p>
+<p><a href="http://www.devstore.cn/essay/essayInfo/1634.html">PHP入门：常量基本规则</a></p>
 
-<p>针对上面的论述，首先，API一定得有版本，否则升级对于用户来说将是噩梦。其次，要做到Compatible Versioning有现实的限制，毕竟API升级时，不可避免的会出现无法兼容老版本的状况，因此，版本控制需要结合第二种和第三种模式，即提供一个统一的兼容版本入口，同时对于不能兼容历史版本的API保留历史版本，支持用户能够调用到历史版本的API。另外，对历史版本的API支持一定要有时间和用户限制，即老版API支持到一定时间就删除，新用户必须使用新版API，否则一个API有10个版本会让平台的维护非常痛苦。</p>
+<p><a href="http://www.devstore.cn/essay/essayInfo/1635.html">PHP入门：书写语法以及基本规范</a></p>
 
-<h4 id="uri-vs-request-parameter-vs-media-type">URI vs Request Parameter vs Media Type</h4>
+<p><a href="http://www.devstore.cn/essay/essayInfo/3574.html">PHP基础之表达式</a></p>
 
-<p>在RESTful API领域，关于如何做版本控制，目前业界比较主流的有3种做法：</p>
+<p><a href="http://www.devstore.cn/essay/essayInfo/3592.html">PHP数组操作详解</a></p>
 
-<p><strong>第一种</strong>：URI， 即在URI中直接标记使用的是哪个版本，无版本号URI默认使用最新版本。如下：</p>
+<p><a href="http://www.devstore.cn/essay/essayInfo/1655.html">PHP中判断变量为空的五种方法</a></p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>http://xianlinbox/api/customers/1234 
-http://xianlinbox/api/v3.0/customers/1234
-</code></pre>
-</div>
+<p><a href="http://www.devstore.cn/essay/essayInfo/4295.html">PHP多种序列化与反序列化的方法</a></p>
 
-<h4 id="section">好处：</h4>
+<p><a href="http://www.devstore.cn/essay/essayInfo/4497.html">PHP防止用户重复提交表单</a></p>
 
-<p>直接可以在URI中直观的看到API版本，可以直接在浏览器的查看各个版本API的结果.</p>
+<p><a href="http://www.devstore.cn/essay/essayInfo/3531.html">PHP exec system passthru系统函数</a></p>
 
-<h4 id="section-1">坏处：</h4>
+<p><a href="http://www.devstore.cn/essay/essayInfo/4448.html">PHP转义Json里的特殊字符的函数</a></p>
 
-<p>版本号在URI中破坏了REST的HATEOAS（hypermedia as the engine of application state）规则。版本号和资源之间并无直接关系。</p>
+<p><a href="http://www.devstore.cn/essay/essayInfo/5443.html">PHP执行linux命令的6个函数</a></p>
 
-<p><strong>第二种</strong>：Request Parameter， 即在每个请求后添加一个version参数，表示请求的是哪个版本。如下：</p>
+<p><a href="http://www.devstore.cn/essay/essayInfo/3655.html">PHP的压缩函数实现：gzencode、gzdeflate和gzcompress</a></p>
 
-<p><code class="highlighter-rouge">http://server:port/api/customer/123?version=2</code></p>
+<p><a href="http://www.devstore.cn/essay/essayInfo/4542.html">PHP 超级全局变量</a></p>
 
-<p>这种做法其实就是URI方式的变种，好坏处也都一样。</p>
+<p><a href="http://www.devstore.cn/essay/essayInfo/3632.html">10个实用的PHP正则表达式</a></p>
 
-<p><strong>第三种</strong>： Mdedia Type， 即在HTTP请求的header中使用Media Type标记该请求想获取的资源， 同样的可以不设置或设置通用的Media Type表示最新版本的API。</p>
+<p><a href="http://www.devstore.cn/essay/essayInfo/4137.html">15个实用的PHP正则表达式</a></p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>===&gt;
-GET /customer/123 HTTP/1.1
-Accept: application/vnd.xianlinbox.customer-v3+json
+<p><a href="http://www.devstore.cn/essay/essayInfo/3527.html">几种php 删除数组元素方法</a></p>
 
-&lt;===
-HTTP/1.1 200 OK
-Content-Type: application/vnd.xianlinbox.customer-v3+json
+<p><a href="http://www.devstore.cn/essay/essayInfo/4601.html">PHP echo/print</a></p>
 
-{"customer":
-  {"name":"Xianlinbox"}
-}
-</code></pre>
-</div>
+<p><a href="http://www.devstore.cn/essay/essayInfo/5325.html">PHP 语言需要避免的 10 大误区</a></p>
 
-<h4 id="section-2">好处：</h4>
+<p><a href="http://www.devstore.cn/essay/essayInfo/4952.html">PHP7错误处理机制修改</a></p>
 
-<p>遵循了REST的设计风格.</p>
+<p><a href="http://www.devstore.cn/essay/essayInfo/4220.html">理解PHP 中的 Streams</a></p>
 
-<h4 id="section-3">坏处：</h4>
+<p><a href="http://www.devstore.cn/essay/essayInfo/3933.html">彻底理解PHP的SESSION机制</a></p>
 
-<p>版本不直观，需要能设置header的client才能调用查看该API的效果。</p>
+<p><a href="http://www.devstore.cn/essay/essayInfo/5063.html">【经验分享】PHP开发中的中文编码问题</a></p>
 
-<p>原文：http://itindex.net/detail/47046-restful-api-版本控制</p>
+<p><a href="http://www.devstore.cn/essay/essayInfo/4526.html">10个必须掌握的PHP关联数组使用技巧</a></p>
 
+<p><a href="http://www.devstore.cn/essay/essayInfo/3506.html">9个必须时刻警惕的PHP命令&amp;代码</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/4806.html">如何编写一个独立的PHP 扩展</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/4677.html">10个你或许不了解但实用的PHP函数</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/3706.html">【教程 】XML数据解析——PHP相关</a></p>
+
+<p><strong>进阶（包括框架、类库、设计模式、图像处理、优秀代码片段等等）</strong></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/5665.html">浅解用PHP实现MVC</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/4746.html">为什么你应该使用一个PHP框架</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/3708.html">为什么Laravel会成为最成功的PHP框架?</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/3710.html">如何挑选PHP框架?</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/3476.html">10款最佳PHP自动化测试框架</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/4678.html">你不可不知道的20个优秀PHP框架</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/5159.html">【技术攻略】php设计模式(一)：简介及创建型模式</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/5180.html">【编程课堂】php设计模式(二)：结构型模式(续)</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/5181.html">【编程课堂】Php设计模式(三)：行为型模式</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/2176.html">PHP配合apc实现上传进度条</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/4805.html">PHP 实现微信网页授权开发教程</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/2839.html">PHP处理Excel插件PHPExcel常用方法详解</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/3752.html">PHP底层的运行机制与原理</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/4240.html">PHP 上传图片并压缩方法</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/3607.html">PHP 7 vs HHVM 比较</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/2829.html">干货：PHP图像处理方法整理（一）</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/2830.html">干货：PHP图像处理方法整理（二）</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/4340.html">让你的PHP7更快之Hugepage</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/3547.html">PHP实现四种基本排序算法</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/6071.html">9个超级有用的PHP代码片段</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/2835.html">33个非常使用的PHP代码样例</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/3907.html">超级干货：24个有用的PHP类库</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/3308.html">超实用 九大节省时间的PHP代码片段</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/5173.html">10个你应该学习使用的PHP特性</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/3307.html">【实用小工具】10款最具人气的PHP开源工具</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/5348.html">【技术分享】PHP 死锁问题分析</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/4162.html">PHP系统设计与云架构</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/2685.html">PHP 中的缓存技术总结</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/4217.html">PHP中该怎样防止SQL注入?</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/1638.html">PHP程序员最常犯的11个MySQL错误</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/5040.html">PHP OCR实战：用Tesseract从图像中读取文字</a></p>
+
+<p><strong>安全问题</strong></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/3963.html">PHP八大安全函数解析</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/3505.html">PHP：8个与安全相关的函数</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/1282.html">PHP开发安全问题总结</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/1300.html">PHP网站常见一些安全漏洞及防御方法</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/5295.html">PHP网站常见安全漏洞，及相应防范措施总结</a></p>
+
+<p><strong>面试</strong></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/2875.html">PHP中级程序员常见面试题（有参考答案）</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/6391.html">10个值得深思的PHP 面试问题</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/5269.html">【面试攻略】12个提问频率最高的PHP面试题</a></p>
+
+<p><strong>经验技巧</strong></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/6133.html">40+个对初学者非常有用的PHP技巧(一)</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/6134.html">40+个对初学者非常有用的PHP技巧(二)</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/3529.html">PHP：20个点有助于提高编程效率</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/4239.html">PHP代码规范的10个好习惯</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/6671.html">高级PHP工程师应该具备的一些技能</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/3815.html">提高PHP代码质量的36个技巧</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/5124.html">中高级PHP开发者应该掌握哪些技术</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/5298.html">10 位顶级PHP 大师的开发原则</a></p>
+
+<p>书籍资料：</p>
+
+<p><a href="http://www.devstore.cn/resource/resourceInfo/1321.html">PHP快速入门与商用项目培训</a></p>
+
+<p><a href="http://www.devstore.cn/resource/resourceInfo/408.html">PHP项目实践热门资源汇总</a></p>
+
+<p><a href="http://www.devstore.cn/resource/resourceInfo/454.html">PHP从入门到精通</a></p>
+
+<p><a href="http://www.devstore.cn/resource/resourceInfo/543.html">PHP编程</a></p>
+
+<p><a href="http://www.devstore.cn/resource/resourceInfo/676.html">PHP网络编程技术与实例 </a></p>
+
+<p><a href="http://www.devstore.cn/resource/resourceInfo/1171.html">经典php教程</a></p>
+
+<p><a href="http://www.devstore.cn/resource/resourceInfo/1005.html">android 和 php开发最佳实践 </a></p>
+
+<p>其他：</p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/5380.html">PHP过往及现在及变革</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/3324.html">PHP之父：PHP7性能翻倍关键大揭秘</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/3863.html">PHP对战Node.js：一场关于开发者喜好的史诗级战役</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/3453.html">PHP程序猿必备的七种武器</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/3891.html">揭秘PHP深受Web开发者喜爱的原因</a></p>
+
+<p><a href="http://www.devstore.cn/essay/essayInfo/3545.html">30条爆笑的程序员梗PHP是最好的语言</a></p>
+
+<blockquote>
+  <p>原文：http://www.devstore.cn/essay/essayInfo/6990.html</p>
+</blockquote>
 
 
                 <hr>
@@ -288,19 +421,12 @@ Content-Type: application/vnd.xianlinbox.customer-v3+json
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2016/04/15/%E5%8D%95%E8%A1%A860%E4%BA%BF%E8%AE%B0%E5%BD%95%E7%AD%89%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%9C%BA%E6%99%AF%E7%9A%84MySQL%E4%BC%98%E5%8C%96%E5%92%8C%E8%BF%90%E7%BB%B4%E4%B9%8B%E9%81%93/" data-toggle="tooltip" data-placement="top" title="单表60亿记录等大数据场景的MySQL优化和运维之道 | 高可用架构">
+                        <a href="/2016/08/08/%E4%BD%BF%E7%94%A8D3.js%E5%AE%9E%E7%8E%B0%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96-PolarClockIII/" data-toggle="tooltip" data-placement="top" title="使用D3.js实现数据可视化-PolarClockIII">
                             Previous<br>
-                            <span>单表60亿记录等大数据场景的MySQL优化和运维之道 | 高可用架构</span>
+                            <span>使用D3.js实现数据可视化-PolarClockIII</span>
                         </a>
                     </li>
                     
-                    
-                    <li class="next">
-                        <a href="/2016/08/03/%E8%A7%82%E5%BD%B1%E5%B0%8F%E6%84%9F-%E9%9D%A9%E5%91%BD%E4%B9%8B%E8%B7%AF/" data-toggle="tooltip" data-placement="top" title="观影小感『革命之路』">
-                            Next<br>
-                            <span>观影小感『革命之路』</span>
-                        </a>
-                    </li>
                     
                 </ul>
 
@@ -309,9 +435,9 @@ Content-Type: application/vnd.xianlinbox.customer-v3+json
                 <!-- 多说评论框 start -->
                 <div class="comment">
                     <div class="ds-thread"
-                         data-thread-key="/2016/07/25/RESTful API版本控制策略"
-                         data-title="RESTful API版本控制策略"
-                         data-url="http://www.francissoung.com/2016/07/25/RESTful-API%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6%E7%AD%96%E7%95%A5/" >
+                         data-thread-key="/2016/08/10/一言不合就学习：PHP优秀学习文章资料汇总整理"
+                         data-title="一言不合就学习：PHP优秀学习文章资料汇总整理"
+                         data-url="http://www.francissoung.com/2016/08/10/%E4%B8%80%E8%A8%80%E4%B8%8D%E5%90%88%E5%B0%B1%E5%AD%A6%E4%B9%A0-PHP%E4%BC%98%E7%A7%80%E5%AD%A6%E4%B9%A0%E6%96%87%E7%AB%A0%E8%B5%84%E6%96%99%E6%B1%87%E6%80%BB%E6%95%B4%E7%90%86/" >
                     </div>
                 </div>
                 <!-- 多说评论框 end -->
