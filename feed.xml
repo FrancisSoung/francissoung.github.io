@@ -5,9 +5,103 @@
     <description>这是一个程序员的日记薄，记录工作与生活的点点滴滴。包括WEB程序开发、Linux服务器管理、LAMP/LNMP环境配置优化、PHP网络技术、MySQL优化等技术分享以及个人生活旅行中的所见所闻所解。</description>
     <link>http://www.francissoung.com/</link>
     <atom:link href="http://www.francissoung.com/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Thu, 18 Aug 2016 13:27:30 +0800</pubDate>
-    <lastBuildDate>Thu, 18 Aug 2016 13:27:30 +0800</lastBuildDate>
+    <pubDate>Sun, 28 Aug 2016 00:06:41 +0800</pubDate>
+    <lastBuildDate>Sun, 28 Aug 2016 00:06:41 +0800</lastBuildDate>
     <generator>Jekyll v3.2.0.pre.beta1</generator>
+    
+      <item>
+        <title>php多种序列化对比</title>
+        <description>&lt;p&gt;序列化是将变量转换为可保存或传输的字符串的过程；反序列化就是在适当的时候把这个字符串再转化成原来的变量使用。这两个过程结合起来，可以轻松地存储和传输数据，使程序更具维护性。&lt;/p&gt;
+
+&lt;h3 id=&quot;serializeunserialize&quot;&gt;serialize和unserialize函数&lt;/h3&gt;
+
+&lt;p&gt;这两个是序列化和反序列化PHP中数据的常用函数。有利于存储或传递 PHP 的值，同时不丢失其类型和结构。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;?php
+
+$a = array('a' =&amp;gt; 'Apple' ,'b' =&amp;gt; 'banana' , 'c' =&amp;gt; 'Coconut');
+
+//序列化数组
+$s = serialize($a);
+echo $s;
+//输出结果：a:3:{s:1:&quot;a&quot;;s:5:&quot;Apple&quot;;s:1:&quot;b&quot;;s:6:&quot;banana&quot;;s:1:&quot;c&quot;;s:7:&quot;Coconut&quot;;}
+
+echo '&amp;lt;br /&amp;gt;&amp;lt;br /&amp;gt;';
+
+//反序列化
+$o = unserialize($s);
+
+print_r($o);
+//输出结果 Array ( [a] =&amp;gt; Apple [b] =&amp;gt; banana [c] =&amp;gt; Coconut )
+
+?&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;当数组值包含如双引号、单引号或冒号等字符时，它们被反序列化后，可能会出现问题。为了克服这个问题，一个巧妙的技巧是使用base64_encode和base64_decode。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$obj = array();
+//序列化
+$s = base64_encode(serialize($obj));
+//反序列化
+$original = unserialize(base64_decode($s));
+
+但是base64编码将增加字符串的长度。为了克服这个问题，可以和gzcompress一起使用。
+
+//定义一个用来序列化对象的函数
+
+function my_serialize( $obj )
+{
+   return base64_encode(gzcompress(serialize($obj)));
+}
+
+//反序列化
+function my_unserialize($txt)
+{
+   return unserialize(gzuncompress(base64_decode($txt)));
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;jsonencode--jsondecode&quot;&gt;json_encode 和 json_decode&lt;/h3&gt;
+
+&lt;p&gt;使用JSON格式序列化和反序列化是一个不错的选择：&lt;/p&gt;
+
+&lt;p&gt;使用json_encode和json_decode格式输出要serialize和unserialize格式快得多。&lt;/p&gt;
+
+&lt;p&gt;(1) JSON格式是可读的。&lt;/p&gt;
+
+&lt;p&gt;(2) JSON格式比serialize返回数据结果小。&lt;/p&gt;
+
+&lt;p&gt;(3) JSON格式是开放的、可移植的。其他语言也可以使用它。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$a = array('a' =&amp;gt; 'Apple' ,'b' =&amp;gt; 'banana' , 'c' =&amp;gt; 'Coconut');
+	
+//序列化数组
+$s = json_encode($a);
+echo $s;
+//输出结果：{&quot;a&quot;:&quot;Apple&quot;,&quot;b&quot;:&quot;banana&quot;,&quot;c&quot;:&quot;Coconut&quot;}
+	
+echo '&amp;lt;br /&amp;gt;&amp;lt;br /&amp;gt;';
+	
+//反序列化
+$o = json_decode($s);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;在上面的例子中，json_encode输出长度比上个例子中serialize输出长度显然要短。需要注意的是json_encode不能序列化对象。&lt;/p&gt;
+
+</description>
+        <pubDate>Sat, 27 Aug 2016 00:00:00 +0800</pubDate>
+        <link>http://www.francissoung.com/2016/08/27/php%E5%A4%9A%E7%A7%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%AF%B9%E6%AF%94/</link>
+        <guid isPermaLink="true">http://www.francissoung.com/2016/08/27/php%E5%A4%9A%E7%A7%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%AF%B9%E6%AF%94/</guid>
+        
+        <category>PHP</category>
+        
+        <category>PHP序列化</category>
+        
+        
+      </item>
     
       <item>
         <title>一言不合就学习：PHP优秀学习文章资料汇总整理</title>
@@ -1986,43 +2080,6 @@ Result: 0
         <category>算法</category>
         
         <category>编程</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>似水年华之回炉再造</title>
-        <description>&lt;p&gt;在犹豫了两年之后，报考了北大的成人教育。曾经的自己非常的迷茫，不知道自己想要什么，只是过着随遇而安的生活。在跌跌撞撞的北漂生活中对自己的未来有了新的认识，也许这种认识才使我重新定位自己。&lt;/p&gt;
-
-&lt;p&gt;经过全国统一考试之后，2016年伊始，开始了三年的北大学习之旅。&lt;/p&gt;
-
-&lt;p&gt;提到北大，大家第一印象便是中国最一流的高等学府。不知道为什么，我并为此而特别兴奋，也许只是为了学位？我相信很多人都会这样想。&lt;/p&gt;
-
-&lt;p&gt;当进入北大之后，没有那种大学自由自在的感觉，反而多了更大的压力，管理严格和要求高是一方面，更多的是经过几年的社会，自己曾经熟知的知识已经忘得差不多了。不过我相信这些都是可以改善的。&lt;/p&gt;
-
-&lt;p&gt;今天提前下课了，来到了大名鼎鼎的未名湖畔。很多游人游览，我想大家也是慕名而来，感受百年老校的文化和艺术气息。我对于北大不是很熟，虽现在是北大的一员，但总是有区别的。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://source.francissoung.com/2016%2F03%2F27%2F%E6%9C%AA%E5%90%8D%E6%B9%96%E7%95%94.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;坐在未名湖畔的休息椅上，呼吸到了春天的气息，看到湖对面的柳树想起了一首中学时期学过的诗–【碧玉妆成一树高 ，万条垂下绿丝绦。不知细叶谁裁出 ，二月春风似剪刀。】不过现在是三月，可依然有些凉（前几日的温度让本人去除了不少衣物）。&lt;/p&gt;
-
-&lt;p&gt;开始羡慕在北大读书的同学，能进入北大的同学多半都是全国的精英吧（较真的同学请掠过）。学术氛围和文化气息确实能影响一个人求知欲望。我只能奋起直追了。&lt;/p&gt;
-
-&lt;p&gt;也许每个人对我报考北大成人教育态度不一，我也不去在意他人的看法了，对我来说，学位固然重要，但更重要的是这段旅程。我相信不久的将来这趟文化之旅给我带来的不仅仅是那一张薄薄的证书。&lt;/p&gt;
-
-&lt;p&gt;因为住的远，每天5点就起床奔向北大，8点开始上课，今后的周末基本都在这里度过了。&lt;/p&gt;
-
-&lt;p&gt;周末对于程序员来说是难得的休息时间，牺牲了周末对本来就紧张的生活来说添了更多的劳累。我不再去追究它到底值不值得，过去的犹豫不决让自己失去了很多了，不能再犯如此错误了。&lt;/p&gt;
-
-&lt;p&gt;我相信自己的选择，如同这春意盎然的时节。&lt;/p&gt;
-
-&lt;p&gt;继续奋进，在这条路上！&lt;/p&gt;
-</description>
-        <pubDate>Sun, 27 Mar 2016 00:00:00 +0800</pubDate>
-        <link>http://www.francissoung.com/2016/03/27/%E4%BC%BC%E6%B0%B4%E5%B9%B4%E5%8D%8E%E4%B9%8B%E5%9B%9E%E7%82%89%E5%86%8D%E9%80%A0/</link>
-        <guid isPermaLink="true">http://www.francissoung.com/2016/03/27/%E4%BC%BC%E6%B0%B4%E5%B9%B4%E5%8D%8E%E4%B9%8B%E5%9B%9E%E7%82%89%E5%86%8D%E9%80%A0/</guid>
-        
-        <category>Francis 简单生活</category>
         
         
       </item>

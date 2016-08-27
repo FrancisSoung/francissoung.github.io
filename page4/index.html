@@ -166,6 +166,31 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2015/11/11/%E8%AE%B0%E4%B8%80%E6%AC%A1TIME_WAIT%E7%BD%91%E7%BB%9C%E6%95%85%E9%9A%9C/">
+        <h2 class="post-title">
+            记一次TIME_WAIT网络故障
+        </h2>
+        
+        <h3 class="post-subtitle">
+            
+        </h3>
+        
+        <div class="post-content-preview">
+            最近发现服务器的网络格外不稳定，流量比较异常，升降差距明显。出现了PHP脚本时常出现连不上服务器的现象，调试了一下，发现是TIME_WAIT状态过多造成的，本文简要介绍一下解决问题的过程。
+
+遇到这类问题，我习惯于先用strace命令跟踪了一下看看：
+
+shell&gt; strace php /path/to/file
+EADDRNOTAVAIL (Cannot assign reques...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Francis Soung on November 11, 2015
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2015/11/11/php%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/">
         <h2 class="post-title">
             php配置文件详解
@@ -419,48 +444,6 @@ mysql pr...
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/2015/04/15/travel-Jeju-Island/">
-        <h2 class="post-title">
-            五一，我在济州岛
-        </h2>
-        
-        <h3 class="post-subtitle">
-            夕阳，美女，落日，大海，自由
-        </h3>
-        
-        <div class="post-content-preview">
-            
-  2015年5月1日
-
-  韩国济州岛
-
-  经纬度：126°08′～126°58′E 36°06′～33°00′N
-
-
-天津出发，直飞济州岛
-
-
-
-
-
-夕阳西下，美女，落日，大海，可惜济州岛没有沙滩，济州岛本是一个火山岛，海滩全是黑色火山岩。
-
-
-
-瞧瞧这海滩，没有人会下去冲浪的，跟国内的海边相比也是另一番景色。
-
-
-
-济州岛周边有很多小岛屿，水清澈的要命，天气晴朗的时候看上去一片绿。...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Francis Soung on April 15, 2015
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
 
@@ -515,7 +498,7 @@ mysql pr...
                             
                         
                             
-                                <a href="/tags/#PHP" title="PHP" rel="7">
+                                <a href="/tags/#PHP" title="PHP" rel="8">
                                     PHP
                                 </a>
                             
@@ -592,6 +575,8 @@ mysql pr...
                                 <a href="/tags/#SVG" title="SVG" rel="3">
                                     SVG
                                 </a>
+                            
+                        
                             
                         
                             
