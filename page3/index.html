@@ -166,62 +166,6 @@
             ">
     			
 <div class="post-preview">
-    <a href="/2016/03/07/nginx.conf%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/">
-        <h2 class="post-title">
-            nginx.conf配置文件详解
-        </h2>
-        
-        <h3 class="post-subtitle">
-            
-        </h3>
-        
-        <div class="post-content-preview">
-            Nginx配置文件主要分成四部分：main（全局设置）、server（主机设置）、upstream（上游服务器设置，主要为反向代理、负载均衡相关配置）和 location（URL匹配特定位置后的设置），每部分包含若干个指令。main部分设置的指令将影响其它所有部分的设置；server部分的指令主要用于指定虚拟主机域名、IP和端口；upstream的指令用于设置一系列的后端服务器，设置反向代理...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Francis Soung on March 7, 2016
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2016/03/04/%E5%A6%82%E4%BD%95%E5%B0%86DISQUS%E7%A4%BE%E4%BC%9A%E5%8C%96%E8%AF%84%E8%AE%BA%E8%AE%BE%E7%BD%AE%E4%B8%BA%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87/">
-        <h2 class="post-title">
-            如何将DISQUS社会化评论设置为简体中文
-        </h2>
-        
-        <h3 class="post-subtitle">
-            
-        </h3>
-        
-        <div class="post-content-preview">
-            1、首先要打开Disqus的网站，点击右上角的 Sign-in 登录。
-
-
-
-2、进入后台。
-
-登录后回到首页，点击右上角你的头像，选择 Admin，进入管理后台。
-
-3、选择右上角“Settings”：
-
-
-
-先给大家看看这些设置都是什么意思：
-
-APPEARANCE：评论区的样式
-COMMENT COUNT LINK： 当评论、回应条数分别为 0、1 时的显示
-DEFAULT SORT：...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Francis Soung on March 4, 2016
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
     <a href="/2016/03/04/%E5%A6%82%E4%BD%95%E5%86%99%E5%87%BA%E4%BC%98%E7%BE%8E%E7%9A%84-C-%E4%BB%A3%E7%A0%81/">
         <h2 class="post-title">
             如何写出优美的 C 代码
@@ -365,9 +309,9 @@ E45: 'readonly' option is set (add ! to override) 这表明文件是只读的，
 <hr>
 
 <div class="post-preview">
-    <a href="/2015/12/16/%E8%87%B4%E6%B5%AE%E8%BA%81%E7%9A%84%E8%87%AA%E5%B7%B1/">
+    <a href="/2015/11/11/%E8%AE%B0%E4%B8%80%E6%AC%A1TIME_WAIT%E7%BD%91%E7%BB%9C%E6%95%85%E9%9A%9C/">
         <h2 class="post-title">
-            致浮躁的自己
+            记一次TIME_WAIT网络故障
         </h2>
         
         <h3 class="post-subtitle">
@@ -375,27 +319,24 @@ E45: 'readonly' option is set (add ! to override) 这表明文件是只读的，
         </h3>
         
         <div class="post-content-preview">
-            懂得太少，表现太多；
+            最近发现服务器的网络格外不稳定，流量比较异常，升降差距明显。出现了PHP脚本时常出现连不上服务器的现象，调试了一下，发现是TIME_WAIT状态过多造成的，本文简要介绍一下解决问题的过程。
 
-才华太少，锋芒太多，很浅薄，一眼就能被看穿。
+遇到这类问题，我习惯于先用strace命令跟踪了一下看看：
 
-沉下来，打根基，让别人不会觉得你烦！
-
-
-
-
+shell&gt; strace php /path/to/file
+EADDRNOTAVAIL (Cannot assign reques...
         </div>
     </a>
     <p class="post-meta">
-        Posted by Francis Soung on December 16, 2015
+        Posted by Francis Soung on November 11, 2015
     </p>
 </div>
 <hr>
 
 <div class="post-preview">
-    <a href="/2015/11/11/%E7%A8%8B%E5%BA%8F%E5%91%98%E5%88%B0%E5%BA%95%E6%98%AF%E4%B8%80%E4%B8%AA%E4%BB%80%E4%B9%88%E8%81%8C%E4%B8%9A/">
+    <a href="/2015/11/11/php%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3/">
         <h2 class="post-title">
-            程序员到底是一个什么职业？
+            php配置文件详解
         </h2>
         
         <h3 class="post-subtitle">
@@ -404,22 +345,79 @@ E45: 'readonly' option is set (add ! to override) 这表明文件是只读的，
         
         <div class="post-content-preview">
             
-  程序员首先是雇员、然后是工程师；比起创造力，工程能力对这个职位更为重要。
+  优化php性能的时候，优化配置文件这个是首当其冲的。下边跟大家分享下我总结的关于php.ini配置文件里的每一行的解释，希望能帮助大家进一步了解php。
 
 
-今天看到鸟哥的微博，说了些我一直想说的话，正好猴年来了，就展开聊聊我理解的程序猿这个职业吧。
-
-
-
-为什么有人在技术造神
-
-大家应该已经感受到，技术圈这两年已经和创业圈差不多的氛围了，这其实是有原因的。
-
-最主要的原因是，创业公司和创业媒体越来越多，他们需要大量的程序员投身到创业这个高风险的行业中，而造神，正...
+[ipv6@ipv6 ~]# grep -v ";" /etc/php5/apache2/php.ini
+[PHP]
+engine = On  ---&gt;  是否启用PHP解析引擎
+short_open_tag = Off  ...
         </div>
     </a>
     <p class="post-meta">
         Posted by Francis Soung on November 11, 2015
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2015/11/01/MAC-OSX10.11%E4%B8%8A%E6%90%AD%E5%BB%BA%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/">
+        <h2 class="post-title">
+            MAC OSX10.11上搭建Apache，PHP，MySQL5.6.15，phpMyAdmin开发环境
+        </h2>
+        
+        <h3 class="post-subtitle">
+            
+        </h3>
+        
+        <div class="post-content-preview">
+            最近在本地测试网站，之前经常远程到公司进行测试，受网络限制比较严重，并且效率非常低，今天就豁出去了，在我用了两年的小白上安装了开发环境。
+
+其实OSX上自带了apache和php，所以这两个搞起来还比较顺利。装MySQL的最新版5.6.15版颇费周折，本文详细记录之。
+
+
+
+apache的配置
+
+apache已经自带了，只需如下三个命令就可以了。
+
+开启apache服务 sudo apach...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Francis Soung on November 1, 2015
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2015/10/13/LAMP%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E8%AF%A6%E7%BB%86%E5%8F%82%E6%95%B0%E6%96%87%E6%A1%A3/">
+        <h2 class="post-title">
+            LAMP环境搭建详细参数文档
+        </h2>
+        
+        <h3 class="post-subtitle">
+            
+        </h3>
+        
+        <div class="post-content-preview">
+            
+  共享一下学习阶段，老师分享的LAMP环境搭建的文档，非常详细，包括安装所需软件、配置相关参数、可能出现的问题以及解决方法等。请提出意见并指正。
+
+
+准备工作
+
+1、安装编译工具gcc、gcc-c++、make
+
+注意解决依赖关系，推荐使用yum安装，若不能联网可使用安装光盘做为yum源——
+1)编辑yum配置文件：
+
+Mount /dev/cdrom /media
+vi /etc/yu...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Francis Soung on October 13, 2015
     </p>
 </div>
 <hr>
@@ -464,18 +462,6 @@ E45: 'readonly' option is set (add ! to override) 这表明文件是只读的，
                             
                         
                             
-                                <a href="/tags/#Francis 旅行录" title="Francis 旅行录" rel="6">
-                                    Francis 旅行录
-                                </a>
-                            
-                        
-                            
-                                <a href="/tags/#Francis 简单生活" title="Francis 简单生活" rel="7">
-                                    Francis 简单生活
-                                </a>
-                            
-                        
-                            
                         
                             
                                 <a href="/tags/#PHP" title="PHP" rel="8">
@@ -492,12 +478,6 @@ E45: 'readonly' option is set (add ! to override) 这表明文件是只读的，
                             
                                 <a href="/tags/#Apache" title="Apache" rel="2">
                                     Apache
-                                </a>
-                            
-                        
-                            
-                                <a href="/tags/#Francis 杂谈" title="Francis 杂谈" rel="15">
-                                    Francis 杂谈
                                 </a>
                             
                         
@@ -537,6 +517,18 @@ E45: 'readonly' option is set (add ! to override) 这表明文件是只读的，
                                 </a>
                             
                         
+                            
+                                <a href="/tags/#Francis 杂谈" title="Francis 杂谈" rel="13">
+                                    Francis 杂谈
+                                </a>
+                            
+                        
+                            
+                        
+                            
+                                <a href="/tags/#Francis 简单生活" title="Francis 简单生活" rel="2">
+                                    Francis 简单生活
+                                </a>
                             
                         
                             
