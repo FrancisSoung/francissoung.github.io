@@ -166,6 +166,42 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2016/10/08/%E5%9C%A8Linux%E7%8E%AF%E5%A2%83%E4%B8%8Bmysql%E7%9A%84root%E5%AF%86%E7%A0%81%E5%BF%98%E8%AE%B0%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95/">
+        <h2 class="post-title">
+            在Linux环境下mysql的root密码忘记解决方法
+        </h2>
+        
+        <h3 class="post-subtitle">
+            
+        </h3>
+        
+        <div class="post-content-preview">
+            mysql版本不同，修改密码的方法大同小异，但是有一定的区别：
+
+mysql5.1
+
+1．首先确认服务器出于安全的状态，也就是没有人能够任意地连接MySQL数据库。
+
+2．修改MySQL的登录设置
+
+vi /etc/my.cnf
+
+在[mysqld]的段中加上一句：skip-grant-tables 保存并且退出
+
+
+
+3．重新启动
+
+mysqld service mysqld restar...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Francis Soung on October 8, 2016
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2016/08/27/php%E5%A4%9A%E7%A7%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%AF%B9%E6%AF%94/">
         <h2 class="post-title">
             php多种序列化对比
@@ -438,30 +474,6 @@ MySQL历史
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/2016/03/31/%E9%80%92%E5%BD%92%E7%AE%97%E6%B3%95%E4%B9%8Bn%E9%98%B6%E7%9F%A9%E9%98%B5%E8%A1%8C%E5%88%97%E5%BC%8F%E6%B1%82%E8%A7%A3/">
-        <h2 class="post-title">
-            递归算法之n阶矩阵行列式求解
-        </h2>
-        
-        <h3 class="post-subtitle">
-            最近高等代数正好讲到这里，此篇文章正好对所学知识做一个具体程序实践。
-        </h3>
-        
-        <div class="post-content-preview">
-            
-  设计算法时使用递归的思想是一个程序员的基本素质，递归可以把一个很庞大的问题转化为规模缩小了的同类问题的子问题，通过这一思想，我们编程时运用递归可以使用很少的代码来处理很大的问题。这篇文章将会讲到递归算法的运用。
-
-
-在数学中，很多数学函数都是由一个公式来表达的，比如 f(x) = 100x; 这个公式可以让我们把长度米转换成长度厘米。 有了这个公式，在程序中敲出一行代码，写出一个函数（...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Francis Soung on March 31, 2016
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
 
@@ -492,7 +504,7 @@ MySQL历史
                     <div class="tags">
                         
                             
-                                <a href="/tags/#Linux" title="Linux" rel="10">
+                                <a href="/tags/#Linux" title="Linux" rel="11">
                                     Linux
                                 </a>
                             
@@ -506,7 +518,7 @@ MySQL历史
                             
                         
                             
-                                <a href="/tags/#MySQL" title="MySQL" rel="3">
+                                <a href="/tags/#MySQL" title="MySQL" rel="4">
                                     MySQL
                                 </a>
                             

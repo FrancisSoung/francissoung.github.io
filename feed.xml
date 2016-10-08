@@ -5,9 +5,112 @@
     <description>这是一个程序员的日记薄，记录工作与生活的点点滴滴。包括WEB程序开发、Linux服务器管理、LAMP/LNMP环境配置优化、PHP网络技术、MySQL优化等技术分享以及个人生活旅行中的所见所闻所解。</description>
     <link>http://www.francissoung.com/</link>
     <atom:link href="http://www.francissoung.com/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Tue, 06 Sep 2016 10:11:14 +0800</pubDate>
-    <lastBuildDate>Tue, 06 Sep 2016 10:11:14 +0800</lastBuildDate>
+    <pubDate>Sat, 08 Oct 2016 13:14:00 +0800</pubDate>
+    <lastBuildDate>Sat, 08 Oct 2016 13:14:00 +0800</lastBuildDate>
     <generator>Jekyll v3.2.0.pre.beta1</generator>
+    
+      <item>
+        <title>在Linux环境下mysql的root密码忘记解决方法</title>
+        <description>&lt;p&gt;mysql版本不同，修改密码的方法大同小异，但是有一定的区别：&lt;/p&gt;
+
+&lt;h3 id=&quot;mysql51&quot;&gt;mysql5.1&lt;/h3&gt;
+
+&lt;p&gt;1．首先确认服务器出于安全的状态，也就是没有人能够任意地连接MySQL数据库。&lt;/p&gt;
+
+&lt;p&gt;2．修改MySQL的登录设置&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;vi /etc/my.cnf
+
+在[mysqld]的段中加上一句：skip-grant-tables 保存并且退出
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;3．重新启动&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mysqld service mysqld restart
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;4．登录并修改MySQL的root密码&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mysql&amp;gt; USE mysql ;
+mysql&amp;gt; UPDATE user SET Password = password ( 'new-password' ) WHERE User = 'root' ;
+mysql&amp;gt; flush privileges ;
+mysql&amp;gt; quit
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;5．将MySQL的登录设置修改回来&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;vi /etc/my.cnf
+
+将刚才在[mysqld]的段中加上的skip-grant-tables删除
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;6．重新启动mysqld&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/etc/init.d/mysqld restart ( service mysqld restart )
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;mysql57&quot;&gt;mysql5.7&lt;/h3&gt;
+
+&lt;p&gt;1．停掉数据库&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;service mysql stop
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;2．运行&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mysqld_safe --skip-grant-tables &amp;amp;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;3．登陆数据库&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mysql -p
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;4．更改密码&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mysql&amp;gt; updatemysql.usersetauthentication_string=password('123qwe') 
+whereuser='root'andHost = 'localhost';
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;不过这里要提示一下：新版本的数据库下的user表里面已经没有password了,而是将加密后的用户密码存储在authentication_string字段下面&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;flush privileges;
+
+quit
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;5．重启下mysql&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;service mysql restart
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;但此时操作似乎功能不完全，还要alter user…&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mysql&amp;gt; alter user 'root'@localhost' identified by '123456'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+</description>
+        <pubDate>Sat, 08 Oct 2016 00:00:00 +0800</pubDate>
+        <link>http://www.francissoung.com/2016/10/08/%E5%9C%A8Linux%E7%8E%AF%E5%A2%83%E4%B8%8Bmysql%E7%9A%84root%E5%AF%86%E7%A0%81%E5%BF%98%E8%AE%B0%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95/</link>
+        <guid isPermaLink="true">http://www.francissoung.com/2016/10/08/%E5%9C%A8Linux%E7%8E%AF%E5%A2%83%E4%B8%8Bmysql%E7%9A%84root%E5%AF%86%E7%A0%81%E5%BF%98%E8%AE%B0%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95/</guid>
+        
+        <category>MySQL</category>
+        
+        <category>Linux</category>
+        
+        
+      </item>
     
       <item>
         <title>php多种序列化对比</title>
@@ -1825,261 +1928,6 @@ MySQL&amp;gt;SELECT id, gift_code FROM pool_gift WHEREdeal_id = 640 AND remark=�
         <category>Francis 杂谈</category>
         
         <category>接口开发</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>递归算法之n阶矩阵行列式求解</title>
-        <description>&lt;blockquote&gt;
-  &lt;p&gt;设计算法时使用递归的思想是一个程序员的基本素质，递归可以把一个很庞大的问题转化为规模缩小了的同类问题的子问题，通过这一思想，我们编程时运用递归可以使用很少的代码来处理很大的问题。这篇文章将会讲到递归算法的运用。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;在数学中，很多数学函数都是由一个公式来表达的，比如 &lt;em&gt;f(x) = 100x&lt;/em&gt;; 这个公式可以让我们把长度米转换成长度厘米。 有了这个公式，在程序中敲出一行代码，写出一个函数（function）来计算实在是太简单方便了，就像这样。&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;int convert(int m){
-    return 100*m;
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;我们就写好了一个函数来进行米到厘米的单位换算。&lt;/p&gt;
-
-&lt;p&gt;但是有的时候，数学函数会以不太标准的形式来定义，比如这个函数，他满足 &lt;em&gt;f(0)=0&lt;/em&gt;而且 &lt;em&gt;f(x) = 2f(x-1)+x&lt;/em&gt;; 从这个函数定义我们可以得出 &lt;em&gt;f(1)=1&lt;/em&gt;;&lt;em&gt;f(2)=3&lt;/em&gt;;等等。当一个函数用他自己来定义时就称为这个函数是递归的。&lt;/p&gt;
-
-&lt;p&gt;通俗地讲，就是从前有个山，山里有个庙，庙里有个老和尚再给小和尚讲故事，讲的是：从前有个山，山里有个庙，庙里有个老和尚再给小和尚讲故事。。。。这就是递归。&lt;/p&gt;
-
-&lt;p&gt;好了说了这么多你们肯定还是一头雾水，现在来实践一下。&lt;/p&gt;
-
-&lt;h3 id=&quot;section&quot;&gt;递归求阶乘&lt;/h3&gt;
-
-&lt;p&gt;刚开始学编程的同学一定会写求阶乘的函数，使用for循环或者while循环都可以，但是递归却完全用不上这两个循环。&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public static int factorial(int a){
-
-    if (a==0 || a==1){
-        return 1;
-    }
-
-    return a*factorial(a-1);
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;上面的代码就是递归求阶乘的方法，a是需要传入的参数，比如我们要求5的阶乘就传入5这样factorial函数最终的返回值为120；&lt;/p&gt;
-
-&lt;p&gt;分析这段代码，他的第3行到第五行处理了 &lt;strong&gt;基准情况（Base Case）&lt;/strong&gt;，在这个情况下，函数的值可以直接算出而不用求出递归。就像上文提到的函数&lt;em&gt;f(x) = 2f(x-1)+x&lt;/em&gt;;如果没有f(0)=0这个事实在数学上没有意义一样。 再编程中，如果没有基准情况也是无意义的。第7行执行的是递归调用。&lt;/p&gt;
-
-&lt;p&gt;所以所，设计递归算法，需要包含以下两个基本法则：&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;1、基准情形（Base Case），必须总要有某些基准的清醒，在这个情形中，不执行递归就能求解。&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;2、不断推进（Making Progress），对于需要递归求解的情形，递归调用必须总能够朝着一个基准情形推进。这样的话，不断推进到基准情形，到达基准情形的时候递归才会推出，得到返回值。&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://source.francissoung.com//2016%2F03%2F30%2Fn%E9%98%B6%E7%9F%A9%E9%98%B5%E8%A1%8C%E5%88%97%E5%BC%8F%E6%B1%82%E8%A7%A31.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;n&quot;&gt;n阶矩阵行列式的求解&lt;/h3&gt;
-
-&lt;p&gt;有了刚在知识的铺垫，现在我们可以动手写一个程序来用递归计算n阶矩阵的行列式了。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;首先来看下二阶矩阵的求法&lt;/strong&gt;：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://source.francissoung.com/2016%2F03%2F30%2Fn%E9%98%B6%E7%9F%A9%E9%98%B5%E8%A1%8C%E5%88%97%E5%BC%8F%E6%B1%82%E8%A7%A32.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;也就是说2×2矩阵的元素交叉相乘再想减即可求出行列式。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;接下来是3阶矩阵&lt;/strong&gt;：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://source.francissoung.com/2016%2F03%2F30%2Fn%E9%98%B6%E7%9F%A9%E9%98%B5%E8%A1%8C%E5%88%97%E5%BC%8F%E6%B1%82%E8%A7%A33.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;3×3矩阵求解中，选择任意行或者列，在那一行/列中,移除那个元素所在的行和列比如选择a11，则移除第一行和第一列，这样矩阵就变成了2×2的，再按照刚才的方法求2×2矩阵的行列式即可。之后整个行或列的3个元素进行此类运算后相加就是3×3的行列式。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;n x n矩阵&lt;/strong&gt;：&lt;/p&gt;
-
-&lt;p&gt;n阶矩阵就和3阶矩阵求解的方法一样了，使用3×3求解的方法，比如4阶矩阵，将4阶消除成3阶，然后再变成2阶来算。但是矩阵每上升一个维度，计算量就会扩大很多。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://source.francissoung.com/2016%2F03%2F30%2Fn%E9%98%B6%E7%9F%A9%E9%98%B5%E8%A1%8C%E5%88%97%E5%BC%8F%E6%B1%82%E8%A7%A34.gif&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;知道了n阶矩阵行列式的计算思路后，就可以开始编写算法了。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;首先是数据结构设计&lt;/strong&gt;，我们需要设计一个矩阵类来提供便利，这个类有两个成员，一个二维数组，用来储存矩阵，一个整数，来储存矩阵的行数或列数（行列式必须是方矩阵才可以求解所以行列无所谓）。&lt;/p&gt;
-
-&lt;p&gt;以下是整个Matrix类的设计：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;static class Matrix{
-
-    private int rowNum=0;
-
-    private int[][] array;
-
-    //Constructor
-    public Matrix(int rowNum){
-        this.rowNum = rowNum;
-        array = new int[rowNum][rowNum];
-    }
-
-    public Matrix(int[][] array){
-        this.array = array;
-        this.rowNum = array.length;
-    }
-
-    int counter = 0; //For add Element
-
-    public void addElement(int a){
-        array[(counter)/rowNum][counter%rowNum] = a;
-        counter++;
-    }
-
-    //Print the instance itself
-    public void printMat(){
-        for (int i=0;i &amp;lt; rowNum ;i++){
-            for (int j=0;j &amp;lt; rowNum ;j++){
-                 System.out.print(array[i][j]+\t;);
-            }
-            System.out.println();
-        }
-    }
-
-    //Setter and Getter
-    public int getRowNum() {
-        return rowNum;
-    }
-
-    public int[][] getArray() {
-        return array;
-    }
-
-    public void setArray(int[][] array) {
-        this.array = array;
-    }
-
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;Matrix类中有两个构造方法：传入整数a会初始化一个axa大小的空矩阵，传入一个二维数组的话即可根据二维初始化一个Matrix对象。&lt;/p&gt;
-
-&lt;p&gt;Matrix类中有一个方法比较特殊：addElement方法，通过不断调用这个函数即可向一个Matrix实例进行有顺序的负值，第一次调用则会更改第第一行第一列位置上的值，第二次调用则会更改第一行第二列上的值，以此类推。&lt;/p&gt;
-
-&lt;p&gt;接下来就是设计一个MatrixCalculator类的，这个类中的一个成员方法可以求出行列式，我命名他为getDet(); 在计算行列式的时候需要移除元素所在的行和列，生成一个减小了一个维度的矩阵，我们需要编写一个方法来完成这个操作，我命名他为removeRowAndCol()；还有一个方法，由于相加的时候会产生符号的改变，所以需要写一个方法来计算矩阵中一个元素的cofactor，命名为getCofactor。&lt;/p&gt;
-
-&lt;p&gt;以下就是removeRowAndCol方法的代码：传入需要移除的行和列和一个Matrix对象，函数会返回消除了指定行和列的Matrix对象。&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public static Matrix removeRowAndCol(int row,int col,Matrix mat){
-
-    int matRowNum = mat.getRowNum();
-    int[][] arr = mat.getArray();
-
-    Matrix matrix = new Matrix(matRowNum-1);
-
-    for (int i = 0;i &amp;lt; matRowNum; i++){
-        for (int j = 0 &amp;lt; matRowNum; j++){
-                if (i!=row &amp;amp;&amp;amp; j!=col) {
-                    matrix.addElement(arr[i][j]);
-                }
-        }
-    }
-
-    matrix.printMat();
-    return matrix;
-
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;以下是getCofactor方法：由于我的算法只会去遍历矩阵第一列来进行求解，所以得到Cofactor的代码就变得简单很多。&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public static int getCofactor(int colNum){
-    if (colNum%2 == 0){
-        return 1;
-    }else {
-        return -1;
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;接下来就是核心的递归求解行列式的算法了，先理一下思路，&lt;strong&gt;递归算法的两个要素：基准情形，不断推进&lt;/strong&gt;。&lt;/p&gt;
-
-&lt;p&gt;对于n阶矩阵什么是基准情形呢？就是矩阵被降为2×2维度的时候，直接返回交叉相乘的差即可，不断推进，如果是一个4阶矩阵，算法会先把4将为3×3矩阵，然后3×3再拆成3个2×2矩阵来达到基准情形来算出答案，就和我们手算行列式时用到的方法一样，手算时候也遵循这一算法。&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public static int getDet(Matrix targetMatrix){
-    //Base (Finally reduced to 2 x 2 Matrix)
-    if (targetMatrix.rowNum == 2){
-        int[][] arr = targetMatrix.getArray();
-        // a*d - b*c
-        return arr[0][0]*arr[1][1] - arr[0][1]*arr[1][0];
-    }
-
-    //MARK- Recursion: to reduce dimension
-    int det = 0;
-    int colNum = targetMatrix.rowNum;
-    for (int i = 0; &amp;lt; colNum;i++){
-        det+= (targetMatrix.getArray()[i][0])*getCofactor(i)*getDet(removeRowAndCol(i,0,targetMatrix));
-    }
-
-    return det;
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;只有不到20行代码，但是却可以解决nxn的矩阵，是不是很神奇，这就是递归的优势，把一个很庞大的问题转化为规模缩小了的同类问题的子问题来求解。n阶矩阵最后被降为若干个2×2矩阵。&lt;/p&gt;
-
-&lt;p&gt;加上适当的输出语句，来求解一个3阶矩阵行列式试一下：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;2   1    2
--1   5   21
-13 -1  -17
-
-Element: 2
-Cofactor: 1
-Removing Row 0 Col 0
-A 2 x 2 Matrix is initialized
-5 21
--1 -17
-END State Reached
-Det: -64
-
-Element: -1
-Cofactor: -1
-Removing Row 1 Col 0
-A 2 x 2 Matrix is initialized
-1 2
--1 -17
-END State Reached
-Det: -15
-
-Element: 13
-Cofactor: 1
-Removing Row 2 Col 0
-A 2 x 2 Matrix is initialized
-1 2
-5 21
-END State Reached
-Det: 11
-Result: 0
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;但是有一个问题需要注意，就是这个算法的复杂度。&lt;/p&gt;
-
-&lt;h3 id=&quot;section-1&quot;&gt;算法复杂度&lt;/h3&gt;
-
-&lt;p&gt;这个算法的复杂度为O(n!), 这意味着他的运行速度很慢，随着问题规模的增长，时间会大幅度增长。在我的电脑上，计算3×3到7×7内规模的矩阵，电脑都可以秒算出来，但是如果是一个10×10的矩阵，电脑需要54秒钟，到了11×11时间将会变得更长，下图是这个算法随着问题规模增长对运行时产生影响的曲线。&lt;/p&gt;
-
-&lt;p&gt;可以看出7×7矩阵需要递归517次，到了10×10需要大约260万次递归运算才能得到结果。可见问题规模增长后时间的开销是十分巨大的。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://source.francissoung.com/2016%2F03%2F30%2Fn%E9%98%B6%E7%9F%A9%E9%98%B5%E8%A1%8C%E5%88%97%E5%BC%8F%E6%B1%82%E8%A7%A35.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;原文：&lt;a href=&quot;http://miketech.it/recursion_algorithm/&quot;&gt;http://miketech.it/recursion_algorithm/&lt;/a&gt;&lt;/p&gt;
-</description>
-        <pubDate>Thu, 31 Mar 2016 00:00:00 +0800</pubDate>
-        <link>http://www.francissoung.com/2016/03/31/%E9%80%92%E5%BD%92%E7%AE%97%E6%B3%95%E4%B9%8Bn%E9%98%B6%E7%9F%A9%E9%98%B5%E8%A1%8C%E5%88%97%E5%BC%8F%E6%B1%82%E8%A7%A3/</link>
-        <guid isPermaLink="true">http://www.francissoung.com/2016/03/31/%E9%80%92%E5%BD%92%E7%AE%97%E6%B3%95%E4%B9%8Bn%E9%98%B6%E7%9F%A9%E9%98%B5%E8%A1%8C%E5%88%97%E5%BC%8F%E6%B1%82%E8%A7%A3/</guid>
-        
-        <category>算法</category>
-        
-        <category>编程</category>
         
         
       </item>
