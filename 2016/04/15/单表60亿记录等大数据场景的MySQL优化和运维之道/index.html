@@ -285,7 +285,7 @@
 
 <p>关于使用datatime和timestamp，现在在5.6.4之后又有了变化，使用二者存储在存储空间上大差距越来越小 ，并且本身datatime存储范围就比timestamp大很多，timestamp只能存储到2038年。</p>
 
-<p><img src="http://source.francissoung.com/2016/04/15/高可用架构-1.jpeg" alt="单表60亿记录等大数据场景的MySQL优化和运维之道" /></p>
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016/04/15/高可用架构-1.jpeg" alt="单表60亿记录等大数据场景的MySQL优化和运维之道" /></p>
 
 <h4 id="section-5">索引规范</h4>
 
@@ -366,7 +366,7 @@ MySQL&gt;SELECT id, gift_code FROM pool_gift WHEREdeal_id = 640 AND remark=‘11
 
 <p>原生MySQL执行DDL时需要锁表，且锁表期间业务是无法写入数据的，对服务影响很大，MySQL对这方面的支持是比较差的。大表做DDL对DBA来说是很痛苦的，相信很多人经历过。如何做到Online DDL呢，是不是就无解了呢？当然不是！</p>
 
-<p><img src="http://source.francissoung.com/2016/04/15/高可用架构-2.jpeg" alt="单表60亿记录等大数据场景的MySQL优化和运维之道" /></p>
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016/04/15/高可用架构-2.jpeg" alt="单表60亿记录等大数据场景的MySQL优化和运维之道" /></p>
 
 <p>上面表格里提到的 Facebook OSC和5.6 OSC也是目前两种比较靠谱的方案</p>
 
@@ -374,7 +374,7 @@ MySQL&gt;SELECT id, gift_code FROM pool_gift WHEREdeal_id = 640 AND remark=‘11
 
 <p>下图是Facebook OSC的思路</p>
 
-<p><img src="http://source.francissoung.com/2016/04/15/高可用架构-3.jpeg" alt="单表60亿记录等大数据场景的MySQL优化和运维之道" /></p>
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016/04/15/高可用架构-3.jpeg" alt="单表60亿记录等大数据场景的MySQL优化和运维之道" /></p>
 
 <p>后来Percona公司根据Facebook OSC思路，用perl重写了一版，就是我们现在用得很多的pt-online-schema-change，软件本身非常成熟，支持目前主流版本。</p>
 
@@ -401,7 +401,7 @@ MySQL&gt;SELECT id, gift_code FROM pool_gift WHEREdeal_id = 640 AND remark=‘11
 
 <p>在正常条件下如何无缝去做主库切换，核心思路是让新主库和从库停在相同位置，主要依赖slave start until 语句，结合双主结构，考虑自增问题。</p>
 
-<p><img src="http://source.francissoung.com/2016/04/15/高可用架构-4.jpeg" alt="单表60亿记录等大数据场景的MySQL优化和运维之道" /></p>
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016/04/15/高可用架构-4.jpeg" alt="单表60亿记录等大数据场景的MySQL优化和运维之道" /></p>
 
 <p><strong>MySQL集群方案：</strong></p>
 
@@ -420,7 +420,7 @@ MySQL&gt;SELECT id, gift_code FROM pool_gift WHEREdeal_id = 640 AND remark=‘11
   <li>MySQL Cluster(有官方支持，不过实际用的不多)</li>
 </ul>
 
-<p><img src="http://source.francissoung.com/2016/04/15/高可用架构-5.jpeg" alt="单表60亿记录等大数据场景的MySQL优化和运维之道" /></p>
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016/04/15/高可用架构-5.jpeg" alt="单表60亿记录等大数据场景的MySQL优化和运维之道" /></p>
 
 <p>红框内是目前大家使用比较多的部署结构和方案。当然异常层面的HA也有很多第三方工具支持，比如MHA、MMM等，推荐使用MHA。</p>
 
@@ -437,7 +437,7 @@ MySQL&gt;SELECT id, gift_code FROM pool_gift WHEREdeal_id = 640 AND remark=‘11
 
 <p>曾经管理的单表最大60亿＋，单表数据文件大小1TB＋，人有时候就要懒一些。</p>
 
-<p><img src="http://source.francissoung.com/2016/04/15/高可用架构-6.jpeg" alt="单表60亿记录等大数据场景的MySQL优化和运维之道" /></p>
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016/04/15/高可用架构-6.jpeg" alt="单表60亿记录等大数据场景的MySQL优化和运维之道" /></p>
 
 <p>上图是水平拆分和垂直拆分的示意图</p>
 
@@ -520,7 +520,7 @@ MySQL&gt;SELECT id, gift_code FROM pool_gift WHEREdeal_id = 640 AND remark=‘11
 
 <p>问题很多，但是能解决基本问题。</p>
 
-<p><img src="http://source.francissoung.com/2016/04/15/高可用架构-7.jpeg" alt="单表60亿记录等大数据场景的MySQL优化和运维之道" /></p>
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016/04/15/高可用架构-7.jpeg" alt="单表60亿记录等大数据场景的MySQL优化和运维之道" /></p>
 
 <p>上图是MySQL复制原理图，红框内就是MySQL一直被人诟病的单线程问题。</p>
 
@@ -532,19 +532,19 @@ MySQL&gt;SELECT id, gift_code FROM pool_gift WHEREdeal_id = 640 AND remark=‘11
   <li>sharding</li>
 </ul>
 
-<p><img src="http://source.francissoung.com/2016/04/15/高可用架构-8.jpeg" alt="单表60亿记录等大数据场景的MySQL优化和运维之道" /></p>
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016/04/15/高可用架构-8.jpeg" alt="单表60亿记录等大数据场景的MySQL优化和运维之道" /></p>
 
 <p>上图是MySQL5.6 目前实现的并行复制原理图，是基于库级别的复制，所以如果你只有一个库，使用这个意义不大。</p>
 
 <p>当然MySQL也认识到5.6这种并行的瓶颈所在，所以在5.7引入了另外一种并行复制方式，基于logical timestamp的并行复制，并行复制不再受限于库的个数，效率会大大提升。</p>
 
-<p><img src="http://source.francissoung.com/2016/04/15/高可用架构-9.jpeg" alt="单表60亿记录等大数据场景的MySQL优化和运维之道" /></p>
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016/04/15/高可用架构-9.jpeg" alt="单表60亿记录等大数据场景的MySQL优化和运维之道" /></p>
 
 <p>上图是5.7的logical timestamp的复制原理图</p>
 
 <p>刚才我也提到MySQL原来只支持异步复制，这种数据安全性是非常差的，所以后来引入了半同步复制，从5.5开始支持。</p>
 
-<p><img src="http://source.francissoung.com/2016/04/15/高可用架构-11.jpeg" alt="单表60亿记录等大数据场景的MySQL优化和运维之道" /></p>
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016/04/15/高可用架构-11.jpeg" alt="单表60亿记录等大数据场景的MySQL优化和运维之道" /></p>
 
 <p>上图是原生异步复制和半同步复制的区别。可以看到半同步通过从库返回ACK这种方式确认从库收到数据，数据安全性大大提高。</p>
 
@@ -554,7 +554,7 @@ MySQL&gt;SELECT id, gift_code FROM pool_gift WHEREdeal_id = 640 AND remark=‘11
 
 <p>关于更安全的复制，MySQL 5.7也是有方案的，方案名叫Group replication 官方多主方案，基于Corosync实现。</p>
 
-<p><img src="http://source.francissoung.com/2016/04/15/高可用架构-12.jpeg" alt="单表60亿记录等大数据场景的MySQL优化和运维之道" /></p>
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016/04/15/高可用架构-12.jpeg" alt="单表60亿记录等大数据场景的MySQL优化和运维之道" /></p>
 
 <h4 id="section-14">主从延时问题</h4>
 
@@ -608,7 +608,7 @@ MySQL&gt;SELECT id, gift_code FROM pool_gift WHEREdeal_id = 640 AND remark=‘11
   <li>atshutdown ，bufferpool dump (5.6+)</li>
 </ul>
 
-<p><img src="http://source.francissoung.com/2016/04/15/高可用架构-13.jpeg" alt="单表60亿记录等大数据场景的MySQL优化和运维之道" /></p>
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016/04/15/高可用架构-13.jpeg" alt="单表60亿记录等大数据场景的MySQL优化和运维之道" /></p>
 
 <p>上图是5.5 4G的redo log和5.6 设置大于4G redo log文件性能对比，可以看到稳定性更好了。innodblogfile_size设置还是很有意义的。</p>
 
@@ -671,9 +671,9 @@ MySQL&gt;SELECT id, gift_code FROM pool_gift WHEREdeal_id = 640 AND remark=‘11
 
 <p>下图是我之前做的测试对比和InnoDB</p>
 
-<p><img src="http://source.francissoung.com/2016/04/15/高可用架构-14.jpeg" alt="单表60亿记录等大数据场景的MySQL优化和运维之道" /></p>
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016/04/15/高可用架构-14.jpeg" alt="单表60亿记录等大数据场景的MySQL优化和运维之道" /></p>
 
-<p><img src="http://source.francissoung.com/2016/04/15/高可用架构-15.jpeg" alt="单表60亿记录等大数据场景的MySQL优化和运维之道" /></p>
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016/04/15/高可用架构-15.jpeg" alt="单表60亿记录等大数据场景的MySQL优化和运维之道" /></p>
 
 <p>上图是sysbench测试的和InnoDB性能对比图，可以看到TokuDB在测试过程中写入稳定性是非常好的。</p>
 
@@ -697,9 +697,9 @@ MySQL&gt;SELECT id, gift_code FROM pool_gift WHEREdeal_id = 640 AND remark=‘11
 
 <p>关于事务隔离级别 ，InnoDB默认隔离级别是可重复读级别，当然InnoDB虽然是设置的可重复读，但是也是解决了幻读的，建议改成读已提交级别，可以满足大多数场景需求，有利于更高的并发，修改transaction-isolation。</p>
 
-<p><img src="http://source.francissoung.com/2016/04/15/高可用架构-16.jpeg" alt="单表60亿记录等大数据场景的MySQL优化和运维之道" /></p>
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016/04/15/高可用架构-16.jpeg" alt="单表60亿记录等大数据场景的MySQL优化和运维之道" /></p>
 
-<p><img src="http://source.francissoung.com/2016/04/15/高可用架构-18.jpg" alt="单表60亿记录等大数据场景的MySQL优化和运维之道" /></p>
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016/04/15/高可用架构-18.jpg" alt="单表60亿记录等大数据场景的MySQL优化和运维之道" /></p>
 
 <p>上图是一个比较经典的死锁case，有兴趣可以测试下。</p>
 
@@ -739,7 +739,7 @@ MySQL&gt;SELECT id, gift_code FROM pool_gift WHEREdeal_id = 640 AND remark=‘11
 
 <p>关于SATA SSD配置参数，建议使用Raid5，想更保险使用Raid50，更土豪使用Raid 10</p>
 
-<p><img src="http://source.francissoung.com/2016/04/15/高可用架构-17.jpeg" alt="单表60亿记录等大数据场景的MySQL优化和运维之道" /></p>
+<p><img src="http://7xl0td.com1.z0.glb.clouddn.com/2016/04/15/高可用架构-17.jpeg" alt="单表60亿记录等大数据场景的MySQL优化和运维之道" /></p>
 
 <p>上图是主要的参数优化，性能提升最大的是第一个修改调度算法的</p>
 
@@ -1132,7 +1132,7 @@ MySQL&gt;SELECT id, gift_code FROM pool_gift WHEREdeal_id = 640 AND remark=‘11
 
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; Francis Soung 2016
+                    Copyright &copy; Francis Soung 2017
                     <br>
                     Powered by <a href="https://github.com/mojombo/jekyll">Jekyll</a> and <a href="http://www.bootcss.com/">Bootstrap</a> | 京ICP备15036690号-1
                 </p>
